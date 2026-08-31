@@ -34,9 +34,9 @@ module.exports = async (req, res) => {
       };
     }
 
-    // gemini-2.5-flash 모델 엔드포인트 호출
+    // gemini-3.6-flash 모델 엔드포인트 호출
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
