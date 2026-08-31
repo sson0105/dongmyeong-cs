@@ -1,12 +1,11 @@
 export default async function handler(req, res) {
-  // CORS 및 POST 메서드 확인
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: 'GEMINI_API_KEY 환경변수가 설정되지 않았습니다.' });
+    return res.status(500).json({ error: 'GEMINI_API_KEY is not configured' });
   }
 
   try {
@@ -31,13 +30,12 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
-    
     if (!response.ok) {
-      return res.status(response.status).json({ error: data.error?.message || 'Google API 호출 오류' });
+      return res.status(response.status).json({ error: data.error?.message || 'API Error' });
     }
 
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({ error: '서버 에러 발생', details: error.message });
+    return res.status(500).json({ error: error.message });
   }
 }
