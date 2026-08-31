@@ -719,7 +719,7 @@
                 <button onclick="sendQuickQuery('추첨 및 결제 마감 시한이 언제인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">결제마감 시한</button>
                 <button onclick="sendQuickQuery('사용 3일 전 취소 시 환불 비율은 얼마인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">환불 비율</button>
                 <button onclick="sendQuickQuery('관내팀 거주팀 및 직장팀 등록 조건은?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">팀 등록 조건</button>
-                <button onclick="sendQuickQuery('SG 쇠뽕 축구화 착용 가능한가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">축구화 착용 수칙</button>
+                <button onclick="sendQuickQuery('샤워실과 탈의실 있나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">샤워실/탈의실</button>
             </div>
 
             <!-- Messages Container -->
@@ -733,7 +733,7 @@
                             안녕하세요! 동명근린공원 축구장 AI CS 도우미 '동명이'입니다. ⚽
                         </p>
                         <p class="text-[11px] text-slate-500 leading-normal">
-                            대관 추첨일, 결제 마감 시한, 환불 비율, 팀 등록 자격, 현장 수칙 등 무엇이든 편하게 물어보세요!
+                            대관 추첨일, 결제 마감 시한, 환불 비율, 시설 현황(샤워실/탈의실 등), 팀 등록 자격 무엇이든 물어보세요!
                         </p>
                     </div>
                 </div>
@@ -742,7 +742,7 @@
             <!-- Input Form -->
             <div class="p-2.5 bg-white border-t border-slate-200">
                 <form onsubmit="handleChatSubmit(event)" class="flex items-center gap-2">
-                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 비 올 때 취소 되나요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
+                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 샤워실이나 탈의실 이용할 수 있나요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
                     <button type="submit" id="chat-send-btn" class="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-xl transition-colors font-medium text-xs shrink-0 flex items-center justify-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
@@ -1297,48 +1297,57 @@
 
         const SYSTEM_PROMPT = `
 당신은 강동구도시관리공단 '동명근린공원 축구장'의 AI CS 도우미 '동명이'입니다.
+반드시 아래 [동명근린공원 축구장 공식 팩트 기준]에만 근거하여 사실 그대로 답변해야 하며, 정보가 없는 허위 사실(할루시네이션)을 지어내지 마세요.
 
-[답변 작성 기본 원칙]
-1. 사용자의 질문에 상황, 인원수, 날짜, 조건 등의 구체적 수치가 포함되어 있다면, 일반적인 규정을 나열하지 말고 **사용자의 상황을 계산·판단하여 결론부터 명쾌하게 답변**하세요.
-2. 답변은 1~3문장 또는 간결한 핵심 요약으로 작성하세요.
-3. 주요 수치와 판단 결과는 **굵은 글씨**로 강조하세요.
+[답변 작성 원칙]
+1. 사용자가 샤워실, 탈의실, 화장실, 구장 규격 등 시설 현황을 물어보면 '동명근린공원 축구장 지상 1층에 남·여 샤워실과 남·여 탈의실, 화장실이 완비되어 있다'고 사실대로 정확히 답변하세요. (절대 없다고 답변하지 마세요.)
+2. 질문에 인원수나 상황(예: "우리 팀 20명 중 강동구민 17명인데 등록돼?")이 제시되면, 기준(총 15명 이상 & 관내 10명 이상)과 비교 계산하여 등록 가능 여부부터 명쾌하게 판정하세요.
+3. 1~3문장 또는 간결한 핵심 요약으로 답변하고, 주요 수치와 핵심 단어는 **굵은 글씨**로 강조하세요.
 
-[동명근린공원 축구장 공식 규정 가이드]
-- 위치/연락처: 서울 강동구 아리수로78길 23 / 02.2045.7877
-- 대관 요금(2시간): 평일 88,000원 / 주말·공휴일 114,400원 (온라인 카드결제)
-- 추첨 및 접수 일정:
-  * 익월 추첨 접수: 매월 16일~20일 (관내팀 우선)
-  * 추첨 일시: 매월 21일 오전 10시 온라인 전자 추첨
-  * 당첨 결제 마감: 추첨 다음 날 밤 11시 59분(23:59)까지
-  * 잔여시간 선착순: 추첨 다다음 날(매월 23일) 오전 10시 온라인 오픈
-- 취소 및 환불 기준 (개인사정/단순우천/독감 등):
-  * 5일 전: 100% 전액 환불 (위약금 0원)
-  * 4일 전~1일 전: 90% 환불 (10% 위약금 차감)
-  * 사용 당일 및 이후: 환불 불가 (위약금 100%)
-  * 호우경보/기상특보/천재지변/공단 사정: 100% 전액 환불
-- 팀 등록 요건 (중복 등록 불가):
-  * 총원 15명 이상 필수
-  * 관내 거주팀: 총 15명 이상 중 강동구 거주 10명 이상 (3개월 내 등본 제출)
-  * 관내 직장팀: 총 15명 이상 중 강동구 사업장 10명 이상 (재직증명서+사업자등록증 제출)
-  * 관외팀: 총 15명 이상 (관내 10명 미만, 서류 없음, 잔여타임 신청만 가능)
-- 현장 수칙 & 축구화:
-  * SG 스터드(쇠뽕/긴 뽕) 착용 절대 금지 (TF풋살화 권장, AG/HG 가능)
-  * 무단 양도/대리: 즉시 퇴장 및 6개월 이용 금지
+[동명근린공원 축구장 공식 팩트 기준]
+1. 시설 현황 (지상 1층):
+   - 축구장 규격: 인조잔디구장 (라인 규격: 100m X 64m), 우레탄 탄성포장 트랙
+   - 편의 부대시설: **남·여 샤워실**, **남·여 탈의실**, 남·여 화장실, 축구장 관리 사무실, 관람 스탠드 및 구령대 완비 구비됨
+2. 위치 및 교통:
+   - 주소: 서울특별시 강동구 아리수로78길 23 (문의: 02.2045.7877)
+   - 대중교통: 버스 3412, 강동02, 강동05(고덕초 하차), 3324, 8333(고덕풍경채 하차) 도보 5분
+   - 주차: 전용 무료주차장 없음. 인근 동명근린공원 공영주차장 유료 이용 (축구장 이용객 감면/할인 혜택 없음)
+3. 대관 요금 (2시간 기준):
+   - 평일: 88,000원 / 주말 및 공휴일: 114,400원 (온라인 카드결제 납부 필수)
+4. 추첨 및 결제 일정:
+   - 익월 추첨 접수: 매월 16일 ~ 20일 (관내팀 우선 접수)
+   - 온라인 전자 추첨: 매월 21일 오전 10시
+   - 당첨 건 결제 마감: 추첨일 다음 날 밤 11시 59분(23:59)까지 (미결제 시 자동 취소)
+   - 잔여타임 접수: 매월 23일 오전 10시 온라인 선착순 오픈
+5. 취소 및 환불 규정 (개인사정, 독감, 변심 등 동일 적용):
+   - 사용 개시일 5일 전: 100% 전액 환불 (위약금 0원)
+   - 사용 4일 전 ~ 1일 전: 90% 환불 (10% 위약금 차감)
+   - 사용 당일 및 이후: 환불 불가 (위약금 100%)
+   - 호우경보 등 기상특보/천재지변/공단 사정: 100% 전액 환불 (단순 우천 시 정상 진행)
+6. 팀 등록 기준 (중복 등록 불가):
+   - 신청: 2026년 9월 1일부터 온라인 수시 접수 (승인 심사: 매월 5일~10일)
+   - 관내 거주팀: 총원 15명 이상 + 강동구 주민등록 회원 10명 이상 (3개월 이내 주민등록등본 제출)
+   - 관내 직장팀: 총원 15명 이상 + 강동구 사업장 재직 회원 10명 이상 (재직증명서 및 사업자등록증 제출)
+   - 관외팀: 총원 15명 이상 (관내 10명 미만, 서류 없음, 잔여타임 선착순 신청만 가능)
+7. 현장 수칙:
+   - SG 스터드(금속 쇠뽕/긴 뽕) 착용 절대 금지 (TF 풋살화 적극 권장, AG/HG 일반 축구화 가능)
+   - 대관 무단 양도/대리: 적발 시 즉시 퇴장 및 6개월간 축구장 이용 금지
+   - 구장 내 음주, 흡연, 취사, 음식물 섭취 금지 (물/음료만 가능)
 `;
 
         function generateOfflineResponse(userText) {
             const query = userText.toLowerCase().trim();
 
             if (query.includes('규격') || query.includes('크기') || query.includes('샤워') || query.includes('탈의실') || query.includes('화장실') || query.includes('트랙') || query.includes('시설현황') || query.includes('구령대') || query.includes('스탠드') || query.includes('100m') || query.includes('64m')) {
-                return "- **구장 규격:** 인조잔디 축구장 **100m X 64m** (우레탄 트랙 설치)\n- **주요 시설:** 관리 사무실, 관람 스탠드/구령대, **남·여 탈의실 및 샤워실**, 화장실 완비";
+                return "- **구장 제원:** 인조잔디 축구장 **100m X 64m** 및 우레탄 트랙\n- **부대시설:** 지상 1층에 **남·여 샤워실**, **남·여 탈의실**, 화장실, 관리 사무실이 완비되어 있습니다.";
             }
 
             if (query.includes('주소') || query.includes('위치') || query.includes('연락처') || query.includes('전화') || query.includes('어디') || query.includes('찾아') || query.includes('오시는길') || query.includes('버스') || query.includes('교통')) {
-                return "- **주소:** 서울특별시 강동구 아리수로78길 23\n- **연락처:** **02.2045.7877**\n- **대중교통:** 버스 3412, 강동02, 강동05(고덕초), 3324, 8333(고덕풍경채어바니티) 하차 도보 5분\n- **주차:** 주차 할인 및 무료 혜택 없음 (공영주차장 유료 이용)";
+                return "- **주소:** 서울특별시 강동구 아리수로78길 23\n- **연락처:** **02.2045.7877**\n- **대중교통:** 버스 3412, 강동02, 강동05(고덕초), 3324, 8333(고덕풍경채) 하차 도보 5분\n- **주차:** 축구장 무료/할인 혜택 없음 (공영주차장 유료 이용)";
             }
 
             if (query.includes('주차') || query.includes('차량') || query.includes('파킹') || query.includes('주차비') || query.includes('주차장')) {
-                return "- **주차 이용:** 동명근린공원 공영주차장 유료 이용 가능\n- **할인 혜택:** 축구장 이용객 대상 **주차 할인 및 감면 혜택 없음** (대중교통 이용 권장)";
+                return "- **주차 안내:** 인근 동명근린공원 공영주차장 유료 이용 가능\n- **할인 혜택:** 축구장 이용객 대상 **주차 감면/할인 혜택 없음** (대중교통 이용 권장)";
             }
 
             if (query.includes('사용료') || query.includes('카드') || query.includes('현금') || query.includes('납부') || query.includes('결제방식') || query.includes('어떻게 결제')) {
@@ -1381,7 +1390,7 @@
                 return "- **평일 대관료(2시간):** **88,000원** (부가세 포함)\n- **주말/공휴일(2시간):** **114,400원** (부가세 포함)\n- **납부 방법:** 온라인 카드결제";
             }
 
-            return "- **추첨 접수:** 매월 16일~20일 / **추첨:** 21일 오전 10시\n- **결제 마감:** 추첨 다음 날 **밤 11시 59분(23:59)**\n- **잔여타임:** 매월 **23일 오전 10시** 선착순\n- **환불 기준:** 5일 전 100%, 4~1일 전 90%, 당일 환불 불가\n- **구장 제원:** 100m X 64m / 남·여 샤워실·탈의실 완비";
+            return "- **구장 시설:** 100m X 64m / **남·여 샤워실 및 탈의실 완비**\n- **추첨 접수:** 매월 16일~20일 / **추첨:** 21일 오전 10시\n- **결제 마감:** 추첨 다음 날 **밤 11시 59분(23:59)**\n- **잔여타임:** 매월 **23일 오전 10시** 선착순";
         }
 
         function toggleChatbot() {
@@ -1461,7 +1470,7 @@
 
             let aiResponseText = "";
 
-            // [1순위] Vercel 서버리스 백엔드 호출 (GEMINI_API_KEY 환경변수 연동)
+            // [1순위] Vercel 서버리스 백엔드 호출 (/api/chat)
             try {
                 const response = await fetch('/api/chat', {
                     method: 'POST',
@@ -1486,7 +1495,7 @@
             // [2순위] 로컬 수동 입력 키 직접 호출 (로컬 HTML 단독 실행용)
             if (!aiResponseText && userStoredApiKey) {
                 try {
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${userStoredApiKey}`;
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userStoredApiKey}`;
                     const response = await fetch(apiUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -1505,7 +1514,7 @@
                 }
             }
 
-            // [3순위] 오프라인 내장 자연어 매칭 엔진
+            // [3순위] 오프라인 내장 자연어 매칭 엔진 (네트워크 장애 시)
             if (!aiResponseText) {
                 aiResponseText = generateOfflineResponse(userText);
             }
