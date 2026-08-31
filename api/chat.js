@@ -13,41 +13,52 @@ module.exports = async (req, res) => {
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: 'GEMINI_API_KEY is not configured' });
+    return res.status(500).json({ error: '환경변수 GEMINI_API_KEY가 Vercel에 등록되지 않았습니다.' });
   }
 
   try {
     const { prompt, systemInstruction } = req.body;
+
+    const payload = {
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }]
+        }
+      ]
+    };
+
+    if (systemInstruction) {
+      payload.systemInstruction = {
+        parts: [{ text: systemInstruction }]
+      };
+    }
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
-          generationConfig: {
-            temperature: 0.3,
-            maxOutputTokens: 800,
-          },
-        }),
+        body: JSON.stringify(payload)
       }
     );
 
     const data = await response.json();
 
-    // Gemini API 응답에서 텍스트 직접 안전 추출
-    const replyText = data?.candidates?.[0]?.content?.parts?.[0]?.text || null;
-
-    if (!replyText) {
-      console.error("Gemini API raw response error:", JSON.stringify(data));
-      return res.status(500).json({ error: 'AI 응답 생성 실패', raw: data });
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: 'Google Gemini API 호출 실패',
+        details: data.error || data
+      });
     }
 
-    // 깔끔하게 text 속성으로 반환
+    const replyText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!replyText) {
+      return res.status(500).json({ error: '생성된 텍스트가 없습니다.', raw: data });
+    }
+
     return res.status(200).json({ text: replyText });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: '서버 내부 예외 발생', message: error.message });
   }
 };
