@@ -1,769 +1,1634 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>동명근린공원 축구장 CS 관리 시스템</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-    body {
-      font-family: 'Pretendard', sans-serif;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동명근린공원 축구장 고객 응대(CS) 통합 가이드</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pretendard Variable Font CDN -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <style>
+        body {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-size: 12px; /* Minimum font size 12px globally */
+        }
+        h3 {
+            font-size: 18px !important;
+        }
+        .font-serif-kr {
+            font-family: "Pretendard Variable", Pretendard, sans-serif;
+            font-weight: 500;
+            letter-spacing: -0.015em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col text-slate-800 antialiased text-xs">
 
-  <!-- 상단 네비게이션 헤더 -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-emerald-200">
-          ⚽
-        </div>
-        <div>
-          <h1 class="text-lg font-bold text-slate-900 leading-tight">동명근린공원 축구장</h1>
-          <p class="text-xs text-slate-500 font-medium">CS 표준 응대 및 시설 관리 시스템</p>
-        </div>
-      </div>
-      <div class="flex items-center space-x-3">
-        <span class="hidden md:inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 text-slate-700">
-          평일 55,000원 / 주말 71,500원 (2시간)
-        </span>
-        <a href="https://gdgd.igangdong.or.kr/adm/" target="_blank" rel="noopener noreferrer" 
-           class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm">
-          <span>관리자 페이지 바로가기</span>
-          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-        </a>
-      </div>
-    </div>
-  </header>
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-md bg-slate-900 flex items-center justify-center font-bold text-xs text-white">
+                    CS
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-semibold text-slate-500">강동구도시관리공단</span>
+                        <span class="text-xs font-medium text-slate-400 border-l border-slate-200 pl-2">동명근린공원 축구장</span>
+                    </div>
+                    <h1 class="text-sm sm:text-base font-bold tracking-tight text-slate-900">고객 응대(CS) 표준 매뉴얼 및 가이드</h1>
+                </div>
+            </div>
 
-  <!-- 메인 탭 네비게이션 -->
-  <div class="bg-white border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <nav class="flex space-x-6 overflow-x-auto" id="mainTabs">
-        <button onclick="switchTab('tab-qa')" id="btn-tab-qa" class="tab-btn py-3.5 px-1 border-b-2 font-bold text-sm text-emerald-600 border-emerald-600 whitespace-nowrap">
-          Q&A 및 응대 스크립트
+            <div class="flex items-center gap-3 text-xs text-slate-600">
+                <span class="bg-slate-100 px-2.5 py-1 rounded border border-slate-200">평일 88,000원 / 주말 114,400원</span>
+                <a href="https://gdgd.igangdong.or.kr/adm/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold px-3 py-1.5 rounded border border-slate-900 transition-colors shadow-2xs">
+                    <span>관리자 페이지 바로가기</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="bg-slate-50 border-t border-slate-200 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto flex space-x-1 overflow-x-auto custom-scrollbar text-xs font-medium py-1.5">
+                <button onclick="switchTab('qa')" id="tab-btn-qa" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap bg-slate-900 text-white font-semibold">
+                    Q&A 및 스크립트
+                </button>
+                <button onclick="switchTab('calculator')" id="tab-btn-calculator" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                    환불·위약금 계산기
+                </button>
+                <button onclick="switchTab('teams')" id="tab-btn-teams" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                    팀 등록·자격 진단
+                </button>
+                <button onclick="switchTab('penalties')" id="tab-btn-penalties" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                    현장 수칙·페널티
+                </button>
+                <button onclick="switchTab('emergency')" id="tab-btn-emergency" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                    비상 대응·연락망
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Minimal Real-Time Clock Bar -->
+    <section class="bg-slate-900 text-white border-b border-slate-800 py-1.5 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-slate-400 font-medium hidden sm:inline">실시간 시각:</span>
+                <span id="live-clock-display" class="font-mono text-slate-300 tracking-wider text-xs">--.--.-- (-) --:--:--</span>
+            </div>
+            <div id="live-status-container" class="flex items-center gap-2">
+                <span id="realtime-status-badge" class="px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    상태 확인 중...
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- ========================================== -->
+        <!-- TAB 1: CS Q&A SEARCH & SCRIPT BANK -->
+        <!-- ========================================== -->
+        <section id="tab-qa" class="tab-content block space-y-5">
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 px-1">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">CS 응대 스크립트 검색</h2>
+                </div>
+                <span id="qa-count-badge" class="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded border border-slate-200 self-start md:self-auto">
+                    총 22개 항목 노출 중
+                </span>
+            </div>
+
+            <!-- Standalone Search Input Box (No Outer Card) -->
+            <div class="relative w-full">
+                <input type="text" id="qa-search-input" onkeyup="filterQA()" placeholder="키워드 검색 (예: 추첨, 16일~20일, 결제마감, 밤 11시 59분, 규격, 100m, 샤워실, 탈의실, 잔여시간, 5일전, 환불)..." class="w-full bg-white border border-slate-300 rounded-lg p-3 pl-10 text-xs text-slate-800 shadow-sm focus:outline-none focus:border-slate-500 font-medium transition-colors">
+                <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+
+            <!-- Cards Grid -->
+            <div id="qa-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- JS will populate Q&A cards here -->
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: REFUND & FEE CALCULATOR -->
+        <!-- ========================================== -->
+        <section id="tab-calculator" class="tab-content hidden space-y-5">
+            
+            <div class="px-1">
+                <h2 class="text-xl font-bold text-slate-900">공식 환불 및 위약금 계산기</h2>
+                <p class="text-xs text-slate-500 mt-1">
+                    취소 신청 시점 및 특별 사유에 따른 정확한 환불액과 위약금, 안내 스크립트를 즉시 확인합니다.
+                </p>
+            </div>
+
+            <!-- Official Refund Summary Table -->
+            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm space-y-2">
+                <h3 class="text-[18px] font-bold text-slate-800">강동구 체육시설 운영 조례 및 결제 일정 기준</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
+                                <th class="p-2 font-semibold">구분 / 신청 시점</th>
+                                <th class="p-2 font-semibold">기준 및 기한</th>
+                                <th class="p-2 font-semibold">위약금 / 세부 사항</th>
+                                <th class="p-2 font-semibold">비고</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                            <tr class="bg-amber-50/50">
+                                <td class="p-2 font-medium text-slate-900">추첨 당첨 건 결제 마감</td>
+                                <td class="p-2 font-semibold text-amber-800">추첨 다음날 밤 11시 59분(23:59)까지</td>
+                                <td class="p-2 text-slate-600">미결제 시 자동 취소</td>
+                                <td class="p-2 text-slate-500">기한 엄수 필수</td>
+                            </tr>
+                            <tr class="bg-emerald-50/50">
+                                <td class="p-2 font-medium text-slate-900">잔여시간 선착순 접수</td>
+                                <td class="p-2 font-semibold text-emerald-800">추첨일 다다음 날(매월 23일) 오전 10시 오픈</td>
+                                <td class="p-2 text-slate-600">온라인 선착순 접수</td>
+                                <td class="p-2 text-slate-500">잔여 타임 발생 시</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-medium text-slate-900">사용 개시일 5일 전 취소</td>
+                                <td class="p-2 font-semibold text-emerald-700">100% 환불</td>
+                                <td class="p-2 text-slate-500">없음 (0원)</td>
+                                <td class="p-2 text-slate-400">위약금 없음</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-medium text-slate-900">사용 개시일 4일 전 ~ 1일 전 취소</td>
+                                <td class="p-2 font-semibold text-amber-700">90% 환불</td>
+                                <td class="p-2 text-amber-700 font-medium">사용료의 10%</td>
+                                <td class="p-2 text-slate-400">10% 차감 후 환불</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-medium text-slate-900">사용 개시일 당일 및 이후</td>
+                                <td class="p-2 font-semibold text-rose-700">환불 불가</td>
+                                <td class="p-2 text-rose-700 font-medium">사용료의 100%</td>
+                                <td class="p-2 text-slate-400">환불 금액 없음</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Vertical Stacked Controls & Calculation Result -->
+            <div class="grid grid-cols-1 gap-5">
+                <!-- 1. Controls -->
+                <div class="bg-white p-4 sm:p-5 rounded-lg border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-[18px] font-bold text-slate-800 border-b border-slate-100 pb-2">조회 조건 설정</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">1. 이용 요일 구분</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button type="button" onclick="setCalcDay('weekday')" id="calc-day-weekday" class="calc-day-btn py-2 px-3 rounded border border-slate-900 bg-slate-900 text-white font-medium text-xs">
+                                    평일 (88,000원)
+                                </button>
+                                <button type="button" onclick="setCalcDay('weekend')" id="calc-day-weekend" class="calc-day-btn py-2 px-3 rounded border border-slate-300 bg-white text-slate-700 font-medium text-xs">
+                                    주말/공휴일 (114,400원)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">2. 취소 신청 시점 (사용 개시일 기준)</label>
+                            <select id="calc-dday" onchange="calculateRefund()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-2 focus:ring-1 focus:ring-slate-500">
+                                <option value="d5">사용 개시일 5일 전 취소 (100% 환불)</option>
+                                <option value="d4_1">사용 개시일 4일 전 ~ 1일 전 취소 (90% 환불 / 위약금 10%)</option>
+                                <option value="d0">사용 개시일 당일 및 이후 (환불 불가)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">3. 특별 취소 사유 선택</label>
+                            <select id="calc-reason" onchange="calculateRefund()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-2 focus:ring-1 focus:ring-slate-500">
+                                <option value="normal">일반 변심 / 개인 사정 / 독감 등 (기본 기준)</option>
+                                <option value="disaster">재해 기타 불가항력 사유 (100% 환불)</option>
+                                <option value="official_event">국가적 행사 또는 공단의 사정 (100% 환불)</option>
+                                <option value="weather_fault">기상 천재지변 또는 운영자 귀책 (100% 환불)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Fast Guides -->
+            <div class="bg-slate-50 p-3 rounded border border-slate-200 text-xs space-y-2">
+                <span class="font-semibold text-slate-800 block">추첨·결제·취소 빠른 안내문:</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 text-xs text-slate-700 leading-normal">
+                    <div class="bg-white p-2 rounded border border-slate-200">
+                        <strong>1. 익월 추첨 및 진행:</strong> 매월 16일~20일 접수 ➔ <span class="text-amber-800 font-bold">21일 오전 10시 온라인 추첨</span>
+                    </div>
+                    <div class="bg-white p-2 rounded border border-slate-200">
+                        <strong>2. 당첨 결제 마감:</strong> 추첨일 다음 날 밤 11시 59분(23:59) 미결제 시 취소
+                    </div>
+                    <div class="bg-white p-2 rounded border border-slate-200">
+                        <strong>3. 사용료 납부 방법:</strong> <span class="text-sky-800 font-bold">시스템상 온라인 결제(카드결제)</span>
+                    </div>
+                    <div class="bg-white p-2 rounded border border-slate-200">
+                        <strong>4. 잔여타임 오픈:</strong> 추첨일 다다음 날(매월 23일) 오전 10시 온라인 선착순 접수
+                    </div>
+                    <div class="bg-white p-2 rounded border border-slate-200">
+                        <strong>5. 온라인 취소 신청:</strong> 마이페이지 &gt; 대관결제내역 &gt; [취소신청]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Calculation Output Result Card -->
+                <div class="bg-slate-900 text-white p-5 rounded-lg shadow-sm border border-slate-800 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                        <span class="text-xs font-medium text-slate-400">환불 금액 산출 결과</span>
+                        <span id="calc-status-badge" class="px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            100% 전액 환불
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 text-center">
+                        <div class="bg-slate-800/90 p-3 rounded border border-slate-700">
+                            <p class="text-slate-400 text-xs">총 결제 금액</p>
+                            <p id="calc-out-total" class="text-xs sm:text-sm font-bold text-white mt-1">88,000원</p>
+                        </div>
+                        <div class="bg-slate-800/90 p-3 rounded border border-slate-700">
+                            <p class="text-slate-400 text-xs">위약금 (차감액)</p>
+                            <p id="calc-out-penalty" class="text-xs sm:text-sm font-bold text-amber-400 mt-1">0원 (0%)</p>
+                        </div>
+                        <div class="bg-slate-800/90 p-3 rounded border border-slate-700">
+                            <p class="text-slate-400 text-xs">최종 환불 예정액</p>
+                            <p id="calc-out-refund" class="text-sm sm:text-base font-bold text-emerald-400 mt-1">88,000원</p>
+                        </div>
+                    </div>
+
+                    <!-- Script box inside calculator without border -->
+                    <div class="bg-slate-100 p-3 rounded space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <circle cx="9" cy="8" r="3.5" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 19c0-3.3 2.7-6 6-6h0c3.3 0 6 2.7 6 6" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 7a3 3 0 010 5" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5a5.5 5.5 0 010 9" />
+                                </svg>
+                                <span class="text-[11px] font-semibold text-slate-500">환불 안내 맞춤 스크립트</span>
+                            </div>
+                            <button onclick="copyToClipboard('calc-out-script', this)" class="flex items-center gap-1 text-[11px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
+                                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                <span>복사</span>
+                            </button>
+                        </div>
+                        <p id="calc-out-script" class="text-[15px] text-slate-800 leading-relaxed font-serif-kr tracking-wide">
+                            사용 개시일 5일 전 취소 건으로 규정에 따라 위약금 없이 100% 전액 환불 처리됩니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: TEAM REGISTRATION & QUALIFICATION -->
+        <!-- ========================================== -->
+        <section id="tab-teams" class="tab-content hidden space-y-5">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">팀 등록 자격 진단기</h2>
+                    <p class="text-xs text-slate-500 mt-1">
+                        강동구 체육시설 공식 팀 등록 조건(총원 15명 이상, 관내 거주/직장 10명 이상, 중복 회원 불가)을 진단합니다.
+                    </p>
+                </div>
+                <span class="text-xs bg-amber-50 text-amber-800 border border-amber-200 font-semibold px-2.5 py-1 rounded self-start">
+                    ※ 중복 회원 등록 불가
+                </span>
+            </div>
+
+            <!-- Team Audit Schedule Highlights Box -->
+            <div class="bg-slate-900 text-slate-100 p-4 rounded-lg border border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div class="space-y-1">
+                    <span class="text-slate-400 font-semibold block text-xs">팀 등록 신청 접수</span>
+                    <p class="font-medium text-slate-200">
+                        신청 시기: <strong class="text-emerald-300">2026년 9월 1일부터 온라인 수시 접수</strong>
+                    </p>
+                </div>
+                <div class="space-y-1 border-t md:border-t-0 md:border-l border-slate-800 pt-2 md:pt-0 md:pl-4">
+                    <span class="text-slate-400 font-semibold block text-xs">관내팀 승인 심사 기간</span>
+                    <p class="font-medium text-slate-200">
+                        심사 일정: <strong class="text-amber-300">매월 5일 ~ 10일 사이</strong> 승인 처리
+                        <span class="text-slate-400 text-xs block mt-0.5">(※ 관외팀은 신청 시 자동 승인)</span>
+                    </p>
+                </div>
+                <div class="space-y-1 border-t md:border-t-0 md:border-l border-slate-800 pt-2 md:pt-0 md:pl-4">
+                    <span class="text-slate-400 font-semibold block text-xs">관내 직장팀 심사 서류 제출</span>
+                    <p class="font-medium text-slate-200">
+                        제출 기한: <strong class="text-sky-300">매월 5일~10일 내</strong> 축구장 사무실 제출 건에 한함
+                    </p>
+                </div>
+            </div>
+
+            <!-- Official Team Rule Reference Box -->
+            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm space-y-2">
+                <h3 class="text-[18px] font-bold text-slate-800">공식 팀 등록 조건 및 구비서류 기준</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
+                                <th class="p-2 font-semibold w-24">구분</th>
+                                <th class="p-2 font-semibold">조건 및 내용</th>
+                                <th class="p-2 font-semibold">제출 구비서류 / 심사 절차</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                            <tr class="bg-slate-50/50">
+                                <td class="p-2.5 font-bold text-slate-900">관내팀<br><span class="text-xs text-slate-500 font-normal">(거주팀)</span></td>
+                                <td class="p-2.5">
+                                    <p class="font-bold text-slate-900">15명 이상으로 이루어진 강동구 거주팀</p>
+                                    <p class="text-slate-600 text-xs mt-0.5">• 강동구 관내에 주소를 둔 회원을 <strong>10명 이상</strong> 보유한 팀</p>
+                                </td>
+                                <td class="p-2.5 text-slate-600">
+                                    <p>주민등록등본 (최근 3개월 이내)</p>
+                                    <p class="text-amber-800 text-xs mt-0.5">• 매월 5일~10일 사이 심사 승인</p>
+                                </td>
+                            </tr>
+                            <tr class="bg-slate-50/50">
+                                <td class="p-2.5 font-bold text-slate-900">관내팀<br><span class="text-xs text-slate-500 font-normal">(직장팀)</span></td>
+                                <td class="p-2.5">
+                                    <p class="font-bold text-slate-900">15명 이상으로 이루어진 강동구 직장팀</p>
+                                    <p class="text-slate-600 text-xs mt-0.5">• 강동구 관내에 사업장 주소를 둔 회원이 <strong>10명 이상</strong>인 팀</p>
+                                </td>
+                                <td class="p-2.5 text-slate-600">
+                                    <p class="font-medium text-amber-800">재직증명서 및 사업자등록증 제출 필수</p>
+                                    <p class="text-slate-500 text-xs mt-0.5">• 매월 5일~10일 내 사무실 제출 건만 진행</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-bold text-slate-900">관외팀</td>
+                                <td class="p-2.5">
+                                    <p class="font-bold text-slate-900">관내팀 이외 15명 이상으로 이루어진 팀</p>
+                                </td>
+                                <td class="p-2.5 text-emerald-700 font-medium">별도 서류 없음 (신청 시 자동 승인)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                <div class="lg:col-span-6 bg-white p-4 sm:p-5 rounded-lg border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-[18px] font-bold text-slate-800 border-b border-slate-100 pb-2">팀 자격 진단 입력</h3>
+
+                    <div class="space-y-3 text-xs">
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200 space-y-1.5">
+                            <label class="font-bold text-slate-800 block">1. 총 등록 회원 수 (중복 회원 불가)</label>
+                            <div class="flex items-center gap-4">
+                                <label class="flex items-center gap-1.5 cursor-pointer">
+                                    <input type="radio" name="quiz-q1" value="15plus" checked onchange="runTeamQuiz()" class="text-slate-900">
+                                    <span>15명 이상</span>
+                                </label>
+                                <label class="flex items-center gap-1.5 cursor-pointer">
+                                    <input type="radio" name="quiz-q1" value="under15" onchange="runTeamQuiz()" class="text-slate-900">
+                                    <span class="text-rose-700 font-medium">15명 미만 (등록 불가)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200 space-y-1.5">
+                            <label class="font-bold text-slate-800 block">2. 강동구 관내 회원 구성 요건</label>
+                            <div class="space-y-2">
+                                <label class="flex items-start gap-1.5 cursor-pointer">
+                                    <input type="radio" name="quiz-q2" value="res10" checked onchange="runTeamQuiz()" class="mt-0.5 text-slate-900">
+                                    <div>
+                                        <span class="font-medium text-slate-900">관내 거주팀 조건 충족</span>
+                                        <p class="text-xs text-slate-500">강동구 주소지 회원 10명 이상 보유</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-1.5 cursor-pointer">
+                                    <input type="radio" name="quiz-q2" value="work10" onchange="runTeamQuiz()" class="mt-0.5 text-slate-900">
+                                    <div>
+                                        <span class="font-medium text-slate-900">관내 직장팀 조건 충족</span>
+                                        <p class="text-xs text-slate-500">강동구 소재 사업장 재직 회원 10명 이상</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-1.5 cursor-pointer">
+                                    <input type="radio" name="quiz-q2" value="under10" onchange="runTeamQuiz()" class="mt-0.5 text-slate-900">
+                                    <div>
+                                        <span class="font-medium text-slate-900">관내 회원 10명 미만 (관외팀)</span>
+                                        <p class="text-xs text-slate-500">강동구 거주/직장 회원 10명 미만</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="quiz-doc-box" class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <label class="font-bold text-slate-800 block mb-1.5">3. 필수 증빙 서류 제출 준비</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer">
+                                <input type="checkbox" id="quiz-q3-doc" checked onchange="runTeamQuiz()" class="rounded text-slate-900">
+                                <span id="quiz-doc-text" class="text-slate-800 font-medium">최근 3개월 이내 발급 주민등록등본 제출 가능</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diagnosis Output Card -->
+                <div class="lg:col-span-6 bg-slate-900 text-white p-5 rounded-lg border border-slate-800 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
+                            <span class="text-xs text-slate-400 font-medium">진단 결과 및 심사 안내</span>
+                            <span id="team-badge" class="px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                관내팀 (1순위 - 거주팀)
+                            </span>
+                        </div>
+
+                        <div id="team-result-title" class="text-base font-bold text-white mb-2">
+                            강동구 관내 거주팀 자격 대상입니다.
+                        </div>
+
+                        <p id="team-result-desc" class="text-xs text-slate-300 leading-relaxed mb-4">
+                            주말 및 관내팀 우선 대관 신청 권한이 부여됩니다. 회원 15명 이상 및 강동구 주민등록 회원 10명 이상 보유 기준을 충족합니다.
+                        </p>
+
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700 space-y-2 text-xs">
+                            <p class="font-semibold text-slate-200">관내 자격 심사 및 서류 안내:</p>
+                            <ul id="team-result-docs" class="list-disc pl-4 space-y-1 text-slate-300 text-xs">
+                                <li><strong>제출 서류:</strong> 최근 3개월 이내 발급된 주민등록등본 제출</li>
+                                <li><strong>관내팀 승인 심사:</strong> 매월 5일~10일 사이 승인 처리</li>
+                                <li><strong>자격 갱신:</strong> 매년 1월 1일, 7월 1일 (연 2회)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: FIELD PENALTIES -->
+        <!-- ========================================== -->
+        <section id="tab-penalties" class="tab-content hidden space-y-5">
+            
+            <div class="px-1">
+                <h2 class="text-xl font-bold text-slate-900">현장 규정 및 이용 제재 수칙</h2>
+                <p class="text-xs text-slate-500 mt-1">
+                    공정한 이용 질서 확립을 위한 현장 적발 시 퇴장 및 이용 금지 기준을 안내합니다.
+                </p>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm space-y-3">
+                <h3 class="font-bold text-slate-800 text-[18px]">주요 위반 행위별 페널티 수칙</h3>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
+                                <th class="p-2.5 font-semibold">위반 항목</th>
+                                <th class="p-2.5 font-semibold">적발 기준</th>
+                                <th class="p-2.5 font-semibold">제재 내용</th>
+                                <th class="p-2.5 font-semibold">현장 대응 가이드</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                            <tr>
+                                <td class="p-2.5 font-semibold text-slate-900">고의적 시설물 파손</td>
+                                <td class="p-2.5"><span class="bg-slate-100 text-slate-800 px-2 py-0.5 rounded text-xs">1회 적발</span></td>
+                                <td class="p-2.5 font-medium text-slate-900">즉시 퇴장 및 원상복구 청구</td>
+                                <td class="p-2.5 text-slate-500">채증 ➔ 즉시 퇴장 ➔ 배상 청구</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-semibold text-slate-900">이용 중 흡연 및 음주</td>
+                                <td class="p-2.5"><span class="bg-slate-100 text-slate-800 px-2 py-0.5 rounded text-xs">2회 적발</span></td>
+                                <td class="p-2.5 font-medium text-slate-900">축구장 1개월 이용 금지</td>
+                                <td class="p-2.5 text-slate-500">1회 경고 ➔ 2회 적발 시 이용정지</td>
+                            </tr>
+                            <tr class="bg-slate-50/50">
+                                <td class="p-2.5 font-semibold text-rose-700">대관 무단 양도 및 양수</td>
+                                <td class="p-2.5"><span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded text-xs font-semibold">1회 적발</span></td>
+                                <td class="p-2.5 font-semibold text-rose-700">즉시 퇴장 및 6개월 이용 금지</td>
+                                <td class="p-2.5 text-slate-500">예약자 본인 미확인 시 적발 처리</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-semibold text-slate-900">폭행, 고성방가, 도박 등</td>
+                                <td class="p-2.5"><span class="bg-slate-100 text-slate-800 px-2 py-0.5 rounded text-xs">1회 적발</span></td>
+                                <td class="p-2.5 font-medium text-slate-900">즉시 퇴장 및 1개월 이용 금지</td>
+                                <td class="p-2.5 text-slate-500">경기 즉시 중단 ➔ 퇴장 ➔ 112 신고</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Footwear Rule -->
+            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm space-y-2">
+                <h3 class="font-bold text-slate-800 text-[18px]">축구화 및 경기 착용 규정</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div class="bg-rose-50 border border-rose-200 p-3 rounded space-y-1">
+                        <span class="font-bold text-rose-800 block">착용 금지: SG (금속 / 긴 뽕 스터드)</span>
+                        <p class="text-rose-700">
+                            인조잔디 파손 및 타 이용자 부상 위험으로 착용이 엄격히 금지됩니다. 적발 시 즉시 교체 요구되며 불응 시 퇴장 조치됩니다.
+                        </p>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-200 p-3 rounded space-y-1">
+                        <span class="font-bold text-emerald-800 block">착용 가능: TF (풋살화), AG / HG 스터드</span>
+                        <p class="text-emerald-700">
+                            인조잔디 전용 풋살화(TF) 착용을 강력히 권장하며, 일반 AG/HG 스터드 축구화는 착용이 가능합니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 5: EMERGENCY CONTACTS & ESCALATION -->
+        <!-- ========================================== -->
+        <section id="tab-emergency" class="tab-content hidden space-y-5">
+            
+            <div class="px-1">
+                <h2 class="text-xl font-bold text-slate-900">시설 정보 및 비상 대응 연락망</h2>
+                <p class="text-xs text-slate-500 mt-1">
+                    축구장 시설현황 및 제원, 위치, 연락처, 대중교통 안내 및 상황별 단계적 대응 절차입니다.
+                </p>
+            </div>
+
+            <!-- Facility Specifications Table -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm space-y-3">
+                <h3 class="font-bold text-slate-800 text-[18px] border-b border-slate-100 pb-2">시설현황</h3>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
+                                <th class="p-3 font-semibold w-24 text-center">구분</th>
+                                <th class="p-3 font-semibold w-1/2">연면적 및 시설 규격</th>
+                                <th class="p-3 font-semibold">주요시설</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                            <tr>
+                                <td class="p-3 text-center font-bold text-slate-900 bg-slate-50/50 align-top">지상 1층</td>
+                                <td class="p-3 leading-relaxed align-top">
+                                    <p class="font-bold text-slate-900">• 인조잔디 축구장 <span class="text-sky-700">(라인규격: 100m X 64m)</span></p>
+                                    <p class="text-slate-600 mt-1">• 우레탄 탄성포장 트랙</p>
+                                </td>
+                                <td class="p-3 leading-relaxed align-top space-y-1">
+                                    <p class="font-medium text-slate-800">• 축구장 관리 사무실</p>
+                                    <p class="text-slate-600">• 관람 스탠드 및 구령대</p>
+                                    <p class="text-emerald-700 font-medium">• 남 / 여 탈의실, 샤워실</p>
+                                    <p class="text-slate-600">• 남 / 여 화장실</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Facility Information & Transport Card -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 text-[18px] border-b border-slate-100 pb-2">시설 위치 및 오시는 길 안내</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="space-y-2 bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                        <div class="flex items-start gap-2">
+                            <span class="font-bold text-slate-700 w-16 shrink-0">• 주소</span>
+                            <span class="text-slate-900 font-medium select-all">서울특별시 강동구 아리수로78길 23</span>
+                        </div>
+                        <div class="flex items-start gap-2 border-t border-slate-200 pt-2">
+                            <span class="font-bold text-slate-700 w-16 shrink-0">• 연락처</span>
+                            <a href="tel:02-2045-7877" class="text-sky-700 font-bold hover:underline">02.2045.7877</a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                        <span class="font-bold text-slate-800 block">• 교통안내 (대중교통 & 승용차)</span>
+                        <div class="space-y-1.5 text-slate-700">
+                            <p class="leading-relaxed">
+                                <strong class="text-slate-900">버스:</strong><br>
+                                - 3412, 강동02, 강동05 (고덕초등학교 하차 후 도보 5분)<br>
+                                - 3324, 8333 (고덕풍경채어바니티 하차 후 도보 5분)
+                            </p>
+                            <p class="leading-relaxed text-amber-800 bg-amber-50 p-2 rounded border border-amber-200">
+                                <strong>승용차:</strong> 주변 공영주차장 및 공원주차장 할인 및 무상제공은 불가능하오니, 다소 불편하시더라도 대중교통을 이용하여 주시기 바랍니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Lv 1 -->
+                <div class="bg-white p-4 rounded-lg border-t-2 border-t-slate-400 border border-slate-200 shadow-sm space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-slate-100 text-slate-700 font-medium text-xs px-2 py-0.5 rounded">1단계 (일반 민원)</span>
+                        <span class="text-xs text-slate-400">현장 매니저</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-[18px]">단순 규정 안내, 주차, 구급약 요청</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        • 축구화, 운영시간, 잔여 타임 안내<br>
+                        • 기본 응급 구급약 제공 (관리실 앞)<br>
+                        • 추첨 결제 기한 및 온라인 취소 경로 안내
+                    </p>
+                </div>
+
+                <!-- Lv 2 -->
+                <div class="bg-white p-4 rounded-lg border-t-2 border-t-amber-500 border border-slate-200 shadow-sm space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-amber-50 text-amber-800 font-medium text-xs px-2 py-0.5 rounded">2단계 (분쟁·하자)</span>
+                        <span class="text-xs text-amber-700 font-medium">구장 총괄팀장</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-[18px]">환불 규정 강력 항의, 시설 하자 부상, 무단 양도 적발</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        • 당일 환불 불가 강력 반발 건<br>
+                        • 잔디 등 시설 결함으로 인한 부상<br>
+                        • 무단 양도 적발 후 퇴장 불응
+                    </p>
+                </div>
+
+                <!-- Lv 3 -->
+                <div class="bg-white p-4 rounded-lg border-t-2 border-t-rose-600 border border-slate-200 shadow-sm space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-rose-50 text-rose-800 font-medium text-xs px-2 py-0.5 rounded">3단계 (위기·사고)</span>
+                        <span class="text-xs text-rose-700 font-medium">112/119 & 공단</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-[18px]">폭행·폭언, 고의 시설 파손, 중상 사고</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        • 팀 간 신체적 충돌 및 난투극<br>
+                        • 골절, 의식불명 등 119 응급 상황<br>
+                        • 고의적인 시설물 파손 적발
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Floating AI Chatbot Button & Dialog Window -->
+    <div id="chatbot-wrapper">
+        <!-- Floating FAB Trigger Button -->
+        <button onclick="toggleChatbot()" id="chatbot-fab" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white hover:bg-slate-800 p-3.5 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 group">
+            <div class="relative">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-slate-900"></span>
+            </div>
+            <span class="font-bold text-xs pr-1 hidden group-hover:inline transition-all">동명이</span>
         </button>
-        <button onclick="switchTab('tab-calc')" id="btn-tab-calc" class="tab-btn py-3.5 px-1 border-b-2 font-medium text-sm text-slate-500 border-transparent hover:text-slate-700 whitespace-nowrap">
-          환불·위약금 계산기
-        </button>
-        <button onclick="switchTab('tab-team')" id="btn-tab-team" class="tab-btn py-3.5 px-1 border-b-2 font-medium text-sm text-slate-500 border-transparent hover:text-slate-700 whitespace-nowrap">
-          관내팀 자격 진단기
-        </button>
-        <button onclick="switchTab('tab-facility')" id="btn-tab-facility" class="tab-btn py-3.5 px-1 border-b-2 font-medium text-sm text-slate-500 border-transparent hover:text-slate-700 whitespace-nowrap">
-          시설 정보 및 비상 대응
-        </button>
-      </nav>
-    </div>
-  </div>
 
-  <!-- 메인 컨텐츠 영역 -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Chatbot Floating Window -->
+        <div id="chatbot-modal" class="fixed bottom-20 right-4 sm:right-6 w-[360px] sm:w-[400px] max-w-[calc(100vw-2rem)] h-[540px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col hidden z-50 overflow-hidden transition-all duration-200">
+            <!-- Chatbot Header -->
+            <div class="bg-slate-900 text-white p-3.5 flex items-center justify-between border-b border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 font-bold text-xs">
+                        동명
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <h3 class="font-bold text-xs text-white">AI CS 도우미 동명이</h3>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        </div>
+                        <p class="text-[10px] text-slate-400">강동구 체육시설 운영 조례 학습 완료</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1">
+                    <!-- Settings Button for User Custom API Key -->
+                    <button onclick="toggleApiKeySettings()" title="Gemini API 키 설정" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </button>
+                    <button onclick="toggleChatbot()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
-    <!-- 좌측 2개 컬럼: 업무 툴 및 규정 인터페이스 -->
-    <div class="lg:col-span-2 space-y-6">
+            <!-- API Key Input Drawer Panel (Hidden by default) -->
+            <div id="apikey-drawer" class="bg-slate-800 text-slate-200 p-2.5 text-xs border-b border-slate-700 space-y-2 hidden">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-emerald-400">Gemini AI 실시간 응용 답변 설정</span>
+                    <span class="text-[10px] text-slate-400">무료 키 적용</span>
+                </div>
+                <p class="text-[11px] text-slate-300">
+                    로컬 HTML 다운로드 파일에서 복잡한 응용 질문 답변을 받으시려면 Gemini API 키를 입력해 주세요. (없어도 기본 매칭 엔진 작동)
+                </p>
+                <div class="flex items-center gap-1.5">
+                    <input type="password" id="user-api-key-input" placeholder="Google Gemini API Key 입력..." class="flex-1 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
+                    <button onclick="saveApiKey()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded text-xs transition-colors">
+                        저장
+                    </button>
+                </div>
+            </div>
 
-      <!-- TAB 1: Q&A 스크립트 뱅크 -->
-      <section id="tab-qa" class="tab-content space-y-4">
-        <!-- 검색 및 필터 바 -->
-        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3 items-center justify-between">
-          <div class="relative w-full sm:w-80">
-            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
-            <input type="text" id="qaSearch" placeholder="키워드 검색 (예: 결제마감, 환불, 우천, 주차...)" 
-                   oninput="filterQA()"
-                   class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-          </div>
-          <div class="flex items-center space-x-1.5 overflow-x-auto w-full sm:w-auto">
-            <button onclick="setQACategory('all')" class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white" data-cat="all">전체</button>
-            <button onclick="setQACategory('예약/접수')" class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200" data-cat="예약/접수">예약/접수</button>
-            <button onclick="setQACategory('결제/환불')" class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200" data-cat="결제/환불">결제/환불</button>
-            <button onclick="setQACategory('시설/이용')" class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200" data-cat="시설/이용">시설/이용</button>
-            <button onclick="setQACategory('팀등록')" class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200" data-cat="팀등록">팀등록</button>
-          </div>
+            <!-- Quick Questions Chips -->
+            <div class="bg-slate-50 border-b border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto custom-scrollbar text-[11px] whitespace-nowrap">
+                <span class="text-slate-400 font-semibold px-1">추천:</span>
+                <button onclick="sendQuickQuery('추첨 및 결제 마감 시한이 언제인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">결제마감 시한</button>
+                <button onclick="sendQuickQuery('사용 3일 전 취소 시 환불 비율은 얼마인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">환불 비율</button>
+                <button onclick="sendQuickQuery('관내팀 거주팀 및 직장팀 등록 조건은?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">팀 등록 조건</button>
+                <button onclick="sendQuickQuery('SG 쇠뽕 축구화 착용 가능한가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">축구화 착용 수칙</button>
+            </div>
+
+            <!-- Chat Messages Log Container -->
+            <div id="chat-messages" class="flex-1 p-3.5 overflow-y-auto custom-scrollbar space-y-3 bg-slate-50/50 text-xs">
+                <!-- Welcome Bot Message -->
+                <div class="flex gap-2">
+                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+                        동명
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-800 shadow-2xs space-y-1.5 max-w-[85%]">
+                        <p class="leading-relaxed font-medium">
+                            안녕하세요! 동명근린공원 축구장 AI CS 도우미 '동명이'입니다. ⚽
+                        </p>
+                        <p class="text-[11px] text-slate-500 leading-normal">
+                            대관 추첨일, 결제 마감 시한, 환불 비율, 팀 등록 자격, 현장 수칙 등 무엇이든 편하게 물어보세요!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="p-2.5 bg-white border-t border-slate-200">
+                <form onsubmit="handleChatSubmit(event)" class="flex items-center gap-2">
+                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 비 올 때 취소 되나요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
+                    <button type="submit" id="chat-send-btn" class="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-xl transition-colors font-medium text-xs shrink-0 flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
         </div>
-
-        <!-- 스크립트 리스트 렌더링 컨테이너 -->
-        <div id="qaListContainer" class="space-y-4">
-          <!-- JS를 통해 동적 생성 -->
-        </div>
-      </section>
-
-      <!-- TAB 2: 환불·위약금 계산기 -->
-      <section id="tab-calc" class="tab-content hidden space-y-4">
-        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-            <div>
-              <h2 class="text-base font-bold text-slate-900">사용료 환불 및 위약금 자동 계산기</h2>
-              <p class="text-xs text-slate-500">이용일자와 취소 사유를 선택하면 조례 기준에 따라 즉시 환불액을 산출합니다.</p>
-            </div>
-            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">강동구 조례 제11조</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">대관 구분 (이용 요금)</label>
-              <select id="calcFee" onchange="runCalculator()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500">
-                <option value="55000">평일 2시간 (55,000원)</option>
-                <option value="71500">주말/공휴일 2시간 (71,500원)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">취소 사유 구분</label>
-              <select id="calcReason" onchange="runCalculator()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500">
-                <option value="user_5days">사용자 귀책: 이용 5일 전까지 취소</option>
-                <option value="user_4days">사용자 귀책: 이용 4일 전 취소</option>
-                <option value="user_3days">사용자 귀책: 이용 3일 전 취소</option>
-                <option value="user_2days">사용자 귀책: 이용 2일 전 취소</option>
-                <option value="user_1day">사용자 귀책: 이용 1일 전 취소</option>
-                <option value="user_today">사용자 귀책: 이용 당일 취소</option>
-                <option value="weather">천재지변 / 우천 취소 (공단 승인 시)</option>
-                <option value="admin">공단/구청 귀책 (특별한 사정)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- 계산 결과 박스 -->
-          <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">산출 결과</span>
-              <span id="calcBadge" class="text-xs font-bold px-2.5 py-1 rounded bg-emerald-100 text-emerald-800">100% 전액 환불</span>
-            </div>
-            <div class="grid grid-cols-3 gap-4 text-center py-2">
-              <div>
-                <p class="text-xs text-slate-500 font-medium">결제 금액</p>
-                <p id="calcPaidText" class="text-base font-bold text-slate-800 mt-1">55,000원</p>
-              </div>
-              <div>
-                <p class="text-xs text-rose-500 font-medium">위약금 (공제액)</p>
-                <p id="calcPenaltyText" class="text-base font-bold text-rose-600 mt-1">0원 (0%)</p>
-              </div>
-              <div>
-                <p class="text-xs text-emerald-600 font-medium">최종 환불 금액</p>
-                <p id="calcRefundText" class="text-lg font-black text-emerald-600 mt-1">55,000원</p>
-              </div>
-            </div>
-            <!-- 스크립트 출력 -->
-            <div class="relative pt-3 border-t border-slate-200">
-              <button onclick="copyElementText('calcScriptText', this)" 
-                      class="absolute right-0 top-3 px-2.5 py-1 bg-white border border-slate-200 rounded text-xs font-bold text-slate-600 hover:bg-slate-100 flex items-center space-x-1 shadow-sm transition">
-                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                <span>복사</span>
-              </button>
-              <p class="text-xs font-bold text-slate-600 mb-1">고객 응대 안내문:</p>
-              <p id="calcScriptText" class="text-xs text-slate-700 leading-relaxed pr-16 bg-white p-3 rounded-lg border border-slate-100">
-                <!-- 결과 텍스트 동적 입력 -->
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 3: 관내팀 자격 진단기 -->
-      <section id="tab-team" class="tab-content hidden space-y-4">
-        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-            <div>
-              <h2 class="text-base font-bold text-slate-900">관내팀 등록 자격 및 유효성 진단</h2>
-              <p class="text-xs text-slate-500">팀 구성원 수와 강동구민 비율을 입력하여 관내팀 승인 가능 여부를 확인합니다.</p>
-            </div>
-            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">2026.09.01 개정 규정 반영</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">전체 등록 팀원 수 (명)</label>
-              <input type="number" id="teamTotal" value="30" min="1" oninput="diagnoseTeam()" 
-                     class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">강동구민 팀원 수 (명)</label>
-              <input type="number" id="teamLocal" value="25" min="0" oninput="diagnoseTeam()" 
-                     class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500">
-            </div>
-          </div>
-
-          <!-- 진단 결과 패널 -->
-          <div id="teamResultPanel" class="p-5 rounded-xl border space-y-3 bg-emerald-50 border-emerald-200">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-2">
-                <span id="teamResultIcon" class="text-lg">✅</span>
-                <span id="teamResultTitle" class="text-sm font-bold text-emerald-900">관내팀 등록 가능 (적격)</span>
-              </div>
-              <span id="teamRatioText" class="text-xs font-bold px-2 py-0.5 rounded bg-white text-emerald-800 border border-emerald-200">
-                관내 거주 비율: 83.3%
-              </span>
-            </div>
-            <p id="teamResultDesc" class="text-xs text-emerald-800 leading-relaxed">
-              최소 기준(20명 이상) 및 구민 비율(80% 이상)을 모두 충족합니다. 필수 서류(회원명부, 주민등록초본 1개월 이내 발급본) 확인 후 승인 처리하십시오.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 4: 시설 정보 및 비상 대응 -->
-      <section id="tab-facility" class="tab-content hidden space-y-4">
-        <!-- 시설 현황 표 -->
-        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-          <h2 class="text-base font-bold text-slate-900 flex items-center space-x-2">
-            <i data-lucide="layout-grid" class="w-4 h-4 text-emerald-600"></i>
-            <span>시설 현황 및 구장 제원</span>
-          </h2>
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
-                  <th class="p-3 font-bold">구분</th>
-                  <th class="p-3 font-bold">면적 및 제원</th>
-                  <th class="p-3 font-bold">주요 부대시설</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 text-slate-600">
-                <tr class="hover:bg-slate-50">
-                  <td class="p-3 font-semibold text-slate-800">지상 1층</td>
-                  <td class="p-3">
-                    <p class="font-bold text-slate-900">인조잔디 축구장 (100m × 64m)</p>
-                    <p class="text-slate-500">우레탄 탄성포장 트랙</p>
-                  </td>
-                  <td class="p-3 space-y-1">
-                    <span class="inline-block px-2 py-0.5 rounded bg-slate-100 font-medium">관리 사무실</span>
-                    <span class="inline-block px-2 py-0.5 rounded bg-slate-100 font-medium">스탠드 및 구령대</span>
-                    <span class="inline-block px-2 py-0.5 rounded bg-slate-100 font-medium">남/여 탈의실 및 샤워실</span>
-                    <span class="inline-block px-2 py-0.5 rounded bg-slate-100 font-medium">남/여 화장실</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- 주소 및 교통 안내 -->
-        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-          <h2 class="text-base font-bold text-slate-900 flex items-center space-x-2">
-            <i data-lucide="map-pin" class="w-4 h-4 text-emerald-600"></i>
-            <span>위치 및 교통·주차 안내</span>
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-              <p class="font-bold text-slate-800">📍 시설 위치 및 연락처</p>
-              <p class="text-slate-600"><strong>주소:</strong> 서울특별시 강동구 아리수로78길 23 (동명근린공원 내)</p>
-              <p class="text-slate-600"><strong>대표 연락처:</strong> <a href="tel:02-2045-7877" class="text-emerald-700 font-bold underline">02.2045.7877</a></p>
-            </div>
-            <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-              <p class="font-bold text-slate-800">🚗 주차 안내 (유료)</p>
-              <p class="text-slate-600">동명근린공원 공영주차장 유료 이용 가능</p>
-              <p class="text-rose-600 font-bold">※ 축구장 이용객 대상 별도 주차 할인/감면 혜택 없음 (대중교통 권장)</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
     </div>
 
-    <!-- 우측 1개 컬럼: AI CS 도우미 '동명이' 채팅창 -->
-    <div class="lg:col-span-1">
-      <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-[740px] sticky top-24">
-        <!-- 챗봇 헤더 -->
-        <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 rounded-t-xl">
-          <div class="flex items-center space-x-2.5">
-            <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white text-base shadow">
-              🤖
-            </div>
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 text-slate-500 text-xs py-5 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-2">
             <div>
-              <h3 class="text-sm font-bold text-slate-900">AI 도우미 동명이</h3>
-              <p class="text-[11px] text-slate-500">실시간 조례·스크립트 판정</p>
+                <p class="font-semibold text-slate-700 text-xs">강동구도시관리공단 - 동명근린공원 축구장 현장 CS 매뉴얼</p>
+                <p class="text-slate-400 text-xs mt-0.5">서울특별시 강동구 아리수로78길 23 | 대표 연락처: 02.2045.7877 | 조례 기준 적용</p>
             </div>
-          </div>
-          <button onclick="toggleKeySettings()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition" title="API 키 설정">
-            <i data-lucide="settings" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <!-- API 키 설정 드로어 (기본 숨김) -->
-        <div id="keySettingsDrawer" class="hidden p-3 bg-slate-100 border-b border-slate-200 text-xs space-y-2">
-          <p class="text-[11px] text-slate-600 font-medium">Vercel 환경변수가 등록되어 있으면 별도 입력 없이 팀원 전체가 바로 사용 가능합니다.</p>
-          <div class="flex space-x-2">
-            <input type="password" id="customApiKey" placeholder="개별 Gemini API 키 (선택사항)" 
-                   class="flex-1 p-1.5 bg-white border border-slate-200 rounded text-xs focus:outline-none">
-            <button onclick="saveApiKey()" class="px-2.5 py-1 bg-slate-800 text-white font-bold rounded text-xs">저장</button>
-          </div>
-        </div>
-
-        <!-- 메시지 리스트 영역 -->
-        <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs">
-          <!-- 초기 웰컴 메시지 -->
-          <div class="flex items-start space-x-2">
-            <div class="w-6 h-6 rounded-md bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
-              AI
+            <div class="text-slate-400 text-xs">
+                동명근린공원 축구장 현장 CS 시스템
             </div>
-            <div class="bg-slate-100 text-slate-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] leading-relaxed">
-              동명근린공원 축구장 AI CS 도우미 <strong>동명이</strong>입니다.<br><br>
-              대관 결제 기한, 환불 위약금, 팀등록 자격, 시설 제원 등 궁금한 점을 질문해 주세요.
-            </div>
-          </div>
         </div>
+    </footer>
 
-        <!-- 메시지 입력창 -->
-        <form id="chatForm" onsubmit="handleChatSubmit(event)" class="p-3 border-t border-slate-200 bg-white rounded-b-xl flex items-center space-x-2">
-          <input type="text" id="chatInput" placeholder="질문을 입력하세요... (예: 우천 시 환불, 쇠뽕 착용)" 
-                 class="flex-1 py-2 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-          <button type="submit" class="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-sm transition">
-            <i data-lucide="send" class="w-4 h-4"></i>
-          </button>
-        </form>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- 통합 자바스크립트 엔진 -->
-  <script>
-    // ==========================================
-    // 1. Q&A 데이터베이스 (단일 통합 원천)
-    // ==========================================
-    const qaData = [
-      {
-        id: "Q1",
-        category: "예약/접수",
-        question: "대관 추첨 당첨 후 결제 마감 시간은 언제까지인가요?",
-        criteria: "당첨 발표 익일(다음날) 23:59까지 온라인 카드 결제 완료 원칙",
-        script: "대관 추첨에 당첨되신 경우, 당첨 발표 익일 23:59까지 시스템상에서 온라인 카드 결제를 완료해주셔야 합니다. 기한 내 미결제 시 당첨 내역은 자동 취소되며 잔여 타임으로 전환됩니다.",
-        tags: ["결제마감", "23:59", "추첨당첨", "자동취소"]
-      },
-      {
-        id: "Q2",
-        category: "예약/접수",
-        question: "잔여 타임(선착순) 예약 후 결제 기한은 언제인가요?",
-        criteria: "매월 23일 잔여 예약 시 신청 당일 23:59까지 결제 완료 원칙",
-        script: "잔여 타임 선착순 예약 시에는 신청 당일 23:59까지 결제를 완료하셔야 합니다. 미결제 시 익일 00시에 자동 취소됩니다.",
-        tags: ["잔여타임", "선착순", "당일결제", "23일"]
-      },
-      {
-        id: "Q3",
-        category: "결제/환불",
-        question: "대관 사용료 납부 및 결제 방식은 어떻게 되나요?",
-        criteria: "대관 예약 신청 시 시스템상 온라인 결제(카드결제)",
-        script: "동명근린공원 축구장 대관 사용료는 예약 신청 시스템을 통한 온라인 카드 결제로 납부해주셔야 합니다. 현장 현금 결제는 불가합니다.",
-        tags: ["사용료납부", "카드결제", "온라인결제"]
-      },
-      {
-        id: "Q4",
-        category: "결제/환불",
-        question: "사용자 개인 사정으로 취소 시 환불 기준은 어떻게 되나요?",
-        criteria: "5일 전 100%, 4일 전 90%, 3일 전 80%, 2일 전 70%, 1일 전 60%, 당일 취소 시 환불 불가",
-        script: "사용자 귀책 취소 시 조례 제11조에 의거하여 이용 5일 전 취소 시 100% 전액 환불, 4일 전 90%, 3일 전 80%, 2일 전 70%, 1일 전 60%가 환불되며, 이용 당일 취소 시에는 환불이 불가합니다.",
-        tags: ["환불규정", "위약금", "개인사정", "취소수수료"]
-      },
-      {
-        id: "Q5",
-        category: "시설/이용",
-        question: "축구장 구장 규격(크기)과 샤워실, 탈의실 등 시설 현황은 어떻게 되나요?",
-        criteria: "인조잔디 축구장(100m × 64m), 우레탄 트랙, 샤워실/탈의실/화장실 완비",
-        script: "동명근린공원 축구장은 정규 규격 인조잔디 구장(100m X 64m)과 우레탄 탄성포장 트랙으로 조성되어 있습니다. 부대시설로는 남·여 탈의실 및 샤워실, 화장실, 관리사무실이 구비되어 있습니다.",
-        tags: ["구장규격", "크기", "100m", "샤워실", "탈의실", "화장실"]
-      },
-      {
-        id: "Q6",
-        category: "시설/이용",
-        question: "축구화 착용 규정은 어떻게 되나요? (쇠뽕/SG 착용 가능 여부)",
-        criteria: "인조잔디 전용 축구화(TF, AG, FG) 권장 / 금속 스터드(SG/쇠뽕) 착용 절대 금지",
-        script: "인조잔디 보호 및 이용자 안전을 위해 금속 스터드(SG, 쇠뽕) 축구화 착용은 엄격히 금지됩니다. TF(풋살화), AG, FG 축구화를 착용해 주시기 바랍니다.",
-        tags: ["축구화", "쇠뽕", "SG", "금속스터드", "TF"]
-      },
-      {
-        id: "Q7",
-        category: "시설/이용",
-        question: "우천 및 기상악화 시 환불 및 취소 기준은 어떻게 되나요?",
-        criteria: "호우·대설주의보 등 공식 기상특보 발효 시 전액 환불 / 단순 강수는 현장 관리자 판단",
-        script: "우천 등 천재지변으로 인한 구장 사용 불가 판단 시 조례에 따라 전액 환불 처리됩니다. 단순 약한 강수의 경우 현장 상태에 따라 공단 관리자 승인 하에 취소 여부가 결정됩니다.",
-        tags: ["우천", "비", "천재지변", "기상특보", "전액환불"]
-      },
-      {
-        id: "Q8",
-        category: "시설/이용",
-        question: "축구장 이용 시 주차장 무료 이용이나 주차 할인 감면이 되나요?",
-        criteria: "동명근린공원 공영주차장 유료 이용 가능 / 축구장 이용객 대상 할인 감면 없음",
-        script: "동명근린공원 공영주차장을 유료로 이용하실 수 있으나, 축구장 이용객에 대한 별도의 주차 요금 감면이나 무료 주차권 제공은 불가하오니 가급적 대중교통을 이용해 주시기 바랍니다.",
-        tags: ["주차", "주차할인", "공영주차장", "유료주차"]
-      },
-      {
-        id: "Q9",
-        category: "팀등록",
-        question: "관내팀 등록 자격 요건은 어떻게 되나요?",
-        criteria: "총 팀원 20명 이상 & 강동구민 거주자 비율 80% 이상 충족 필수",
-        script: "동명근린공원 축구장 관내팀 등록은 총 팀원 20명 이상이어야 하며, 팀원의 80% 이상이 강동구 주민등록자여야 합니다. 구민 확인을 위한 1개월 이내 주민등록초본 제출이 필요합니다.",
-        tags: ["팀등록", "관내팀", "20명", "80%", "주민등록초본"]
-      }
-    ];
-
-    // ==========================================
-    // 2. AI 챗봇 시스템 프롬프트 (간결성 극대화)
-    // ==========================================
-    const SYSTEM_PROMPT = `
-당신은 '동명근린공원 축구장'의 CS 전담 AI '동명이'입니다.
-상담자가 신속하게 파악할 수 있도록 불필요한 미사여구를 일절 배제하고 핵심 규정과 수치만 간결하게 불릿포인트(-) 형태로 답변하십시오.
-
-[핵심 규정 요약]
-- 요금: 평일 2시간 55,000원 / 주말·공휴일 2시간 71,500원
-- 결제: 대관 예약 신청 시 온라인 카드결제 원칙 (추첨 당첨: 익일 23:59까지 / 잔여 선착순: 당일 23:59까지)
-- 취소 환불: 5일 전 100%, 4일 전 90%, 3일 전 80%, 2일 전 70%, 1일 전 60%, 당일 0% (우천/천재지변은 전액 환불)
-- 관내팀: 총원 20명 이상 & 강동구민 80% 이상 (1개월 이내 초본 확인)
-- 시설 제원: 100m x 64m 인조잔디, 트랙, 샤워실/탈의실/화장실 완비
-- 주차: 동명근린공원 공영주차장 유료 이용 (축구장 이용객 주차 할인 없음)
-- 장비: 금속 스터드(SG/쇠뽕) 절대 착용 금지 (TF, AG, FG 권장)
-- 위치/전화: 서울특별시 강동구 아리수로78길 23 / 02-2045-7877
-    `.trim();
-
-    // ==========================================
-    // 3. 챗봇 엔진 (3중 안전 Fallback 구조)
-    // ==========================================
-    async function askGemini(promptText) {
-      // 1순위: Vercel 서버리스 API (/api/chat) 호출 시도
-      try {
-        const serverlessRes = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            prompt: promptText,
-            systemInstruction: SYSTEM_PROMPT
-          })
-        });
-
-        if (serverlessRes.ok) {
-          const data = await serverlessRes.json();
-          const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (aiReply) return aiReply;
-        }
-      } catch (err) {
-        console.warn("Vercel Serverless bypass:", err);
-      }
-
-      // 2순위: 개별 등록된 로컬 스토리지 API 키 직접 호출
-      const localApiKey = localStorage.getItem('gemini_api_key');
-      if (localApiKey) {
-        try {
-          const directRes = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${localApiKey}`,
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC & GEMINI AI INTEGRATION -->
+    <!-- ========================================== -->
+    <script>
+        // QA Data Bank
+        const qaData = [
             {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }],
-                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }
-              })
+                id: 'Q1',
+                category: 'booking',
+                question: '다음 달(익월) 대관 추첨 신청 및 추첨은 언제, 어떻게 진행되나요?',
+                criteria: '매월 16일 ~ 20일 관내팀 우선 접수 후, 매월 21일 오전 10시 온라인 전자 추첨 진행.',
+                script: '다음 달 대관 추첨 신청은 매월 16일부터 20일까지 강동구 관내팀 우선 접수로 진행되며, 추첨은 매월 21일 오전 10시에 온라인 전자 추첨으로 진행됩니다. 접수 기간 내에 온라인으로 대관 추첨을 신청해 주시기 바랍니다.',
+                tags: ['16일~20일', '21일오전10시', '온라인추첨', '익월추첨', '추첨신청', '관내팀우선', '접수일정']
+            },
+            {
+                id: 'Q2',
+                category: 'booking',
+                question: '추첨 당첨 후 결제 마감 시한은 언제까지인가요?',
+                criteria: '추첨일 다음 날 밤 11시 59분(23:59)까지 결제 미완료 시 자동 취소 처리.',
+                script: '추첨 당첨 건의 결제 마감 기한은 추첨일 다음 날 밤 11시 59분(23:59)까지입니다. 마감 시각까지 결제가 완료되지 않을 경우 당첨이 자동 취소되오니 반드시 기한 내에 결제를 완료해 주시기 바랍니다.',
+                tags: ['추첨', '결제마감', '밤11시59분', '23시59분', '23:59', '자동취소', '당첨']
+            },
+            {
+                id: 'Q3',
+                category: 'booking',
+                question: '대관 사용료 납부 및 결제 방식은 어떻게 되나요?',
+                criteria: '대관 예약 신청 시 시스템상 온라인 결제(카드결제)로 납부.',
+                script: '동명근린공원 축구장 사용료는 대관 예약 신청 시 예약 시스템상에서 온라인 카드결제로 납부해 주셔야 합니다. (현장 현금 수납 불가)',
+                tags: ['사용료납부', '온라인결제', '카드결제', '결제방법', '수납']
+            },
+            {
+                id: 'Q4',
+                category: 'booking',
+                question: '추첨 후 남아있는 잔여시간은 언제, 어떻게 신청하나요?',
+                criteria: '추첨일 다다음 날(매월 23일) 오전 10시부터 온라인 선착순 접수로 오픈.',
+                script: '추첨 후 잔여시간(잔여타임) 신청은 추첨일 다다음 날인 매월 23일 오전 10시부터 온라인 선착순 접수로 진행됩니다. 남아있는 회차 확인 후 선착순으로 대관을 신청해 주시면 됩니다.',
+                tags: ['잔여시간', '잔여타임', '선착순', '매월23일오전10시', '오전10시', '추첨일다다음날', '접수일정']
+            },
+            {
+                id: 'Q5',
+                category: 'field',
+                question: '축구장 구장 규격(크기)과 트랙, 샤워실 및 탈의실 등 시설현황은 어떻게 되나요?',
+                criteria: '지상 1층 규모 / 인조잔디 축구장 (라인규격: 100m X 64m), 우레탄 탄성포장 트랙 / 관리 사무실, 스탠드 및 구령대, 남·여 탈의실 및 샤워실, 화장실 완비.',
+                script: '동명근린공원 축구장은 지상 1층 규모로 인조잔디 축구장(라인규격: 100m X 64m)과 우레탄 탄성포장 트랙을 갖추고 있습니다. 주요 부대시설로는 축구장 관리 사무실, 관람 스탠드 및 구령대, 남/여 탈의실 및 샤워실, 남/여 화장실이 마련되어 있습니다.',
+                tags: ['시설현황', '구장규격', '100mX64m', '규격', '트랙', '샤워실', '탈의실', '화장실', '구령대', '지상1층']
+            },
+            {
+                id: 'Q6',
+                category: 'weather',
+                question: '오늘 비가 오는데 예약 취소 및 전액 환불이 가능한가요?',
+                criteria: '단순 우천 시 정상 진행. 기상청 호우경보 등 기상특보/천재지변 또는 재해 시에만 100% 환불.',
+                script: '동명근린공원 축구장은 야외 잔디 전용 시설로 단순 우천 시에는 정상 운영됩니다. 규정에 따라 당일 단순 취소는 환불이 불가합니다. 단, 이용 시간에 호우경보 등 기상특보가 발효되거나 천재지변 발생 시 100% 전액 환불 또는 일정 변경을 도와드리고 있습니다.',
+                tags: ['우천', '비', '호우경보', '기상특보', '천재지변', '환불']
+            },
+            {
+                id: 'Q7',
+                category: 'weather',
+                question: '강수량이 어느 정도여야 안전 취소가 되나요?',
+                criteria: '시간당 강수량 10mm 이상 지속 시 현장 운영진 판단에 따라 안전 취소 검토 가능.',
+                script: '시간당 10mm 이상의 집중호우가 계속되어 안전사고 우려가 있는 경우 현장 관리자의 판단 하에 이용 취소 및 전액 환불 조치를 진행합니다.',
+                tags: ['강수량', '10mm', '안전취소', '우천취소']
+            },
+            {
+                id: 'Q8',
+                category: 'booking',
+                question: '대관 취소는 몇 일 전까지 해야 위약금이 없나요?',
+                criteria: '사용 개시일 5일 전 취소 시 100% 전액 환불 (위약금 0원).',
+                script: '사용 개시일 기준 5일 전까지 온라인으로 취소 신청해 주시면 위약금 없이 100% 전액 환불 처리됩니다.',
+                tags: ['5일전', '100%', '전액환불', '위약금없음', '환불규정']
+            },
+            {
+                id: 'Q9',
+                category: 'booking',
+                question: '사용 개시일 3일 전에 취소하면 환불을 얼마나 받나요?',
+                criteria: '사용 개시일 4일 전 ~ 1일 전 취소 시 10% 위약금 차감 후 90% 환불.',
+                script: '사용 개시일 4일 전부터 1일 전 취소 시에는 조례 기준에 따라 총 대관 요금의 10%가 위약금으로 차감되며, 나머지 90% 금액이 환불됩니다.',
+                tags: ['3일전', '90%', '위약금10%', '차감환불']
+            },
+            {
+                id: 'Q10',
+                category: 'booking',
+                question: '대관 당일에 개인 사정으로 취소하면 환불이 되나요?',
+                criteria: '사용 개시일 당일 및 이용 시간 이후 취소 시 환불 불가 (위약금 100%).',
+                script: '체육시설 운영조례에 따라 대관 당일 및 사용 개시 이후에는 개인 사정(단원 독감, 수시 참가 등)으로 인한 취소 및 환불이 불가능합니다.',
+                tags: ['당일취소', '환불불가', '0원', '조례기준']
+            },
+            {
+                id: 'Q11',
+                category: 'booking',
+                question: '온라인에서 취소 신청을 하려면 어디로 들어가야 하나요?',
+                criteria: '마이페이지 > 대관결제내역 > 상세보기 > [취소신청] 버튼 클릭.',
+                script: '공단 홈페이지 로그인 후 [마이페이지] > [대관결제내역]으로 이동하시어 해당 대관 건의 [상세보기]를 클릭하시면 하단에서 직접 [취소신청]이 가능합니다.',
+                tags: ['취소방법', '온라인취소', '마이페이지', '취소신청']
+            },
+            {
+                id: 'Q12',
+                category: 'field',
+                question: '축구장 주소와 연락처, 대중교통으로 찾아오는 길은 어떻게 되나요?',
+                criteria: '주소: 서울시 강동구 아리수로78길 23 / 연락처: 02.2045.7877 / 버스 3412, 강동02, 강동05, 3324, 8333 도보 5분.',
+                script: '동명근린공원 축구장 주소는 [서울특별시 강동구 아리수로78길 23]이며, 문의 연락처는 [02.2045.7877]입니다. 대중교통 이용 시 버스 3412, 강동02, 강동05(고덕초등학교 하차) 또는 3324, 8333(고덕풍경채어바니티 하차) 후 도보 5분 거리에 위치해 있습니다. 주차 감면 혜택이 없으므로 대중교통 이용을 권장드립니다.',
+                tags: ['주소', '위치', '연락처', '전화번호', '02.2045.7877', '교통안내', '버스', '오시는길', '아리수로78길']
+            },
+            {
+                id: 'Q13',
+                category: 'field',
+                question: '축구장 이용 시 주차장 무료 이용이나 주차 요금 할인이 가능한가요?',
+                criteria: '동명근린공원 공영주차장 유료 이용 가능. 축구장 이용객 관련 주차 요금 할인 및 감면 혜택 없음.',
+                script: '축구장 이용 시 인근 동명근린공원 공영주차장을 유료로 이용하실 수 있습니다. 축구장 이용객에 대한 별도의 주차 할인 및 감면 혜택은 제공되지 않으므로 일반 주차 요금이 부과됩니다.',
+                tags: ['주차장', '공영주차장', '유료주차', '주차할인없음', '감면없음', '주차요금']
+            },
+            {
+                id: 'Q14',
+                category: 'field',
+                question: '쇠뽕 축구화(SG 스터드)를 신고 뛰어도 되나요?',
+                criteria: 'SG (금속/긴 뽕) 스터드 착용 절대 금지. TF(풋살화) 및 AG/HG 권장.',
+                script: '동명근린공원 축구장은 인조잔디 보호 및 선수 부상 방지를 위해 쇠뽕(SG 스터드) 착용이 엄격히 금지됩니다. TF 풋살화나 일반 축구화를 착용해 주셔야 합니다.',
+                tags: ['축구화', 'SG', '쇠뽕', '착용금지', 'TF', '풋살화']
+            },
+            {
+                id: 'Q15',
+                category: 'field',
+                question: '구장 내에서 컵라면이나 음주, 흡연이 가능한가요?',
+                criteria: '구장 내부 및 보조 공간 전체 금연, 금주, 음식물 섭취 금지 (물/음료만 가능).',
+                script: '축구장 내에서는 음주, 흡연, 취사 및 음식물 섭취가 엄격히 금지됩니다. 물과 스포츠 음료만 반입 가능하오니 쾌적한 환경을 위해 협조 부탁드립니다.',
+                tags: ['흡연', '음주', '음식물', '금연', '금주', '페널티']
+            },
+            {
+                id: 'Q16',
+                category: 'teams',
+                question: '팀 등록 신청 시기와 관내팀 등록 조건, 제출 서류는 어떻게 되나요?',
+                criteria: '2026년 9월 1일부터 온라인 페이지 오픈 후 수시 신청 가능. 총원 15명 이상 중 관내 회원 10명 이상 기준.',
+                script: '팀 등록은 2026년 9월 1일부터 온라인 페이지 오픈 후 수시 접수가 가능합니다. 관내팀은 15명 이상으로 구성된 팀 중 강동구 주소 회원 10명 이상(거주팀) 또는 강동구 사업장 회원 10명 이상(직장팀) 요건을 갖추어야 합니다. 직장팀의 경우 재직증명서와 사업자등록증을 매월 5일~10일 내에 축구장 사무실로 제출해 주셔야 심사가 진행됩니다.',
+                tags: ['팀등록', '2026년9월1일', '수시접수', '온라인접수', '관내팀', '거주팀', '직장팀', '주민등록등본', '재직증명서', '15명', '10명', '매월5일10일']
+            },
+            {
+                id: 'Q17',
+                category: 'teams',
+                question: '한 사람이 여러 팀에 중복으로 회원 등록할 수 있나요?',
+                criteria: '동일 인물의 다수 팀 중복 등록 절대 불가.',
+                script: '강동구 체육시설 규정상 1인 1팀 등록이 원칙이며 중복 회원 등록은 불가능합니다. 중복 적발 시 해당 회원의 등록이 취소될 수 있습니다.',
+                tags: ['중복등록', '1인1팀', '회원등록', '등록불가']
+            },
+            {
+                id: 'Q18',
+                category: 'teams',
+                question: '관내 자격 갱신은 언제 진행되나요?',
+                criteria: '거주자 자격 갱신: 매년 1월 1일 / 7월 1일 (연 2회). 관내팀 승인 유지: 매년 8월 1일.',
+                script: '관내 거주 자격은 매년 1월 1일과 7월 1일 연 2회 갱신되며, 관내팀 전체 승인 유지는 매년 8월 1일 기준으로 심사 및 업데이트됩니다.',
+                tags: ['자격갱신', '거주자갱신', '8월1일', '1월1일', '7월1일']
+            },
+            {
+                id: 'Q19',
+                category: 'booking',
+                question: '예약된 타임을 다른 팀에게 양도해도 되나요?',
+                criteria: '대관 무단 양도 적발 시 즉시 퇴장 및 축구장 6개월 이용 금지.',
+                script: '대관 양도는 엄격히 금지되어 있습니다. 무단 양도 적발 시 당일 즉시 퇴장 조치되며, 양도한 팀과 양수한 팀 모두 6개월간 축구장 이용이 금지됩니다.',
+                tags: ['양도', '무단양도', '6개월', '이용금지', '적발']
+            },
+            {
+                id: 'Q20',
+                category: 'safety',
+                question: '경기 중 다른 팀과 시비가 붙어 싸움이 났을 때 대응은?',
+                criteria: '즉시 경기 중단, 양 팀 퇴장 조치 및 1개월 이용 금지. 필요시 112 경찰 신고.',
+                script: '신체적 충돌 및 폭행 발생 시 현장 매니저가 즉시 경기를 중단시키고 양 팀 모두 퇴장 조치합니다. 사안에 따라 1개월 이용 금지 페널티가 부과되며 112 신고 조치될 수 있습니다.',
+                tags: ['폭행', '싸움', '분쟁', '112신고', '퇴장', '1개월정지']
+            },
+            {
+                id: 'Q21',
+                category: 'safety',
+                question: '시설물(골대, 펜스 등)을 고의로 파손한 경우 조치는?',
+                criteria: '1회 적발 즉시 퇴장 및 원상복구(배상) 청구.',
+                script: '시설물을 고의로 파손한 경우 즉시 퇴장 조치되며, 손괴된 시설물에 대한 원상복구 비용 전체가 관련 팀 및 사용자에게 청구됩니다.',
+                tags: ['시설파손', '원상복구', '배상청구', '퇴장']
+            },
+            {
+                id: 'Q22',
+                category: 'booking',
+                question: '천재지변이나 국가적 행사로 취소되면 어떻게 되나요?',
+                criteria: '공단 사정, 재해, 국가적 행사로 취소 시 100% 전액 환불.',
+                script: '천재지변이나 공단 사정, 국가 행사 등으로 구장 사용이 불가능해진 경우 위약금 없이 100% 전액 환불해 드립니다.',
+                tags: ['천재지변', '공단사정', '100%환불', '전액환불']
             }
-          );
-          if (directRes.ok) {
-            const data = await directRes.json();
-            const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (aiReply) return aiReply;
-          }
-        } catch (err) {
-          console.warn("Direct Gemini call failed:", err);
+        ];
+
+        let currentCalcDay = 'weekday';
+        let userStoredApiKey = '';
+
+        function renderQACards(filterText = '') {
+            const container = document.getElementById('qa-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const query = filterText.toLowerCase().trim();
+            const filtered = qaData.filter(item => {
+                return !query || 
+                    item.id.toLowerCase().includes(query) ||
+                    item.question.toLowerCase().includes(query) ||
+                    item.criteria.toLowerCase().includes(query) ||
+                    item.script.toLowerCase().includes(query) ||
+                    item.tags.some(t => t.toLowerCase().includes(query));
+            });
+
+            const countBadge = document.getElementById('qa-count-badge');
+            if (countBadge) {
+                countBadge.textContent = `총 ${filtered.length}개 항목 노출 중`;
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-white p-6 rounded-lg border border-slate-200 text-center text-slate-500 text-xs">
+                        검색 조건에 해당되는 항목이 없습니다.
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(item => {
+                let catText = '';
+                if(item.category === 'booking') catText = '추첨·결제·환불';
+                else if(item.category === 'weather') catText = '기상·천재지변';
+                else if(item.category === 'field') catText = '현장수칙·축구화';
+                else if(item.category === 'teams') catText = '팀등록·자격';
+                else if(item.category === 'safety') catText = '안전·부상·분쟁';
+
+                const cardHTML = `
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm hover:border-slate-300 transition-colors space-y-3 flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-400 font-mono">${item.id}</span>
+                                <span class="text-xs text-slate-400 font-normal">${catText}</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-[18px] leading-snug">${item.question}</h3>
+                            
+                            <!-- Criteria Text (#1158cb color, No background box) -->
+                            <div class="text-[15px] text-[#1158cb] font-semibold leading-relaxed py-1">
+                                A. ${item.criteria}
+                            </div>
+
+                            <!-- Script Box (Pictogram icon + Copy Button, No Title, No Border) -->
+                            <div class="bg-slate-100 text-slate-700 p-3 rounded text-xs leading-relaxed space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <circle cx="9" cy="8" r="3.5" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 19c0-3.3 2.7-6 6-6h0c3.3 0 6 2.7 6 6" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 7a3 3 0 010 5" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5a5.5 5.5 0 010 9" />
+                                        </svg>
+                                    </div>
+                                    <button onclick="copyToClipboard('${item.id}-script', this)" class="flex items-center gap-1 text-[11px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
+                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>복사</span>
+                                    </button>
+                                </div>
+                                <p id="${item.id}-script" class="whitespace-pre-line font-serif-kr text-slate-700 text-[15px] leading-relaxed tracking-wide">${item.script}</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex items-center justify-between border-t border-slate-100">
+                            <div class="flex flex-wrap gap-1">
+                                ${item.tags.map(t => `<span class="text-xs bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">#${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
         }
-      }
 
-      // 3순위: 로컬 오프라인 규칙 매칭 엔진
-      return generateOfflineResponse(promptText);
-    }
-
-    // 오프라인 규칙 엔진
-    function generateOfflineResponse(text) {
-      const q = text.toLowerCase();
-      if (q.includes('주차') || q.includes('차량') || q.includes('주차비')) {
-        return "• 동명근린공원 공영주차장 유료 이용 가능\n• 축구장 이용객 대상 별도 주차 할인/감면 없음 (대중교통 권장)";
-      }
-      if (q.includes('결제') || q.includes('마감') || q.includes('추첨') || q.includes('23:59')) {
-        return "• 추첨 당첨분: 당첨 익일 23:59까지 온라인 카드 결제\n• 잔여 선착순: 신청 당일 23:59까지 결제 (미결제 시 자동 취소)";
-      }
-      if (q.includes('환불') || q.includes('취소') || q.includes('위약금')) {
-        return "• 5일 전: 100% 환불\n• 4일 전: 90% | 3일 전: 80% | 2일 전: 70% | 1일 전: 60%\n• 이용 당일: 취소 및 환불 불가 (우천/특보 시 전액 환불)";
-      }
-      if (q.includes('규격') || q.includes('크기') || q.includes('샤워') || q.includes('탈의실')) {
-        return "• 구장 규격: 100m × 64m (인조잔디) + 우레탄 트랙\n• 부대시설: 남/여 샤워실 및 탈의실, 화장실 완비";
-      }
-      if (q.includes('축구화') || q.includes('쇠뽕') || q.includes('sg') || q.includes('풋살화')) {
-        return "• 금속 스터드(SG/쇠뽕) 축구화 착용 절대 금지\n• TF(풋살화), AG, FG 인조잔디용 축구화 착용 필수";
-      }
-      if (q.includes('팀') || q.includes('관내') || q.includes('20명') || q.includes('80%')) {
-        return "• 관내팀 등록 기준: 총원 20명 이상 + 강동구민 80% 이상\n• 필요 서류: 1개월 이내 발급된 주민등록초본 및 팀원 명부";
-      }
-      if (q.includes('주소') || q.includes('위치') || q.includes('전화') || q.includes('번호')) {
-        return "• 주소: 서울특별시 강동구 아리수로78길 23\n• 직통 문의: 02-2045-7877";
-      }
-      return "• 규정에 대한 세부 문의는 Q&A 스크립트 탭을 확인하시거나 직통번호(02-2045-7877)로 안내해 주시기 바랍니다.";
-    }
-
-    // ==========================================
-    // 4. UI 렌더링 및 탭 조작 스크립트
-    // ==========================================
-    let currentCategory = 'all';
-
-    function renderQAList() {
-      const container = document.getElementById('qaListContainer');
-      const keyword = document.getElementById('qaSearch').value.toLowerCase().trim();
-      container.innerHTML = '';
-
-      const filtered = qaData.filter(item => {
-        const matchCat = (currentCategory === 'all' || item.category === currentCategory);
-        const matchText = item.question.toLowerCase().includes(keyword) ||
-                          item.script.toLowerCase().includes(keyword) ||
-                          item.tags.some(t => t.toLowerCase().includes(keyword));
-        return matchCat && matchText;
-      });
-
-      if (filtered.length === 0) {
-        container.innerHTML = '<div class="p-8 text-center text-slate-400 bg-white rounded-xl border border-slate-200">검색된 스크립트가 없습니다.</div>';
-        return;
-      }
-
-      filtered.forEach(item => {
-        const card = document.createElement('div');
-        card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3 relative group";
-        card.innerHTML = `
-          <div class="flex items-start justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-600">${item.id}</span>
-              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700">${item.category}</span>
-            </div>
-            <button onclick="copyScript('${item.id}', this)" 
-                    class="px-2.5 py-1 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 rounded text-xs font-bold text-slate-600 flex items-center space-x-1 shadow-sm transition">
-              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-              <span>복사</span>
-            </button>
-          </div>
-          <h3 class="text-sm font-bold text-slate-900">${item.question}</h3>
-          <p class="text-xs text-slate-500 font-medium bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-            <strong>판정 기준:</strong> ${item.criteria}
-          </p>
-          <div class="p-3 bg-emerald-50/40 rounded-lg border border-emerald-100">
-            <p class="text-xs text-slate-800 leading-relaxed font-normal" id="script-${item.id}">${item.script}</p>
-          </div>
-          <div class="flex flex-wrap gap-1.5 pt-1">
-            ${item.tags.map(t => `<span class="text-[10px] text-slate-400">#${t}</span>`).join(' ')}
-          </div>
-        `;
-        container.appendChild(card);
-      });
-
-      lucide.createIcons();
-    }
-
-    function filterQA() { renderQAList(); }
-
-    function setQACategory(cat) {
-      currentCategory = cat;
-      document.querySelectorAll('.cat-filter-btn').forEach(btn => {
-        if (btn.getAttribute('data-cat') === cat) {
-          btn.className = "cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white";
-        } else {
-          btn.className = "cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200";
+        function copyToClipboard(elementId, btn) {
+            const el = document.getElementById(elementId);
+            const textToCopy = el ? el.innerText.trim() : elementId;
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful && btn) {
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = `
+                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span class="text-emerald-700 font-bold">복사완료!</span>
+                    `;
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                    }, 1500);
+                }
+            } catch (err) {
+                console.error('클립보드 복사 실패:', err);
+            } finally {
+                document.body.removeChild(textarea);
+            }
         }
-      });
-      renderQAList();
-    }
 
-    function copyScript(id, btn) {
-      const text = document.getElementById(`script-${id}`).innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        const original = btn.innerHTML;
-        btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i><span class="text-emerald-600">완료!</span>`;
-        lucide.createIcons();
-        setTimeout(() => { btn.innerHTML = original; lucide.createIcons(); }, 1500);
-      });
-    }
+        function filterQA() {
+            const input = document.getElementById('qa-search-input');
+            renderQACards(input ? input.value : '');
+        }
 
-    function copyElementText(elId, btn) {
-      const text = document.getElementById(elId).innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        const original = btn.innerHTML;
-        btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i><span class="text-emerald-600">완료!</span>`;
-        lucide.createIcons();
-        setTimeout(() => { btn.innerHTML = original; lucide.createIcons(); }, 1500);
-      });
-    }
+        // Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white', 'font-semibold');
+                btn.classList.add('text-slate-600');
+            });
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.className = "tab-btn py-3.5 px-1 border-b-2 font-medium text-sm text-slate-500 border-transparent hover:text-slate-700 whitespace-nowrap";
-      });
-      document.getElementById(tabId).classList.remove('hidden');
-      const activeBtn = document.getElementById(`btn-${tabId}`);
-      activeBtn.className = "tab-btn py-3.5 px-1 border-b-2 font-bold text-sm text-emerald-600 border-emerald-600 whitespace-nowrap";
-    }
+            const targetSection = document.getElementById('tab-' + tabId);
+            if (targetSection) targetSection.classList.remove('hidden');
 
-    // ==========================================
-    // 5. 계산기 및 진단기 로직
-    // ==========================================
-    function runCalculator() {
-      const fee = parseInt(document.getElementById('calcFee').value);
-      const reason = document.getElementById('calcReason').value;
+            const activeBtn = document.getElementById('tab-btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-slate-900', 'text-white', 'font-semibold');
+                activeBtn.classList.remove('text-slate-600');
+            }
+        }
 
-      let refundRate = 1.0;
-      let badgeText = "100% 전액 환불";
-      let script = "";
+        function setCalcDay(type) {
+            currentCalcDay = type;
+            const btnWeekday = document.getElementById('calc-day-weekday');
+            const btnWeekend = document.getElementById('calc-day-weekend');
 
-      switch (reason) {
-        case 'user_5days':
-          refundRate = 1.0; badgeText = "100% 전액 환불";
-          script = `사용 5일 전 취소 건으로 결제 금액 ${fee.toLocaleString()}원 전액 환불 처리됩니다.`;
-          break;
-        case 'user_4days':
-          refundRate = 0.9; badgeText = "90% 부분 환불 (10% 위약금)";
-          script = `사용 4일 전 취소 건으로 위약금 10%(${(fee*0.1).toLocaleString()}원) 공제 후 ${(fee*0.9).toLocaleString()}원이 환불됩니다.`;
-          break;
-        case 'user_3days':
-          refundRate = 0.8; badgeText = "80% 부분 환불 (20% 위약금)";
-          script = `사용 3일 전 취소 건으로 위약금 20%(${(fee*0.2).toLocaleString()}원) 공제 후 ${(fee*0.8).toLocaleString()}원이 환불됩니다.`;
-          break;
-        case 'user_2days':
-          refundRate = 0.7; badgeText = "70% 부분 환불 (30% 위약금)";
-          script = `사용 2일 전 취소 건으로 위약금 30%(${(fee*0.3).toLocaleString()}원) 공제 후 ${(fee*0.7).toLocaleString()}원이 환불됩니다.`;
-          break;
-        case 'user_1day':
-          refundRate = 0.6; badgeText = "60% 부분 환불 (40% 위약금)";
-          script = `사용 1일 전 취소 건으로 위약금 40%(${(fee*0.4).toLocaleString()}원) 공제 후 ${(fee*0.6).toLocaleString()}원이 환불됩니다.`;
-          break;
-        case 'user_today':
-          refundRate = 0.0; badgeText = "환불 불가 (100% 위약금)";
-          script = `사용 당일 취소 건은 조례 규정에 따라 환불이 불가합니다.`;
-          break;
-        case 'weather':
-          refundRate = 1.0; badgeText = "천재지변 100% 전액 환불";
-          script = `우천 및 기상악화로 인한 취소 건으로 결제 금액 ${fee.toLocaleString()}원 전액 환불 처리됩니다.`;
-          break;
-        case 'admin':
-          refundRate = 1.0; badgeText = "공단 귀책 100% 전액 환불";
-          script = `공단 사정으로 인한 취소 건으로 결제 금액 ${fee.toLocaleString()}원 전액 환불 처리됩니다.`;
-          break;
-      }
+            if (type === 'weekday') {
+                btnWeekday.className = "calc-day-btn py-2 px-3 rounded border border-slate-900 bg-slate-900 text-white font-medium text-xs";
+                btnWeekend.className = "calc-day-btn py-2 px-3 rounded border border-slate-300 bg-white text-slate-700 font-medium text-xs";
+            } else {
+                btnWeekday.className = "calc-day-btn py-2 px-3 rounded border border-slate-300 bg-white text-slate-700 font-medium text-xs";
+                btnWeekend.className = "calc-day-btn py-2 px-3 rounded border border-slate-900 bg-slate-900 text-white font-medium text-xs";
+            }
+            calculateRefund();
+        }
 
-      const refundAmount = fee * refundRate;
-      const penaltyAmount = fee - refundAmount;
+        function calculateRefund() {
+            const totalFee = currentCalcDay === 'weekday' ? 88000 : 114400;
+            const dday = document.getElementById('calc-dday').value;
+            const reason = document.getElementById('calc-reason').value;
 
-      document.getElementById('calcPaidText').innerText = `${fee.toLocaleString()}원`;
-      document.getElementById('calcPenaltyText').innerText = `${penaltyAmount.toLocaleString()}원 (${Math.round((1-refundRate)*100)}%)`;
-      document.getElementById('calcRefundText').innerText = `${refundAmount.toLocaleString()}원`;
-      document.getElementById('calcBadge').innerText = badgeText;
-      document.getElementById('calcScriptText').innerText = script;
-    }
+            let penaltyRate = 0;
+            let statusText = '';
+            let scriptText = '';
 
-    function diagnoseTeam() {
-      const total = parseInt(document.getElementById('teamTotal').value) || 0;
-      const local = parseInt(document.getElementById('teamLocal').value) || 0;
+            if (reason !== 'normal') {
+                penaltyRate = 0;
+                statusText = '특별사유 100% 환불';
+                if (reason === 'disaster') {
+                    scriptText = '재해 및 기타 불가항력 사유로 인한 취소 건으로 규정에 따라 위약금 없이 100% 전액 환불됩니다.';
+                } else if (reason === 'official_event') {
+                    scriptText = '국가적 행사 또는 공단 사정으로 인한 취소 건으로 위약금 없이 100% 전액 환불해 드립니다.';
+                } else {
+                    scriptText = '기상 천재지변 또는 운영자 귀책에 따른 취소 건으로 위약금 없이 100% 전액 환불됩니다.';
+                }
+            } else {
+                if (dday === 'd5') {
+                    penaltyRate = 0;
+                    statusText = '100% 전액 환불';
+                    scriptText = '사용 개시일 5일 전 취소 건으로 규정에 따라 위약금 없이 100% 전액 환불 처리됩니다.';
+                } else if (dday === 'd4_1') {
+                    penaltyRate = 0.10;
+                    statusText = '90% 환불 (10% 위약금)';
+                    scriptText = '사용 개시일 4일 전~1일 전 취소 건으로 조례 규정에 따라 사용료의 10% 위약금 차감 후 90% 금액이 환불됩니다.';
+                } else {
+                    penaltyRate = 1.0;
+                    statusText = '환불 불가 (위약금 100%)';
+                    scriptText = '사용 개시일 당일 및 이후 취소 건은 조례 규정에 따라 환불이 불가능합니다.';
+                }
+            }
 
-      const panel = document.getElementById('teamResultPanel');
-      const icon = document.getElementById('teamResultIcon');
-      const title = document.getElementById('teamResultTitle');
-      const ratio = document.getElementById('teamRatioText');
-      const desc = document.getElementById('teamResultDesc');
+            const penaltyAmt = Math.floor(totalFee * penaltyRate);
+            const refundAmt = totalFee - penaltyAmt;
 
-      if (total <= 0) return;
+            document.getElementById('calc-out-total').textContent = totalFee.toLocaleString() + '원';
+            document.getElementById('calc-out-penalty').textContent = penaltyAmt.toLocaleString() + '원 (' + (penaltyRate * 100) + '%)';
+            document.getElementById('calc-out-refund').textContent = refundAmt.toLocaleString() + '원';
+            document.getElementById('calc-out-script').textContent = scriptText;
+            document.getElementById('calc-status-badge').textContent = statusText;
+        }
 
-      const rate = (local / total) * 100;
-      ratio.innerText = `관내 거주 비율: ${rate.toFixed(1)}%`;
+        function runTeamQuiz() {
+            const q1Val = document.querySelector('input[name="quiz-q1"]:checked')?.value;
+            const q2Val = document.querySelector('input[name="quiz-q2"]:checked')?.value;
+            const q3DocChecked = document.getElementById('quiz-q3-doc')?.checked;
 
-      if (total >= 20 && rate >= 80) {
-        panel.className = "p-5 rounded-xl border space-y-3 bg-emerald-50 border-emerald-200";
-        icon.innerText = "✅";
-        title.className = "text-sm font-bold text-emerald-900";
-        title.innerText = "관내팀 등록 가능 (적격)";
-        desc.className = "text-xs text-emerald-800 leading-relaxed";
-        desc.innerText = "총원(20명 이상) 및 구민 비율(80% 이상)을 모두 충족합니다. 1개월 이내 발급된 초본 서류 심사를 진행하십시오.";
-      } else {
-        panel.className = "p-5 rounded-xl border space-y-3 bg-rose-50 border-rose-200";
-        icon.innerText = "❌";
-        title.className = "text-sm font-bold text-rose-900";
-        title.innerText = "관내팀 등록 불가 (부적격)";
-        desc.className = "text-xs text-rose-800 leading-relaxed";
-        let reasonStr = [];
-        if (total < 20) reasonStr.push(`총 인원 부족 (현재 ${total}명 / 최소 20명 필요)`);
-        if (rate < 80) reasonStr.push(`구민 비율 미달 (현재 ${rate.toFixed(1)}% / 80% 이상 필요)`);
-        desc.innerText = `부적격 사유: ${reasonStr.join(', ')}`;
-      }
-    }
+            const docText = document.getElementById('quiz-doc-text');
 
-    // ==========================================
-    // 6. 챗봇 대화 핸들러
-    // ==========================================
-    function toggleKeySettings() {
-      const drawer = document.getElementById('keySettingsDrawer');
-      drawer.classList.toggle('hidden');
-    }
+            if (q2Val === 'work10') {
+                if (docText) docText.textContent = "재직증명서 및 사업자등록증 제출 가능 (매월 5일~10일 내 제출 필수)";
+            } else {
+                if (docText) docText.textContent = "최근 3개월 이내 발급 주민등록등본 제출 가능 (거주팀)";
+            }
 
-    function saveApiKey() {
-      const key = document.getElementById('customApiKey').value.trim();
-      if (key) {
-        localStorage.setItem('gemini_api_key', key);
-        alert('API 키가 로컬에 저장되었습니다.');
-      } else {
-        localStorage.removeItem('gemini_api_key');
-        alert('로컬 API 키가 삭제되었습니다.');
-      }
-      toggleKeySettings();
-    }
+            const badge = document.getElementById('team-badge');
+            const title = document.getElementById('team-result-title');
+            const desc = document.getElementById('team-result-desc');
+            const docsList = document.getElementById('team-result-docs');
 
-    async function handleChatSubmit(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const text = input.value.trim();
-      if (!text) return;
+            if (q1Val === 'under15') {
+                if (badge) {
+                    badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30";
+                    badge.textContent = "등록 불가 (인원 미달)";
+                }
+                if (title) title.textContent = "최소 등록 인원 미달로 팀 등록이 불가능합니다.";
+                if (desc) desc.textContent = "강동구 체육시설 규칙상 팀 등록 최소 인원은 15명 이상입니다. (중복 회원 등록은 불가능합니다.)";
+                if (docsList) {
+                    docsList.innerHTML = `
+                        <li><strong>신청 기준:</strong> 최소 15명 이상의 회원을 확보한 후 신청 가능</li>
+                        <li><strong>중복 검증:</strong> 타 팀 중복 등록 회원 제외 후 15명 이상 필요</li>
+                    `;
+                }
+                return;
+            }
 
-      appendChatMessage('user', text);
-      input.value = '';
+            if (q2Val === 'res10') {
+                if (!q3DocChecked) {
+                    if (badge) {
+                        badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30";
+                        badge.textContent = "서류 미비 (등본 필요)";
+                    }
+                    if (title) title.textContent = "주민등록등본 미제출 시 관내팀 승인이 불가합니다.";
+                    if (desc) desc.textContent = "강동구 거주 회원 10명 이상의 주소를 증빙할 3개월 이내 발급 주민등록등본 제출이 필요합니다.";
+                    if (docsList) {
+                        docsList.innerHTML = `
+                            <li><strong>필수 서류:</strong> 최근 3개월 이내 발급 주민등록등본</li>
+                            <li><strong>심사 일정:</strong> 매월 5일~10일 사이 심사 진행</li>
+                        `;
+                    }
+                } else {
+                    if (badge) {
+                        badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                        badge.textContent = "관내팀 (1순위 - 거주팀)";
+                    }
+                    if (title) title.textContent = "강동구 관내 거주팀 자격 대상입니다.";
+                    if (desc) desc.textContent = "주말 및 관내팀 우선 대관 신청 권한이 부여됩니다. 회원 15명 이상 및 강동구 주민등록 회원 10명 이상 보유 기준을 충족합니다.";
+                    if (docsList) {
+                        docsList.innerHTML = `
+                            <li><strong>제출 서류:</strong> 최근 3개월 이내 발급 주민등록등본 제출</li>
+                            <li><strong>승인 심사:</strong> 매월 5일~10일 사이 승인 처리</li>
+                            <li><strong>거주자 자격 갱신:</strong> 매년 1월 1일, 7월 1일 (연 2회)</li>
+                        `;
+                    }
+                }
+            } else if (q2Val === 'work10') {
+                if (!q3DocChecked) {
+                    if (badge) {
+                        badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30";
+                        badge.textContent = "서류 미비 (재직증명서 필요)";
+                    }
+                    if (title) title.textContent = "재직증명서 및 사업자등록증 미제출 시 직장팀 승인이 불가합니다.";
+                    if (desc) desc.textContent = "강동구 소재 사업장 재직 회원 10명 이상 증빙을 위한 구비서류 제출이 필수입니다. (매월 5일~10일 내 사무실 제출)";
+                    if (docsList) {
+                        docsList.innerHTML = `
+                            <li><strong>필수 제출 서류:</strong> 재직증명서 및 사업자등록증</li>
+                            <li><strong>제출 기한:</strong> 매월 5일~10일 내 축구장 사무실 제출 건만 진행</li>
+                        `;
+                    }
+                } else {
+                    if (badge) {
+                        badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                        badge.textContent = "관내팀 (1순위 - 직장팀)";
+                    }
+                    if (title) title.textContent = "강동구 관내 직장팀 자격 대상입니다.";
+                    if (desc) desc.textContent = "강동구 관내 사업장 재직 회원 10명 이상 및 필수 구비서류(재직증명서, 사업자등록증) 제출 요건을 충족합니다.";
+                    if (docsList) {
+                        docsList.innerHTML = `
+                            <li><strong>구비서류:</strong> 재직증명서 및 사업자등록증 제출 (매월 5일~10일 내)</li>
+                            <li><strong>승인 심사:</strong> 매월 5일~10일 사이 축구장 사무실 제출 건 심사</li>
+                        `;
+                    }
+                }
+            } else {
+                if (badge) {
+                    badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-slate-500/20 text-slate-300 border border-slate-500/30";
+                    badge.textContent = "관외팀 (2순위)";
+                }
+                if (title) title.textContent = "관외팀 자격으로 등록 가능합니다.";
+                if (desc) desc.textContent = "총원 15명 이상 요건은 충족하나 관내 회원 10명 미만으로 관외팀으로 분류됩니다. 잔여타임 선착순 신청이 가능합니다.";
+                if (docsList) {
+                    docsList.innerHTML = `
+                        <li><strong>신청 권한:</strong> 잔여타임 선착순 접수 참여 가능 (신청 시 자동 승인)</li>
+                        <li><strong>관내팀 전환:</strong> 강동구 회원 10명 이상 확보 시 관내팀 전환 신청 가능</li>
+                    `;
+                }
+            }
+        }
 
-      const loadingId = appendChatMessage('ai', '조례 규정 확인 중...');
+        function updateLiveClock() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const date = String(now.getDate()).padStart(2, '0');
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            const dayName = days[now.getDay()];
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
 
-      try {
-        const reply = await askGemini(text);
-        updateChatMessage(loadingId, reply);
-      } catch (err) {
-        updateChatMessage(loadingId, generateOfflineResponse(text));
-      }
-    }
+            const clockEl = document.getElementById('live-clock-display');
+            if (clockEl) {
+                clockEl.textContent = `${year}.${month}.${date} (${dayName}) ${hours}:${minutes}:${seconds}`;
+            }
 
-    function appendChatMessage(role, text) {
-      const container = document.getElementById('chatMessages');
-      const msgId = 'msg-' + Date.now();
-      const div = document.createElement('div');
-      div.id = msgId;
+            // Real-time booking status badge auto calculation
+            const dayNum = now.getDate();
+            const badgeEl = document.getElementById('realtime-status-badge');
+            if (badgeEl) {
+                if (dayNum >= 16 && dayNum <= 20) {
+                    badgeEl.className = "px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                    badgeEl.textContent = "현재 접수 상태: 익월 대관 추첨 접수 기간 (16일~20일 / 21일 10시 추첨)";
+                } else if (dayNum === 21) {
+                    badgeEl.className = "px-2.5 py-0.5 rounded text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30";
+                    badgeEl.textContent = "현재 접수 상태: 오늘(21일) 오전 10시 온라인 추첨 진행 / 당첨 결제 중";
+                } else if (dayNum === 22) {
+                    badgeEl.className = "px-2.5 py-0.5 rounded text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30";
+                    badgeEl.textContent = "현재 접수 상태: 추첨 당첨 건 결제 마감일 (오늘 23:59 마감)";
+                } else if (dayNum === 23) {
+                    badgeEl.className = "px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                    badgeEl.textContent = "현재 접수 상태: 오늘(23일) 오전 10시 잔여타임 선착순 접수 오픈";
+                } else if (dayNum >= 5 && dayNum <= 10) {
+                    badgeEl.className = "px-2.5 py-0.5 rounded text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30";
+                    badgeEl.textContent = "현재 접수 상태: 잔여타임 선착순 접수 & 관내팀 자격 심사 기간";
+                } else {
+                    badgeEl.className = "px-2.5 py-0.5 rounded text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700";
+                    badgeEl.textContent = "현재 접수 상태: 잔여타임 온라인 선착순 접수 중";
+                }
+            }
+        }
 
-      if (role === 'user') {
-        div.className = "flex justify-end";
-        div.innerHTML = `<div class="bg-emerald-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] leading-relaxed">${text}</div>`;
-      } else {
-        div.className = "flex items-start space-x-2";
-        div.innerHTML = `
-          <div class="w-6 h-6 rounded-md bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">AI</div>
-          <div class="bg-slate-100 text-slate-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] leading-relaxed whitespace-pre-line">${text}</div>
-        `;
-      }
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
-      return msgId;
-    }
+        // ==========================================
+        // AI CHATBOT LOGIC (HYBRID ONLINE AI & ENHANCED LOCAL INTENT MATCHING)
+        // ==========================================
+        const SYSTEM_PROMPT = `
+당신은 강동구도시관리공단 '동명근린공원 축구장'의 AI CS 도우미 '동명이'입니다.
 
-    function updateChatMessage(msgId, newText) {
-      const el = document.getElementById(msgId);
-      if (el) {
-        el.querySelector('.whitespace-pre-line').innerText = newText;
-        const container = document.getElementById('chatMessages');
-        container.scrollTop = container.scrollHeight;
-      }
-    }
+[답변 작성 기본 원칙]
+1. 불필요한 서두나 장황한 미사여구, 중복 설명을 전면 배제하고 '최대한 간결하게 확실한 핵심 팩트/규정'만 답변하세요.
+2. 1~4줄 이내의 명확한 불릿 포인트(-) 또는 핵심 요약 문장으로 답변하세요.
+3. 주요 수치(날짜, 시각, 금액, 요율, 규격, 서류 등)는 **굵은 글씨**로 강조하여 즉시 파악할 수 있게 하세요.
 
-    // 초기 실행
-    window.addEventListener('DOMContentLoaded', () => {
-      renderQAList();
-      runCalculator();
-      diagnoseTeam();
-      lucide.createIcons();
-    });
-  </script>
+[동명근린공원 축구장 공식 팩트 가이드]
+- 위치/연락처: 서울 강동구 아리수로78길 23 / 02.2045.7877
+- 교통: 버스 3412, 강동02, 강동05(고덕초 하차), 3324, 8333(고덕풍경채 하차) 도보 5분 / 주차 할인·감면 없음 (공영주차장 유료 이용)
+- 시설/규격: 지상 1층, 인조잔디구장(라인 규격 100m X 64m), 우레탄 트랙, 관리실, 스탠드/구령대, 남·여 샤워실/탈의실, 화장실 완비
+- 대관 요금(2시간): 평일 88,000원 / 주말·공휴일 114,400원 (온라인 카드결제 납부)
+- 추첨 및 접수 일정:
+  * 익월 추첨 접수: 매월 16일~20일 (관내팀 우선)
+  * 추첨 일시: 매월 21일 오전 10시 온라인 전자 추첨
+  * 당첨 결제 마감: 추첨 다음 날 밤 11시 59분(23:59)까지 (미결제 시 자동 취소)
+  * 잔여시간 선착순: 추첨 다다음 날(매월 23일) 오전 10시 온라인 오픈
+- 취소 및 환불 기준 (개인사정/독감 등 포함):
+  * 5일 전: 100% 전액 환불 (위약금 0원)
+  * 4일 전~1일 전: 90% 환불 (10% 위약금 차감)
+  * 사용 당일 및 이후: 환불 불가
+  * 천재지변/호우경보/공단 사정: 100% 전액 환불
+- 팀 등록 요건 (중복 등록 불가):
+  * 신청: 2026년 9월 1일부터 온라인 수시 접수
+  * 관내 거주팀: 총 15명 이상 & 강동구 거주 10명 이상 (3개월 내 등본)
+  * 관내 직장팀: 총 15명 이상 & 강동구 사업장 10명 이상 (재직증명서+사업자등록증 제출)
+  * 관외팀: 총 15명 이상 (서류 없음, 잔여타임 신청만 가능)
+  * 심사: 매월 5일~10일
+- 현장 수칙 & 축구화:
+  * SG 스터드(쇠뽕/긴 뽕) 착용 절대 금지 (TF풋살화 권장, AG/HG 가능)
+  * 음주, 흡연, 취사, 음식물 반입 금지
+  * 무단 양도/대리: 즉시 퇴장 및 6개월 이용 금지
+`;
+
+        // Enhanced Multi-Intent Offline Natural Language Matcher (Concise & Direct)
+        function generateOfflineResponse(userText) {
+            const query = userText.toLowerCase().trim();
+
+            // -2. Facility Specs / Dimensions / Amenities
+            if (query.includes('규격') || query.includes('크기') || query.includes('샤워') || query.includes('탈의실') || query.includes('화장실') || query.includes('트랙') || query.includes('시설현황') || query.includes('구령대') || query.includes('스탠드') || query.includes('100m') || query.includes('64m')) {
+                return "- **구장 규격:** 인조잔디 축구장 **100m X 64m** (우레탄 트랙 설치)\n- **주요 시설:** 관리 사무실, 관람 스탠드/구령대, **남·여 탈의실 및 샤워실**, 화장실 완비";
+            }
+
+            // -1. Address / Contact / Directions
+            if (query.includes('주소') || query.includes('위치') || query.includes('연락처') || query.includes('전화') || query.includes('어디') || query.includes('찾아') || query.includes('오시는길') || query.includes('버스') || query.includes('교통')) {
+                return "- **주소:** 서울특별시 강동구 아리수로78길 23\n- **연락처:** **02.2045.7877**\n- **대중교통:** 버스 3412, 강동02, 강동05(고덕초), 3324, 8333(고덕풍경채어바니티) 하차 도보 5분\n- **주차:** 주차 할인 및 무료 혜택 없음 (공영주차장 유료 이용)";
+            }
+
+            // 0. Parking Guidelines
+            if (query.includes('주차') || query.includes('차량') || query.includes('파킹') || query.includes('주차비') || query.includes('주차장')) {
+                return "- **주차 이용:** 동명근린공원 공영주차장 유료 이용 가능\n- **할인 혜택:** 축구장 이용객 대상 **주차 할인 및 감면 혜택 없음** (대중교통 이용 권장)";
+            }
+
+            // 1. Payment Deadline / Payment Method
+            if (query.includes('사용료') || query.includes('카드') || query.includes('현금') || query.includes('납부') || query.includes('결제방식') || query.includes('어떻게 결제')) {
+                return "- **사용료 납부:** 대관 예약 신청 시 시스템상 **온라인 결제(카드결제)** 필수 (현장 현금 수납 불가)";
+            }
+
+            if (query.includes('결제') || query.includes('마감') || query.includes('23:59') || query.includes('밤 11시') || query.includes('입금')) {
+                return "- **결제 마감 시한:** 추첨일 다음 날 **밤 11시 59분(23:59)**까지\n- **납부 방식:** 시스템상 **온라인 카드결제**\n- 기한 내 미결제 시 당첨 건은 **자동 취소**됩니다.";
+            }
+
+            // 2. Lottery Drawing & Schedule
+            if (query.includes('추첨') || query.includes('접수') || query.includes('16일') || query.includes('21일')) {
+                return "- **익월 추첨 접수:** 매월 16일 ~ 20일 (관내팀 우선 접수)\n- **온라인 추첨:** 매월 **21일 오전 10시**\n- **당첨 결제 마감:** 추첨 다음 날 **밤 11시 59분(23:59)**까지";
+            }
+
+            // 3. Remaining Slot First-Come First-Served
+            if (query.includes('잔여') || query.includes('선착순') || query.includes('23일') || query.includes('남아')) {
+                return "- **잔여타임 접수 오픈:** 추첨일 다다음 날(**매월 23일**) **오전 10시**부터 온라인 선착순 접수";
+            }
+
+            // 4. Personal Reasons / Illness / Transfer / Proxy (Applied Questions)
+            if (query.includes('독감') || query.includes('개인사정') || query.includes('아파') || query.includes('대신') || query.includes('친구') || query.includes('양도') || query.includes('타인')) {
+                return "- **개인사정(독감/변심 등):** 일반 환불 요율 적용 (5일 전 100%, 4~1일 전 90%, **당일 취소 불가**)\n- **무단 양도/대리 이용:** 적발 시 **즉시 퇴장 및 6개월간 이용 금지**";
+            }
+
+            // 5. Refund & Penalty Rates
+            if (query.includes('환불') || query.includes('취소') || query.includes('위약금') || query.includes('돈') || query.includes('돌려') || query.includes('5일') || query.includes('3일') || query.includes('4일') || query.includes('당일')) {
+                return "- **사용 5일 전:** **100% 전액 환불** (위약금 0원)\n- **사용 4일 전 ~ 1일 전:** **90% 환불** (위약금 10% 차감)\n- **사용 당일 및 이용 후:** **환불 불가** (위약금 100%)\n*취소 경로: 마이페이지 > 대관결제내역 > [취소신청]*";
+            }
+
+            // 6. Rain / Weather Conditions
+            if (query.includes('우천') || query.includes('비') || query.includes('강수량') || query.includes('날씨') || query.includes('태풍') || query.includes('장마')) {
+                return "- **단순 우천:** 정상 진행 (당일 단순 취소 시 환불 불가)\n- **호우경보/기상특보/재해:** 현장 확인 후 **100% 전액 환불**";
+            }
+
+            // 7. Team Registration & Qualifications
+            if (query.includes('팀') || query.includes('등록') || query.includes('거주') || query.includes('직장') || query.includes('서류') || query.includes('2026') || query.includes('중복')) {
+                return "- **신청 시기:** **2026년 9월 1일부터** 온라인 수시 접수\n- **기본 요건:** 총원 **15명 이상** (중복 회원 등록 불가)\n- **관내 거주팀:** 강동구 주민등록 10명 이상 (3개월 내 등본)\n- **관내 직장팀:** 강동구 사업장 재직 10명 이상 (재직증명서+사업자등록증)\n- **심사 기간:** 매월 5일~10일";
+            }
+
+            // 8. Football Shoes / Studs
+            if (query.includes('축구화') || query.includes('sg') || query.includes('쇠뽕') || query.includes('스터드') || query.includes('신발') || query.includes('풋살화')) {
+                return "- **착용 절대 금지:** **SG 스터드 (금속 / 긴 뽕)** - 적발 시 즉시 퇴장\n- **착용 가능:** **TF 풋살화(적극 권장)**, AG / HG 축구화";
+            }
+
+            // 9. Pricing / Fees
+            if (query.includes('요금') || query.includes('금액') || query.includes('가격') || query.includes('비용') || query.includes('얼마')) {
+                return "- **평일 대관료(2시간):** **88,000원** (부가세 포함)\n- **주말/공휴일(2시간):** **114,400원** (부가세 포함)\n- **납부 방법:** 온라인 카드결제";
+            }
+
+            // General Fallback
+            return "- **추첨 접수:** 매월 16일~20일 / **추첨:** 21일 오전 10시\n- **결제 마감:** 추첨 다음 날 **밤 11시 59분(23:59)**\n- **잔여타임:** 매월 **23일 오전 10시** 선착순\n- **환불 기준:** 5일 전 100%, 4~1일 전 90%, 당일 환불 불가\n- **구장 제원:** 100m X 64m / 남·여 샤워실·탈의실 완비";
+        }
+
+        function toggleChatbot() {
+            const modal = document.getElementById('chatbot-modal');
+            if (modal) {
+                modal.classList.toggle('hidden');
+                if (!modal.classList.contains('hidden')) {
+                    document.getElementById('chat-input')?.focus();
+                }
+            }
+        }
+
+        function toggleApiKeySettings() {
+            const drawer = document.getElementById('apikey-drawer');
+            if (drawer) {
+                drawer.classList.toggle('hidden');
+            }
+        }
+
+        function saveApiKey() {
+            const val = document.getElementById('user-api-key-input')?.value.trim();
+            if (val) {
+                userStoredApiKey = val;
+                alert('Gemini API 키가 설정되었습니다. 이제 로컬 환경에서도 실시간 AI 응용 답변이 활성화됩니다!');
+                toggleApiKeySettings();
+            } else {
+                alert('API 키를 입력해 주세요.');
+            }
+        }
+
+        function sendQuickQuery(text) {
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) {
+                chatInput.value = text;
+                handleChatSubmit(new Event('submit'));
+            }
+        }
+
+        async function handleChatSubmit(event) {
+            event.preventDefault();
+            const inputEl = document.getElementById('chat-input');
+            const messagesContainer = document.getElementById('chat-messages');
+            if (!inputEl || !messagesContainer) return;
+
+            const userText = inputEl.value.trim();
+            if (!userText) return;
+
+            // Append User Message
+            const userMsgHTML = `
+                <div class="flex justify-end">
+                    <div class="bg-slate-900 text-white p-3 rounded-2xl rounded-tr-none text-xs max-w-[85%] leading-relaxed shadow-2xs font-medium">
+                        ${escapeHTML(userText)}
+                    </div>
+                </div>
+            `;
+            messagesContainer.innerHTML += userMsgHTML;
+            inputEl.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Append Loading Indicator
+            const loadingId = 'loading-' + Date.now();
+            const loadingHTML = `
+                <div id="${loadingId}" class="flex gap-2">
+                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+                        동명
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-500 text-xs shadow-2xs flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
+                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                        <span class="text-[11px] text-slate-400 ml-1">답변 분석 중...</span>
+                    </div>
+                </div>
+            `;
+            messagesContainer.innerHTML += loadingHTML;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            let aiResponseText = "";
+
+            // Hybrid Strategy: Try online API first (if custom key or system key exists); fall back to enhanced offline engine
+            try {
+                const apiKey = userStoredApiKey || "";
+                if (apiKey && apiKey.trim() !== "") {
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                    const payload = {
+                        contents: [{ parts: [{ text: userText }] }],
+                        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+                    if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        aiResponseText = data.candidates[0].content.parts[0].text;
+                    }
+                }
+            } catch (err) {
+                console.log("Online API call skipped or unconfigured, using offline engine:", err);
+            }
+
+            // If online API call wasn't available or returned empty (local downloaded file scenario), use enhanced local matcher
+            if (!aiResponseText) {
+                aiResponseText = generateOfflineResponse(userText);
+            }
+
+            // Remove Loading
+            const loadingEl = document.getElementById(loadingId);
+            if (loadingEl) loadingEl.remove();
+
+            // Generate unique speech button id
+            const speechBtnId = 'tts-btn-' + Date.now();
+
+            // Append Bot Response
+            const aiMsgHTML = `
+                <div class="flex gap-2">
+                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+                        동명
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-800 text-xs shadow-2xs space-y-2 max-w-[85%]">
+                        <div class="whitespace-pre-line leading-relaxed font-medium">${formatBotResponse(aiResponseText)}</div>
+                        <div class="pt-1 border-t border-slate-100 flex items-center justify-end">
+                            <button id="${speechBtnId}" onclick="speakText('${escapeSpeechText(aiResponseText)}', '${speechBtnId}')" class="text-[10px] text-slate-500 hover:text-slate-900 flex items-center gap-1 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded transition-colors">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                </svg>
+                                <span>음성 듣기</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            messagesContainer.innerHTML += aiMsgHTML;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Speech Synthesis Fallback (Web Speech API + Gemini TTS Hybrid)
+        async function speakText(text, buttonId) {
+            const btn = document.getElementById(buttonId);
+            if (btn) btn.innerText = "음성 재생 중...";
+
+            // Browser native speech synthesis (Works 100% locally)
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const cleanText = text.replace(/[*#`_]/g, '');
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'ko-KR';
+                utterance.rate = 1.0;
+                utterance.onend = () => { if (btn) btn.innerText = "음성 듣기"; };
+                utterance.onerror = () => { if (btn) btn.innerText = "음성 듣기"; };
+                window.speechSynthesis.speak(utterance);
+            } else {
+                if (btn) btn.innerText = "음성 듣기";
+            }
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+        }
+
+        function formatBotResponse(str) {
+            return str
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1$1</strong>'.replace('$1$1', '$1'))
+                .replace(/`([^`]+)`/g, '<code class="bg-slate-100 text-slate-800 px-1 py-0.5 rounded text-[11px] font-mono">$1</code>');
+        }
+
+        function escapeSpeechText(str) {
+            return str.replace(/['"\n\r]/g, ' ').replace(/\*/g, '');
+        }
+
+        window.onload = function() {
+            renderQACards();
+            calculateRefund();
+            runTeamQuiz();
+            updateLiveClock();
+            setInterval(updateLiveClock, 1000);
+        };
+    </script>
 </body>
 </html>
