@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
           contents: [{ parts: [{ text: prompt }] }],
           systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
           generationConfig: {
-            temperature: 0.2,
+            temperature: 0.3,
             maxOutputTokens: 800,
           },
         }),
@@ -36,7 +36,17 @@ module.exports = async (req, res) => {
     );
 
     const data = await response.json();
-    return res.status(200).json(data);
+
+    // Gemini API 응답에서 텍스트 직접 안전 추출
+    const replyText = data?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+
+    if (!replyText) {
+      console.error("Gemini API raw response error:", JSON.stringify(data));
+      return res.status(500).json({ error: 'AI 응답 생성 실패', raw: data });
+    }
+
+    // 깔끔하게 text 속성으로 반환
+    return res.status(200).json({ text: replyText });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
