@@ -113,12 +113,12 @@
                     <h2 class="text-xl font-bold text-slate-900">CS 응대 스크립트 검색</h2>
                 </div>
                 <span id="qa-count-badge" class="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded border border-slate-200 self-start md:self-auto">
-                    총 25개 항목 노출 중
+                    총 24개 항목 노출 중
                 </span>
             </div>
 
             <div class="relative w-full">
-                <input type="text" id="qa-search-input" onkeyup="filterQA()" placeholder="키워드 검색 (예: 운영시간, 휴관일, 6회차, 하절기, 동절기, 9월 8일, 추첨, 16일~20일, 환불, 샤워실 지하 1층, 02-2045-7835)..." class="w-full bg-white border border-slate-300 rounded-lg p-3 pl-10 text-xs text-slate-800 shadow-sm focus:outline-none focus:border-slate-500 font-medium transition-colors">
+                <input type="text" id="qa-search-input" onkeyup="filterQA()" placeholder="키워드 검색 (예: 추첨 3회, 대관사이트, 운영시간, 갱신, 직장팀 서류, 9월 8일, 임시운영, 환불)..." class="w-full bg-white border border-slate-300 rounded-lg p-3 pl-10 text-xs text-slate-800 shadow-sm focus:outline-none focus:border-slate-500 font-medium transition-colors">
                 <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -535,11 +535,11 @@
             <!-- Quick Questions Chips -->
             <div class="bg-slate-50 border-b border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto custom-scrollbar text-[11px] whitespace-nowrap">
                 <span class="text-slate-400 font-semibold px-1">추천:</span>
+                <button onclick="sendQuickQuery('추첨은 한 달에 몇 번 신청할 수 있나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">추첨 접수 횟수</button>
+                <button onclick="sendQuickQuery('직장팀 제출 서류가 어떻게 되나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">직장팀 구비서류</button>
                 <button onclick="sendQuickQuery('운영시간과 회차별 이용시간, 휴관일은 어떻게 되나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">운영시간·회차</button>
-                <button onclick="sendQuickQuery('팀 등록 신청 시기와 심사 일정은 어떻게 되나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">팀 등록 시기·심사</button>
-                <button onclick="sendQuickQuery('관내팀 등록 조건과 제출 서류는 무엇인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">팀 등록 조건·서류</button>
                 <button onclick="sendQuickQuery('9월 임시운영 일정과 대관료는 어떻게 되나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">9월 임시운영</button>
-                <button onclick="sendQuickQuery('샤워실과 탈의실 이용할 수 있나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">샤워실/탈의실</button>
+                <button onclick="sendQuickQuery('관내 자격 갱신은 언제 하나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">자격 갱신일</button>
             </div>
 
             <!-- Messages Container -->
@@ -553,7 +553,7 @@
                             안녕하세요! 동명근린공원 축구장 AI CS 도우미 '동명이'입니다. ⚽
                         </p>
                         <p class="text-[11px] text-slate-500 leading-normal">
-                            운영시간 및 회차, 휴관일, 팀 등록 조건, 9월 임시운영(무료), 대관 규정 등 무엇이든 편하게 물어보세요!
+                            운영시간 및 회차, 추첨 방법 및 횟수, 팀 등록 조건, 9월 임시운영(무료), 대관 규정 등 무엇이든 편하게 물어보세요!
                         </p>
                     </div>
                 </div>
@@ -562,7 +562,7 @@
             <!-- Input Form -->
             <div class="p-2.5 bg-white border-t border-slate-200">
                 <form onsubmit="handleChatSubmit(event)" class="flex items-center gap-2">
-                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 회차별 이용시간이 어떻게 되나요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
+                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 추첨은 한 달에 몇 번 가능한가요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
                     <button type="submit" id="chat-send-btn" class="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-xl transition-colors font-medium text-xs shrink-0 flex items-center justify-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
@@ -599,19 +599,19 @@
             },
             {
                 id: 'Q2',
+                category: 'draw',
+                question: '정규 대관(익월) 추첨 신청 및 추첨은 언제, 어떻게 진행되나요?',
+                criteria: '매월 16일~20일 대관사이트(gdgd.igangdong.or.kr) 접수 / 추첨신청은 등록팀별 월 3회 가능 / 매월 21일 10시 추첨.',
+                script: '다음 달 정규 대관 추첨 신청은 매월 16일부터 20일까지 공식 대관사이트(gdgd.igangdong.or.kr)를 통해 접수할 수 있습니다. 추첨 신청은 등록팀별로 월 3회까지만 가능하며, 추첨은 매월 21일 오전 10시에 온라인 전자 추첨으로 진행됩니다.',
+                tags: ['16일~20일', '대관사이트', '월3회', '21일오전10시', '온라인추첨', '익월추첨', '추첨신청']
+            },
+            {
+                id: 'Q3',
                 category: 'field',
                 question: '축구장 정규 운영시간과 회차별 이용시간, 휴관일은 어떻게 되나요?',
                 criteria: '운영시간: 동절기(10월~3월) 06:00~21:50, 하절기(4월~9월) 08:00~20:00 / 휴관일: 신정, 설 연휴, 추석 연휴, 노동절 등 / 회차(2시간 단위): 1회차(08~10), 2회차(10~12), 3회차(12~14), 4회차(14~16), 5회차(16~18), 6회차(18~20, 하절기 한시 운영).',
                 script: '축구장 정규 운영시간은 [동절기(10~3월) 06:00~21:50], [하절기(4~9월) 08:00~20:00]이며, 휴관일은 [신정, 설 연휴, 추석 연휴, 노동절 등]입니다. 회차별 이용시간은 1회차(08:00~10:00), 2회차(10:00~12:00), 3회차(12:00~14:00), 4회차(14:00~16:00), 5회차(16:00~18:00), 6회차(18:00~20:00, 하절기 한시)로 운영됩니다.',
                 tags: ['운영시간', '휴관일', '회차', '이용시간', '동절기', '하절기', '06:00~21:50', '08:00~20:00', '1회차', '2회차', '3회차', '4회차', '5회차', '6회차', '신정', '설연휴', '추석연휴', '노동절']
-            },
-            {
-                id: 'Q3',
-                category: 'draw',
-                question: '정규 대관(익월) 추첨 신청 및 추첨은 언제, 어떻게 진행되나요?',
-                criteria: '매월 16일 ~ 20일 관내팀 우선 접수 후, 매월 21일 오전 10시 온라인 전자 추첨 진행.',
-                script: '다음 달 정규 대관 추첨 신청은 매월 16일부터 20일까지 강동구 관내팀 우선 접수로 진행되며, 추첨은 매월 21일 오전 10시에 온라인 전자 추첨으로 진행됩니다. 접수 기간 내에 온라인으로 대관 추첨을 신청해 주시기 바랍니다.',
-                tags: ['16일~20일', '21일오전10시', '온라인추첨', '익월추첨', '추첨신청', '관내팀우선', '접수일정']
             },
             {
                 id: 'Q4',
@@ -729,7 +729,7 @@
                 id: 'Q18',
                 category: 'teams',
                 question: '팀 등록 신청 시기와 심사 및 승인 일정은 어떻게 되나요?',
-                criteria: '팀 등록 신청은 수시 신청 가능 (2026.9.1 오픈) / 관내팀: 매월 5일~10일 사이 심사 및 승인 처리 (관내 직장팀 서류는 매월 10일까지 제출된 건에 한함) / 관외팀: 수시 심사 후 순차 승인 처리.',
+                criteria: '팀 등록 신청은 수시 신청 가능 / 관내팀: 매월 5일~10일 사이 심사 및 승인 처리 (관내 직장팀 서류는 매월 10일까지 제출된 건에 한함) / 관외팀: 수시 심사 후 순차 승인 처리.',
                 script: '동명근린공원 축구장 팀 등록 신청은 상시 [수시 신청]이 가능합니다. 관내팀은 [매월 5일~10일 사이]에 심사 및 승인이 진행되며(직장팀 심사 서류는 매월 10일까지 제출 건에 한함), 관외팀은 [수시 심사 후 순차 승인] 처리됩니다.',
                 tags: ['팀등록', '수시신청', '심사일정', '승인일정', '매월5일~10일', '매월10일까지', '순차승인', '관내팀심사', '관외팀심사']
             },
@@ -1133,7 +1133,9 @@
 반드시 아래 [동명근린공원 축구장 공식 팩트 기준]에만 근거하여 사실 그대로 답변해야 하며, 정보가 없는 허위 사실(할루시네이션)을 지어내지 마세요.
 
 [답변 작성 원칙]
-1. 운영시간, 회차별 이용시간, 휴관일 질문 시:
+1. 정규 추첨 접수 시: "매월 16일~20일 대관사이트(gdgd.igangdong.or.kr)를 통해 접수하며, **등록팀별 월 3회 가능**"함을 명확히 안내하세요.
+2. 관내 자격 갱신 질문 시: "거주자 자격 갱신은 매년 1월 1일과 7월 1일(연 2회)이며, 관내팀 전체 승인 유지는 매년 8월 1일 기준"임을 답변하세요.
+3. 운영시간, 회차별 이용시간, 휴관일 질문 시:
    - **동절기(10월~3월)**: **06:00 ~ 21:50**
    - **하절기(4월~9월)**: **08:00 ~ 20:00**
    - **휴관일**: **신정, 설 연휴, 추석 연휴, 노동절 등**
@@ -1144,19 +1146,17 @@
      * 4회차: **14:00 ~ 16:00**
      * 5회차: **16:00 ~ 18:00**
      * 6회차: **18:00 ~ 20:00** (하절기 한시적 운영)
-2. 9월 임시운영 질문 시:
+4. 9월 임시운영 질문 시:
    - **기간**: **2026년 9월 15일 ~ 9월 22일** (대관료 **전액 무료**)
    - **운영시간(4타임 한정)**: **1~4회차(08~10시, 10~12시, 12~14시, 14~16시)**
    - **선착순 접수 오픈**: **9월 8일 아침 10시**
    - **시설 제약**: **9월 임시운영 기간 동안 샤워실 및 탈의실(지하 1층) 사용 불가**
-3. 팀 등록 및 심사 질문 시:
+5. 팀 등록 및 심사 질문 시:
    - 신청: **수시 신청 가능**
    - 관내팀 심사: **매월 5일~10일 사이** (직장팀 서류는 **매월 10일까지** 제출 건에 한함)
-   - 관외팀 심사: **수시 심사 후 순차 승인**
-   - 관내팀(1순위: 추첨 및 잔여석 선착순 가능): 거주팀(강동구 주소 10명 이상, 3개월 내 등본) / 직장팀(강동구 사업장 10명 이상, 사업자등록증+3개월 내 재직증명서)
-   - 관외팀(2순위: 추첨 후 잔여석 선착순 가능): 관내팀 이외 15명 이상
-4. 대표 전화번호: **02-2045-7835**
-5. 1~3문장 또는 간결한 핵심 요약으로 답변하고, 주요 수치와 핵심 단어는 **굵은 글씨**로 강조하세요.
+   - 관내팀(1순위): 거주팀(강동구 주소 10명 이상, 3개월 내 등본) / 직장팀(강동구 사업장 10명 이상, **사업자등록증 및 3개월 이내 발급된 재직증명서**)
+6. 대표 전화번호: **02-2045-7835**
+7. 1~3문장 또는 간결한 핵심 요약으로 답변하고, 주요 수치와 핵심 단어는 **굵은 글씨**로 강조하세요.
 
 [동명근린공원 축구장 공식 팩트 기준]
 1. 정규 운영시간 및 회차:
@@ -1169,26 +1169,23 @@
    - 회차: 1~4회차 총 4개 타임만 운영 (**08~10시, 10~12시, 12~14시, 14~16시**)
    - 선착순 접수: **9월 8일 오전 10시 오픈**
    - 샤워실/탈의실(지하 1층): **9월 임시운영 기간 사용 불가**
-3. 팀 등록 및 심사 기준 (※ 중복 회원 등록 불가):
+3. 팀 등록 및 자격 갱신 (※ 중복 회원 등록 불가):
    - 팀 등록 신청: **수시 신청 가능**
    - 관내팀 심사 일정: **매월 5일~10일 사이 심사 및 승인 처리** (관내 직장팀 서류는 **매월 10일까지** 제출 건만 진행)
    - 관외팀 심사 일정: **수시 심사 후 순차 승인 처리**
    - 관내팀 조건 (1순위 - 추첨 접수 & 잔여석 선착순):
      * 거주팀: 15명 이상 강동구 거주팀 (강동구 주소 회원 10명 이상, 3개월 내 주민등록등본)
-     * 직장팀: 15명 이상 강동구 직장팀 (강동구 사업장 재직 회원 10명 이상, 사업자등록증 및 3개월 내 재직증명서)
+     * 직장팀: 15명 이상 강동구 직장팀 (강동구 사업장 재직 회원 10명 이상, **사업자등록증 및 3개월 내 재직증명서**)
    - 관외팀 조건 (2순위 - 추첨 후 잔여석 선착순): 관내팀 이외 15명 이상으로 이루어진 팀
-4. 위치 및 연락처:
-   - 주소: 서울특별시 강동구 아리수로78길 23 (대표 문의: **02-2045-7835**)
-   - 대중교통: 버스 3412, 강동02, 강동05(고덕초), 3324, 8333(고덕풍경채) 도보 5분
-   - 주차: 전용 무료주차장 없음 (공영주차장 유료 이용, 감면 없음)
-5. 정규 대관 요금 및 일정:
+   - 관내 자격 갱신: 거주자 자격 매년 **1월 1일 / 7월 1일 (연 2회) 갱신**, 관내팀 승인 유지는 매년 **8월 1일** 기준.
+4. 정규 대관 요금 및 일정:
    - 정규 요금(2시간): 평일 88,000원 / 주말·공휴일 114,400원
-   - 정규 일정: 매월 16~20일 접수 ➔ 21일 10시 추첨 ➔ 익일 23:59 결제마감 ➔ 23일 10시 잔여타임
-6. 환불 규정 (정규 대관):
+   - 정규 일정: 매월 16~20일 대관사이트(**gdgd.igangdong.or.kr**) 접수 ➔ 21일 10시 추첨 ➔ 익일 23:59 결제마감 ➔ 23일 10시 잔여타임
+   - **추첨 접수 횟수 제한**: **등록팀별 월 3회 가능**
+5. 환불 규정 (정규 대관):
    - 5일 전 100% / 4~1일 전 90% (위약금 10%) / 당일 취소 불가 / 천재지변 100%
-7. 현장 수칙 & 페널티:
-   - SG 스터드(쇠뽕/긴 뽕) 착용 금지 (TF풋살화 권장, AG/HG 가능)
-   - 무단 양도: 즉시 퇴장 및 6개월 이용 금지 / 음주·흡연 2회 적발: 1개월 이용 금지
+6. 기타 수칙:
+   - SG 스터드 착용 불가, 주차 감면 혜택 없음, 연락처: **02-2045-7835**
 `;
 
         function generateOfflineResponse(userText) {
@@ -1202,12 +1199,20 @@
                 return "- **팀 등록 신청:** **수시 신청 가능**\n- **관내팀 심사·승인:** **매월 5일~10일 사이** (직장팀 서류는 **매월 10일까지** 제출 건에 한함)\n- **관외팀 심사·승인:** **수시 심사 후 순차 승인**";
             }
 
+            if (query.includes('갱신') || query.includes('유지') || query.includes('자격 갱신')) {
+                return "- **거주자 자격 갱신:** 매년 **1월 1일, 7월 1일** (연 2회)\n- **관내팀 승인 유지:** 매년 **8월 1일** 기준 심사 및 업데이트 진행";
+            }
+
             if (query.includes('조건') || query.includes('서류') || query.includes('자격') || query.includes('직장팀') || query.includes('거주팀') || query.includes('재직') || query.includes('등본')) {
                 return "- **팀 등록 공통:** 총원 **15명 이상** (중복 회원 등록 불가)\n- **관내 거주팀 (1순위):** 강동구 주소 회원 10명 이상 (**주민등록등본** 제출)\n- **관내 직장팀 (1순위):** 강동구 사업장 재직 회원 10명 이상 (**사업자등록증 및 3개월 이내 재직증명서** 제출)\n- **관외팀 (2순위):** 관내팀 이외 15명 이상 (별도 서류 없음)";
             }
 
             if (query.includes('임시') || query.includes('9월 8일') || query.includes('9월 15일') || query.includes('무료') || query.includes('4타임')) {
                 return "- **임시운영 기간:** **9월 15일 ~ 9월 22일** (대관료 **전액 무료**)\n- **운영 시간 (4개 타임):** **08~10시, 10~12시, 12~14시, 14~16시**\n- **임시운영 선착순 접수:** **9월 8일 아침 10시** 오픈\n- **★ 주의:** 임시운영 기간 동안 **샤워실·탈의실(지하 1층) 사용 불가**";
+            }
+
+            if (query.includes('추첨') || query.includes('접수') || query.includes('16일') || query.includes('21일') || query.includes('횟수') || query.includes('몇 번') || query.includes('3회')) {
+                return "- **정규 추첨 접수:** 매월 16일~20일 공식 대관사이트(gdgd.igangdong.or.kr) 접수\n- **신청 제한:** **등록팀별 월 3회 가능**\n- **추첨 일시:** 매월 **21일 오전 10시** (온라인)\n- **결제 마감:** 당첨 후 익일 밤 11시 59분(23:59)까지";
             }
 
             if (query.includes('샤워') || query.includes('탈의실')) {
@@ -1226,7 +1231,7 @@
                 return "- **착용 절대 금지:** **SG 스터드 (금속 / 긴 뽕)** - 적발 시 즉시 퇴장\n- **착용 가능:** **TF 풋살화(적극 권장)**, AG / HG 축구화";
             }
 
-            return "- **운영시간:** 동절기 06:00~21:50 / 하절기 08:00~20:00 (회차별 2시간 단위)\n- **9월 임시운영:** 9.15~9.22 무료 (08~16시 4타임, 9.8 10시 선착순 접수)\n- **팀 등록:** 수시 신청 가능 (관내팀 매월 5~10일 심사 / 직장팀 서류 10일까지 제출)\n- **대표 문의:** **02-2045-7835**";
+            return "- **운영시간:** 동절기 06:00~21:50 / 하절기 08:00~20:00 (회차별 2시간 단위)\n- **9월 임시운영:** 9.15~9.22 무료 (08~16시 4타임, 9.8 10시 선착순 접수)\n- **추첨 접수:** 매월 16~20일 사이 **월 3회** 가능\n- **대표 문의:** **02-2045-7835**";
         }
 
         function toggleChatbot() {
