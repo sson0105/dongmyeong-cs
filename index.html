@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <!-- Navigation Tabs (핵심 3개 탭으로 간소화) -->
+        <!-- Navigation Tabs -->
         <nav class="bg-slate-50 border-t border-slate-200 px-4 sm:px-6 lg:px-8">
             <div class="max-w-7xl mx-auto flex space-x-1 overflow-x-auto custom-scrollbar text-xs font-medium py-1.5">
                 <button onclick="switchTab('qa')" id="tab-btn-qa" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap bg-slate-900 text-white font-semibold">
@@ -87,7 +87,7 @@
         </nav>
     </header>
 
-    <!-- Minimal Real-Time Clock Bar -->
+    <!-- Real-Time Clock Bar -->
     <section class="bg-slate-900 text-white border-b border-slate-800 py-1.5 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
             <div class="flex items-center gap-2">
@@ -97,7 +97,7 @@
             </div>
             <div id="live-status-container" class="flex items-center gap-2">
                 <span id="realtime-status-badge" class="px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    상태 확인 중...
+                    현재 접수 상태: 팀 등록 신청 접수 중
                 </span>
             </div>
         </div>
@@ -118,7 +118,7 @@
             </div>
 
             <div class="relative w-full">
-                <input type="text" id="qa-search-input" onkeyup="filterQA()" placeholder="키워드 검색 (예: 추첨, 16일~20일, 결제마감, 밤 11시 59분, 규격, 100m, 샤워실, 탈의실, 잔여시간, 5일전, 환불, 쇠뽕, 양도, 싸움)..." class="w-full bg-white border border-slate-300 rounded-lg p-3 pl-10 text-xs text-slate-800 shadow-sm focus:outline-none focus:border-slate-500 font-medium transition-colors">
+                <input type="text" id="qa-search-input" onkeyup="filterQA()" placeholder="키워드 검색 (예: 추첨, 16일~20일, 결제마감, 밤 11시 59분, 규격, 100m, 샤워실, 9월 사용불가, 지하 1층, 탈의실, 잔여시간, 5일전, 환불)..." class="w-full bg-white border border-slate-300 rounded-lg p-3 pl-10 text-xs text-slate-800 shadow-sm focus:outline-none focus:border-slate-500 font-medium transition-colors">
                 <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -529,7 +529,7 @@
                 <button onclick="sendQuickQuery('추첨 및 결제 마감 시한이 언제인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">결제마감 시한</button>
                 <button onclick="sendQuickQuery('사용 3일 전 취소 시 환불 비율은 얼마인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">환불 비율</button>
                 <button onclick="sendQuickQuery('관내팀 거주팀 및 직장팀 등록 조건은?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">팀 등록 조건</button>
-                <button onclick="sendQuickQuery('샤워실과 탈의실 있나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">샤워실/탈의실</button>
+                <button onclick="sendQuickQuery('샤워실과 탈의실 이용할 수 있나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">샤워실/탈의실 이용</button>
                 <button onclick="sendQuickQuery('SG 쇠뽕 축구화 착용 가능한가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">축구화 수칙</button>
             </div>
 
@@ -544,7 +544,7 @@
                             안녕하세요! 동명근린공원 축구장 AI CS 도우미 '동명이'입니다. ⚽
                         </p>
                         <p class="text-[11px] text-slate-500 leading-normal">
-                            대관 추첨일, 결제 마감 시한, 환불 규정, 시설 현황, 축구화 및 페널티 수칙 등 무엇이든 물어보세요!
+                            대관 추첨일, 결제 마감 시한, 환불 규정, 시설 이용 현황(9월 임시운영 샤워실 불가 등), 팀 등록 자격 무엇이든 물어보세요!
                         </p>
                     </div>
                 </div>
@@ -553,7 +553,7 @@
             <!-- Input Form -->
             <div class="p-2.5 bg-white border-t border-slate-200">
                 <form onsubmit="handleChatSubmit(event)" class="flex items-center gap-2">
-                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 쇠뽕 축구화 착용 가능한가요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
+                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 샤워실 쓸 수 있나요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
                     <button type="submit" id="chat-send-btn" class="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-xl transition-colors font-medium text-xs shrink-0 flex items-center justify-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
@@ -564,7 +564,7 @@
         </div>
     </div>
 
-    <!-- Footer & Facility Contacts -->
+    <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 text-slate-500 text-xs py-5 mt-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-2">
             <div>
@@ -579,7 +579,6 @@
 
     <!-- JAVASCRIPT LOGIC & VERCEL SERVERLESS INTEGRATION -->
     <script>
-        // 현장 규정 및 비상 대응을 포괄하는 전체 CS 스크립트 데이터베이스
         const qaData = [
             {
                 id: 'Q1',
@@ -616,10 +615,10 @@
             {
                 id: 'Q5',
                 category: 'field',
-                question: '축구장 구장 규격(크기)과 트랙, 샤워실 및 탈의실 등 시설현황은 어떻게 되나요?',
-                criteria: '지상 1층 규모 / 인조잔디 축구장 (라인규격: 100m X 64m), 우레탄 탄성포장 트랙 / 관리 사무실, 스탠드 및 구령대, 남·여 탈의실 및 샤워실, 화장실 완비.',
-                script: '동명근린공원 축구장은 지상 1층 규모로 인조잔디 축구장(라인규격: 100m X 64m)과 우레탄 탄성포장 트랙을 갖추고 있습니다. 주요 부대시설로는 축구장 관리 사무실, 관람 스탠드 및 구령대, 남/여 탈의실 및 샤워실, 남/여 화장실이 완비되어 있습니다.',
-                tags: ['시설현황', '구장규격', '100mX64m', '규격', '트랙', '샤워실', '탈의실', '화장실', '구령대', '지상1층']
+                question: '축구장 구장 규격과 샤워실/탈의실 이용 가능한가요?',
+                criteria: '지상 1층: 인조잔디구장(100m X 64m), 우레탄 트랙 / 지하 1층: 남·여 샤워실 및 탈의실 (※ 단, 9월 임시운영 기간 동안 샤워실 및 탈의실 사용 불가).',
+                script: '동명근린공원 축구장은 지상 1층에 100m X 64m 규격의 인조잔디구장이 있으며, 지하 1층에 남/여 샤워실과 탈의실이 완비되어 있습니다. 단, 9월 임시운영 기간 동안에는 샤워실과 탈의실 사용이 불가능하오니 양해 부탁드립니다.',
+                tags: ['시설현황', '구장규격', '100mX64m', '샤워실', '탈의실', '지하1층', '9월사용불가', '임시운영', '화장실']
             },
             {
                 id: 'Q6',
@@ -1094,15 +1093,17 @@
 반드시 아래 [동명근린공원 축구장 공식 팩트 기준]에만 근거하여 사실 그대로 답변해야 하며, 정보가 없는 허위 사실(할루시네이션)을 지어내지 마세요.
 
 [답변 작성 원칙]
-1. 사용자가 샤워실, 탈의실, 화장실, 구장 규격 등 시설 현황을 물어보면 '동명근린공원 축구장 지상 1층에 남·여 샤워실과 남·여 탈의실, 화장실이 완비되어 있다'고 사실대로 정확히 답변하세요. (절대 없다고 답변하지 마세요.)
+1. 샤워실, 탈의실 유무 및 이용 가능 여부 질문 시:
+   - "남·여 샤워실 및 탈의실은 **지하 1층**에 구비되어 있으나, **현재 9월 임시운영 기간 동안에는 샤워실과 탈의실 사용이 전면 불가능합니다**"라고 정확히 안내하세요.
 2. 질문에 인원수나 상황(예: "우리 팀 20명 중 강동구민 17명인데 등록돼?")이 제시되면, 기준(총 15명 이상 & 관내 10명 이상)과 비교 계산하여 등록 가능 여부부터 명쾌하게 판정하세요.
 3. 축구화(SG 스터드 금지, TF 권장) 및 페널티(무단양도 6개월, 음주흡연 1개월, 시설파손 원상복구) 질문 시 규정을 정확히 안내하세요.
 4. 1~3문장 또는 간결한 핵심 요약으로 답변하고, 주요 수치와 핵심 단어는 **굵은 글씨**로 강조하세요.
 
 [동명근린공원 축구장 공식 팩트 기준]
-1. 시설 현황 (지상 1층):
-   - 축구장 규격: 인조잔디구장 (라인 규격: 100m X 64m), 우레탄 탄성포장 트랙
-   - 편의 부대시설: **남·여 샤워실**, **남·여 탈의실**, 남·여 화장실, 축구장 관리 사무실, 관람 스탠드 및 구령대 완비 구비됨
+1. 시설 현황 및 층별 배치 (★ 9월 임시운영 수칙):
+   - 지상 1층: 인조잔디 축구장 (라인 규격: 100m X 64m), 우레탄 탄성포장 트랙, 축구장 관리 사무실, 관람 스탠드 및 구령대
+   - 지하 1층: 남·여 샤워실, 남·여 탈의실, 남·여 화장실 완비
+   - **★ 중요 이용 제한: 9월 임시운영 기간 중에는 샤워실 및 탈의실 사용이 불가합니다.**
 2. 위치 및 연락망:
    - 주소: 서울특별시 강동구 아리수로78길 23 (문의: 02.2045.7877)
    - 대중교통: 버스 3412, 강동02, 강동05(고덕초 하차), 3324, 8333(고덕풍경채 하차) 도보 5분
@@ -1136,11 +1137,15 @@
         function generateOfflineResponse(userText) {
             const query = userText.toLowerCase().trim();
 
-            if (query.includes('규격') || query.includes('크기') || query.includes('샤워') || query.includes('탈의실') || query.includes('화장실') || query.includes('트랙') || query.includes('시설현황') || query.includes('구령대') || query.includes('스탠드') || query.includes('100m') || query.includes('64m')) {
-                return "- **구장 제원:** 인조잔디 축구장 **100m X 64m** 및 우레탄 트랙\n- **부대시설:** 지상 1층에 **남·여 샤워실**, **남·여 탈의실**, 화장실, 관리 사무실이 완비되어 있습니다.";
+            if (query.includes('샤워') || query.includes('탈의실')) {
+                return "- **샤워실/탈의실 위치:** **지하 1층**에 구비되어 있습니다.\n- **★ 이용 제한 안내:** **9월 임시운영 기간 동안에는 샤워실 및 탈의실 사용이 불가능**합니다.";
             }
 
-            if (query.includes('주소') || query.includes('위치') || query.includes('연락처') || query.includes('전화') || query.includes('어디') || query.includes('찾아') || query.includes('오시는길') || query.includes('버스') || query.includes('교통')) {
+            if (query.includes('규격') || query.includes('크기') || query.includes('화장실') || query.includes('트랙') || query.includes('시설현황') || query.includes('구령대') || query.includes('스탠드') || query.includes('100m') || query.includes('64m') || query.includes('지하') || query.includes('어디')) {
+                return "- **구장 제원:** 지상 1층 인조잔디 축구장 **100m X 64m**, 우레탄 트랙, 관리실\n- **부대시설:** 지하 1층 화장실, 샤워실/탈의실 (**단, 9월 임시운영 기간 샤워실·탈의실 사용 불가**)";
+            }
+
+            if (query.includes('주소') || query.includes('위치') || query.includes('연락처') || query.includes('전화') || query.includes('찾아') || query.includes('오시는길') || query.includes('버스') || query.includes('교통')) {
                 return "- **주소:** 서울특별시 강동구 아리수로78길 23\n- **연락처:** **02.2045.7877**\n- **대중교통:** 버스 3412, 강동02, 강동05(고덕초), 3324, 8333(고덕풍경채) 하차 도보 5분\n- **주차:** 축구장 무료/할인 혜택 없음 (공영주차장 유료 이용)";
             }
 
@@ -1188,7 +1193,7 @@
                 return "- **평일 대관료(2시간):** **88,000원** (부가세 포함)\n- **주말/공휴일(2시간):** **114,400원** (부가세 포함)\n- **납부 방법:** 온라인 카드결제";
             }
 
-            return "- **구장 시설:** 100m X 64m / **남·여 샤워실 및 탈의실 완비**\n- **추첨 접수:** 매월 16일~20일 / **추첨:** 21일 오전 10시\n- **결제 마감:** 추첨 다음 날 **밤 11시 59분(23:59)**\n- **잔여타임:** 매월 **23일 오전 10시** 선착순";
+            return "- **구장 시설:** 100m X 64m / 지하 1층 샤워실·탈의실 (**9월 임시운영 사용 불가**)\n- **추첨 접수:** 매월 16일~20일 / **추첨:** 21일 오전 10시\n- **결제 마감:** 추첨 다음 날 **밤 11시 59분(23:59)**\n- **잔여타임:** 매월 **23일 오전 10시** 선착순";
         }
 
         function toggleChatbot() {
@@ -1236,7 +1241,6 @@
             const userText = inputEl.value.trim();
             if (!userText) return;
 
-            // 사용자 입력 말풍선 추가
             const userMsgHTML = `
                 <div class="flex justify-end">
                     <div class="bg-slate-900 text-white p-3 rounded-2xl rounded-tr-none text-xs max-w-[85%] leading-relaxed shadow-2xs font-medium">
@@ -1248,7 +1252,6 @@
             inputEl.value = '';
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            // 로딩 바 추가
             const loadingId = 'loading-' + Date.now();
             const loadingHTML = `
                 <div id="${loadingId}" class="flex gap-2">
@@ -1268,7 +1271,6 @@
 
             let aiResponseText = "";
 
-            // [1순위] Vercel 서버리스 백엔드 호출 (/api/chat)
             try {
                 const response = await fetch('/api/chat', {
                     method: 'POST',
@@ -1290,7 +1292,6 @@
                 console.warn("Vercel Serverless 호출 실패, 대체 로직 진행:", err);
             }
 
-            // [2순위] 로컬 수동 입력 키 직접 호출 (로컬 HTML 단독 실행용)
             if (!aiResponseText && userStoredApiKey) {
                 try {
                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${userStoredApiKey}`;
@@ -1312,18 +1313,15 @@
                 }
             }
 
-            // [3순위] 오프라인 내장 자연어 매칭 엔진 (네트워크 장애 시)
             if (!aiResponseText) {
                 aiResponseText = generateOfflineResponse(userText);
             }
 
-            // 로딩 바 제거
             const loadingEl = document.getElementById(loadingId);
             if (loadingEl) loadingEl.remove();
 
             const speechBtnId = 'tts-btn-' + Date.now();
 
-            // AI 응답 말풍선 추가
             const aiMsgHTML = `
                 <div class="flex gap-2">
                     <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
