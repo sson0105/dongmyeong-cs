@@ -63,6 +63,7 @@
             <div class="flex flex-wrap items-center gap-2.5 text-xs text-slate-600">
                 <span class="bg-amber-100 text-amber-900 font-semibold px-2.5 py-1 rounded border border-amber-200 hidden lg:inline-block">9.15~9.22 임시운영 무료 (정규: 평일 8.8만/주말 11.44만)</span>
                 
+                <!-- 관리자 매뉴얼 다운로드 버튼 신규 추가 -->
                 <a href="/admin_manual.pdf" download="동명근린공원_관리자_매뉴얼.pdf" class="inline-flex items-center gap-1.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold px-3 py-1.5 rounded border border-slate-300 transition-colors shadow-2xs">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -90,7 +91,7 @@
             </div>
             <div id="live-status-container" class="flex items-center gap-2">
                 <span id="realtime-status-badge" class="px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    현재 접수 상태: 팀 등록 신청 접수 중 (9.8 오전 10시 임시운영 선착순 접수 오픈)
+                    현재 접수 상태: 9월 임시운영 선착순 대관 접수 중
                 </span>
             </div>
         </div>
@@ -119,135 +120,6 @@
 
             <div id="qa-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- JS will populate Q&A cards here -->
-            </div>
-        </section>
-
-        <!-- TAB 2: REFUND & FEE CALCULATOR -->
-        <section id="tab-calculator" class="hidden space-y-5">
-            <div class="px-1">
-                <h2 class="text-xl font-bold text-slate-900">공식 환불 및 위약금 계산기</h2>
-                <p class="text-xs text-slate-500 mt-1">
-                    취소 신청 시점 및 특별 사유에 따른 정확한 환불액과 위약금, 안내 스크립트를 즉시 확인합니다.
-                </p>
-            </div>
-
-            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm space-y-2">
-                <h3 class="text-[18px] font-bold text-slate-800">강동구 체육시설 운영 조례 및 결제 일정 기준</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
-                                <th class="p-2 font-semibold">구분 / 신청 시점</th>
-                                <th class="p-2 font-semibold">기준 및 기한</th>
-                                <th class="p-2 font-semibold">위약금 / 세부 사항</th>
-                                <th class="p-2 font-semibold">비고</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 text-slate-700">
-                            <tr class="bg-emerald-50/70">
-                                <td class="p-2 font-bold text-emerald-900">★ 9월 임시운영 대관</td>
-                                <td class="p-2 font-semibold text-emerald-800">9월 15일 ~ 9월 22일 (08~16시 4타임)</td>
-                                <td class="p-2 font-bold text-emerald-700">전액 무료 (0원)</td>
-                                <td class="p-2 text-slate-500">9월 8일 10시 선착순 접수</td>
-                            </tr>
-                            <tr class="bg-amber-50/50">
-                                <td class="p-2 font-medium text-slate-900">추첨 당첨 건 결제 마감</td>
-                                <td class="p-2 font-semibold text-amber-800">당첨 익일인 매월 22일 밤 11시 59분(23:59)까지</td>
-                                <td class="p-2 text-slate-600">미결제 시 자동 취소</td>
-                                <td class="p-2 text-slate-500">기한 엄수 필수</td>
-                            </tr>
-                            <tr class="bg-slate-50/50">
-                                <td class="p-2 font-medium text-slate-900">잔여회차 선착순 (관내팀)</td>
-                                <td class="p-2 font-semibold text-slate-800">매월 23일 오전 10시 오픈</td>
-                                <td class="p-2 text-slate-600">온라인 선착순 접수</td>
-                                <td class="p-2 text-slate-500">관내팀 대상</td>
-                            </tr>
-                            <tr class="bg-slate-50/50">
-                                <td class="p-2 font-medium text-slate-900">잔여회차 선착순 (관외팀)</td>
-                                <td class="p-2 font-semibold text-slate-800">매월 24일 오전 10시 오픈</td>
-                                <td class="p-2 text-slate-600">온라인 선착순 접수</td>
-                                <td class="p-2 text-slate-500">관외팀까지 확대</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 font-medium text-slate-900">사용 개시일 5일 전 취소</td>
-                                <td class="p-2 font-semibold text-emerald-700">100% 환불</td>
-                                <td class="p-2 text-slate-500">없음 (0원)</td>
-                                <td class="p-2 text-slate-400">위약금 없음</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 font-medium text-slate-900">사용 개시일 4일 전 ~ 1일 전 취소</td>
-                                <td class="p-2 font-semibold text-amber-700">90% 환불</td>
-                                <td class="p-2 text-amber-700 font-medium">사용료의 10%</td>
-                                <td class="p-2 text-slate-400">10% 차감 후 환불</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 font-medium text-slate-900">사용 개시일 당일 및 이후</td>
-                                <td class="p-2 font-semibold text-rose-700">환불 불가</td>
-                                <td class="p-2 text-rose-700 font-medium">사용료의 100%</td>
-                                <td class="p-2 text-slate-400">환불 금액 없음</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-5">
-                <div class="bg-white p-4 sm:p-5 rounded-lg border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="text-[18px] font-bold text-slate-800 border-b border-slate-100 pb-2">조회 조건 설정</h3>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">1. 이용 요일 구분</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button type="button" onclick="setCalcDay('weekday')" id="calc-day-weekday" class="calc-day-btn py-2 px-3 rounded border border-slate-900 bg-slate-900 text-white font-medium text-xs">
-                                    평일 (88,000원)
-                                </button>
-                                <button type="button" onclick="setCalcDay('weekend')" id="calc-day-weekend" class="calc-day-btn py-2 px-3 rounded border border-slate-300 bg-white text-slate-700 font-medium text-xs">
-                                    주말/공휴일 (114,400원)
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">2. 취소 신청 시점 (사용 개시일 기준)</label>
-                            <select id="calc-dday" onchange="calculateRefund()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-2 focus:ring-1 focus:ring-slate-500">
-                                <option value="d5">사용 개시일 5일 전 취소 (100% 환불)</option>
-                                <option value="d4_1">사용 개시일 4일 전 ~ 1일 전 취소 (90% 환불 / 위약금 10%)</option>
-                                <option value="d0">사용 개시일 당일 및 이후 (환불 불가)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">3. 특별 취소 사유 선택</label>
-                            <select id="calc-reason" onchange="calculateRefund()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-2 focus:ring-1 focus:ring-slate-500">
-                                <option value="normal">일반 변심 / 개인 사정 / 독감 등 (기본 기준)</option>
-                                <option value="disaster">재해 기타 불가항력 사유 (100% 환불)</option>
-                                <option value="official_event">국가적 행사 또는 공단의 사정 (100% 환불)</option>
-                                <option value="weather_fault">기상 천재지변 또는 운영자 귀책 (100% 환불)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-50 p-3 rounded border border-slate-200 text-xs space-y-2">
-                        <span class="font-semibold text-slate-800 block">임시운영 및 대관 접수 빠른 안내:</span>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-xs text-slate-700 leading-normal">
-                            <div class="bg-emerald-50 p-2 rounded border border-emerald-200 text-emerald-900">
-                                <strong>★ 임시운영:</strong> 9.15~22 무료 (08~16시 4타임, 9.8 10시 선착순)
-                            </div>
-                            <div class="bg-white p-2 rounded border border-slate-200">
-                                <strong>1. 정규 추첨:</strong> 매월 16~20일 접수 ➔ <span class="text-amber-800 font-bold">21일 오전 11시 추첨</span>
-                            </div>
-                            <div class="bg-white p-2 rounded border border-slate-200">
-                                <strong>2. 결제 마감:</strong> 매월 22일 밤 11시 59분 미결제 시 취소
-                            </div>
-                            <div class="bg-white p-2 rounded border border-slate-200">
-                                <strong>3. 잔여타임:</strong> 23일 10시(관내) / 24일 10시(관외 확대)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- (이하 계산기/팀등록 진단기 등은 제외되었으므로 영역을 표출하지 않습니다) -->
             </div>
         </section>
 
@@ -721,6 +593,12 @@
             const clockEl = document.getElementById('live-clock-display');
             if (clockEl) {
                 clockEl.textContent = `${year}.${month}.${date} (${dayName}) ${hours}:${minutes}:${seconds}`;
+            }
+
+            const badgeEl = document.getElementById('realtime-status-badge');
+            if (badgeEl) {
+                badgeEl.className = "px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                badgeEl.textContent = "현재 접수 상태: 9월 임시운영 선착순 대관 접수 중";
             }
         }
 
