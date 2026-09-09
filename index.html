@@ -70,21 +70,6 @@
                 </a>
             </div>
         </div>
-
-        <!-- Navigation Tabs -->
-        <nav class="bg-slate-50 border-t border-slate-200 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-7xl mx-auto flex space-x-1 overflow-x-auto custom-scrollbar text-xs font-medium py-1.5">
-                <button onclick="switchTab('qa')" id="tab-btn-qa" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap bg-slate-900 text-white font-semibold">
-                    Q&A 및 스크립트
-                </button>
-                <button onclick="switchTab('calculator')" id="tab-btn-calculator" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
-                    환불·위약금 계산기
-                </button>
-                <button onclick="switchTab('teams')" id="tab-btn-teams" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
-                    팀 등록·자격 진단
-                </button>
-            </div>
-        </nav>
     </header>
 
     <!-- Real-Time Clock Bar -->
@@ -106,8 +91,8 @@
     <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
 
-        <!-- TAB 1: CS Q&A SEARCH & SCRIPT BANK -->
-        <section id="tab-qa" class="tab-content block space-y-5">
+        <!-- CS Q&A SEARCH & SCRIPT BANK -->
+        <section id="tab-qa" class="block space-y-5">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 px-1">
                 <div>
                     <h2 class="text-xl font-bold text-slate-900">CS 응대 스크립트 검색</h2>
@@ -126,348 +111,6 @@
 
             <div id="qa-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- JS will populate Q&A cards here -->
-            </div>
-        </section>
-
-        <!-- TAB 2: REFUND & FEE CALCULATOR -->
-        <section id="tab-calculator" class="tab-content hidden space-y-5">
-            <div class="px-1">
-                <h2 class="text-xl font-bold text-slate-900">공식 환불 및 위약금 계산기</h2>
-                <p class="text-xs text-slate-500 mt-1">
-                    취소 신청 시점 및 특별 사유에 따른 정확한 환불액과 위약금, 안내 스크립트를 즉시 확인합니다.
-                </p>
-            </div>
-
-            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm space-y-2">
-                <h3 class="text-[18px] font-bold text-slate-800">강동구 체육시설 운영 조례 및 결제 일정 기준</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
-                                <th class="p-2 font-semibold">구분 / 신청 시점</th>
-                                <th class="p-2 font-semibold">기준 및 기한</th>
-                                <th class="p-2 font-semibold">위약금 / 세부 사항</th>
-                                <th class="p-2 font-semibold">비고</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 text-slate-700">
-                            <tr class="bg-emerald-50/70">
-                                <td class="p-2 font-bold text-emerald-900">★ 9월 임시운영 대관</td>
-                                <td class="p-2 font-semibold text-emerald-800">9월 15일 ~ 9월 22일 (08~16시 4타임)</td>
-                                <td class="p-2 font-bold text-emerald-700">전액 무료 (0원)</td>
-                                <td class="p-2 text-slate-500">9월 8일 10시 선착순 접수</td>
-                            </tr>
-                            <tr class="bg-amber-50/50">
-                                <td class="p-2 font-medium text-slate-900">추첨 당첨 건 결제 마감</td>
-                                <td class="p-2 font-semibold text-amber-800">추첨 다음날 밤 11시 59분(23:59)까지</td>
-                                <td class="p-2 text-slate-600">미결제 시 자동 취소</td>
-                                <td class="p-2 text-slate-500">기한 엄수 필수</td>
-                            </tr>
-                            <tr class="bg-slate-50/50">
-                                <td class="p-2 font-medium text-slate-900">잔여시간 선착순 접수</td>
-                                <td class="p-2 font-semibold text-slate-800">추첨일 다다음 날(매월 23일) 오전 10시 오픈</td>
-                                <td class="p-2 text-slate-600">온라인 선착순 접수</td>
-                                <td class="p-2 text-slate-500">정규 운영 시</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 font-medium text-slate-900">사용 개시일 5일 전 취소</td>
-                                <td class="p-2 font-semibold text-emerald-700">100% 환불</td>
-                                <td class="p-2 text-slate-500">없음 (0원)</td>
-                                <td class="p-2 text-slate-400">위약금 없음</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 font-medium text-slate-900">사용 개시일 4일 전 ~ 1일 전 취소</td>
-                                <td class="p-2 font-semibold text-amber-700">90% 환불</td>
-                                <td class="p-2 text-amber-700 font-medium">사용료의 10%</td>
-                                <td class="p-2 text-slate-400">10% 차감 후 환불</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 font-medium text-slate-900">사용 개시일 당일 및 이후</td>
-                                <td class="p-2 font-semibold text-rose-700">환불 불가</td>
-                                <td class="p-2 text-rose-700 font-medium">사용료의 100%</td>
-                                <td class="p-2 text-slate-400">환불 금액 없음</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-5">
-                <div class="bg-white p-4 sm:p-5 rounded-lg border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="text-[18px] font-bold text-slate-800 border-b border-slate-100 pb-2">조회 조건 설정</h3>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">1. 이용 요일 구분</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button type="button" onclick="setCalcDay('weekday')" id="calc-day-weekday" class="calc-day-btn py-2 px-3 rounded border border-slate-900 bg-slate-900 text-white font-medium text-xs">
-                                    평일 (88,000원)
-                                </button>
-                                <button type="button" onclick="setCalcDay('weekend')" id="calc-day-weekend" class="calc-day-btn py-2 px-3 rounded border border-slate-300 bg-white text-slate-700 font-medium text-xs">
-                                    주말/공휴일 (114,400원)
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">2. 취소 신청 시점 (사용 개시일 기준)</label>
-                            <select id="calc-dday" onchange="calculateRefund()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-2 focus:ring-1 focus:ring-slate-500">
-                                <option value="d5">사용 개시일 5일 전 취소 (100% 환불)</option>
-                                <option value="d4_1">사용 개시일 4일 전 ~ 1일 전 취소 (90% 환불 / 위약금 10%)</option>
-                                <option value="d0">사용 개시일 당일 및 이후 (환불 불가)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">3. 특별 취소 사유 선택</label>
-                            <select id="calc-reason" onchange="calculateRefund()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-2 focus:ring-1 focus:ring-slate-500">
-                                <option value="normal">일반 변심 / 개인 사정 / 독감 등 (기본 기준)</option>
-                                <option value="disaster">재해 기타 불가항력 사유 (100% 환불)</option>
-                                <option value="official_event">국가적 행사 또는 공단의 사정 (100% 환불)</option>
-                                <option value="weather_fault">기상 천재지변 또는 운영자 귀책 (100% 환불)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-50 p-3 rounded border border-slate-200 text-xs space-y-2">
-                        <span class="font-semibold text-slate-800 block">임시운영 및 접수 빠른 안내:</span>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 text-xs text-slate-700 leading-normal">
-                            <div class="bg-emerald-50 p-2 rounded border border-emerald-200 text-emerald-900">
-                                <strong>★ 9월 임시운영:</strong> 9.15~9.22 무료 운영 (08~16시 4타임)
-                            </div>
-                            <div class="bg-white p-2 rounded border border-slate-200">
-                                <strong>1. 팀 등록 오픈:</strong> 수시 신청 접수 중
-                            </div>
-                            <div class="bg-white p-2 rounded border border-slate-200">
-                                <strong>2. 임시운영 접수:</strong> <span class="text-amber-800 font-bold">9월 8일 오전 10시</span> 선착순
-                            </div>
-                            <div class="bg-white p-2 rounded border border-slate-200">
-                                <strong>3. 정규 대관료:</strong> 평일 88,000원 / 주말 114,400원
-                            </div>
-                            <div class="bg-white p-2 rounded border border-slate-200">
-                                <strong>4. 문의 전화:</strong> <a href="tel:02-2045-7835" class="text-sky-700 font-bold">02.2045.7835</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900 text-white p-5 rounded-lg shadow-sm border border-slate-800 space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
-                        <span class="text-xs font-medium text-slate-400">환불 금액 산출 결과</span>
-                        <span id="calc-status-badge" class="px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                            100% 전액 환불
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-3 text-center">
-                        <div class="bg-slate-800/90 p-3 rounded border border-slate-700">
-                            <p class="text-slate-400 text-xs">총 결제 금액</p>
-                            <p id="calc-out-total" class="text-xs sm:text-sm font-bold text-white mt-1">88,000원</p>
-                        </div>
-                        <div class="bg-slate-800/90 p-3 rounded border border-slate-700">
-                            <p class="text-slate-400 text-xs">위약금 (차감액)</p>
-                            <p id="calc-out-penalty" class="text-xs sm:text-sm font-bold text-amber-400 mt-1">0원 (0%)</p>
-                        </div>
-                        <div class="bg-slate-800/90 p-3 rounded border border-slate-700">
-                            <p class="text-slate-400 text-xs">최종 환불 예정액</p>
-                            <p id="calc-out-refund" class="text-sm sm:text-base font-bold text-emerald-400 mt-1">88,000원</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-100 p-3 rounded space-y-2">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-1.5">
-                                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <circle cx="9" cy="8" r="3.5" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 19c0-3.3 2.7-6 6-6h0c3.3 0 6 2.7 6 6" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 7a3 3 0 010 5" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5a5.5 5.5 0 010 9" />
-                                </svg>
-                                <span class="text-[11px] font-semibold text-slate-500">환불 안내 맞춤 스크립트</span>
-                            </div>
-                            <button onclick="copyToClipboard('calc-out-script', this)" class="flex items-center gap-1 text-[11px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
-                                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                                <span>복사</span>
-                            </button>
-                        </div>
-                        <p id="calc-out-script" class="text-[15px] text-slate-800 leading-relaxed font-serif-kr tracking-wide">
-                            사용 개시일 5일 전 취소 건으로 규정에 따라 위약금 없이 100% 전액 환불 처리됩니다.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 3: TEAM REGISTRATION & QUALIFICATION -->
-        <section id="tab-teams" class="tab-content hidden space-y-5">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
-                <div>
-                    <h2 class="text-xl font-bold text-slate-900">팀 등록 자격 진단기</h2>
-                    <p class="text-xs text-slate-500 mt-1">
-                        강동구 체육시설 공식 팀 등록 조건(총원 15명 이상, 관내 거주/직장 10명 이상, 중복 회원 불가)을 진단합니다.
-                    </p>
-                </div>
-                <span class="text-xs bg-amber-50 text-amber-800 border border-amber-200 font-semibold px-2.5 py-1 rounded self-start">
-                    ※ 중복 회원 등록 불가
-                </span>
-            </div>
-
-            <div class="bg-slate-900 text-slate-100 p-4 rounded-lg border border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                <div class="space-y-1">
-                    <span class="text-slate-400 font-semibold block text-xs">팀 등록 신청 접수</span>
-                    <p class="font-medium text-slate-200">
-                        신청 시기: <strong class="text-emerald-300">수시 신청 가능</strong>
-                    </p>
-                </div>
-                <div class="space-y-1 border-t md:border-t-0 md:border-l border-slate-800 pt-2 md:pt-0 md:pl-4">
-                    <span class="text-slate-400 font-semibold block text-xs">관내팀 승인 심사 기간</span>
-                    <p class="font-medium text-slate-200">
-                        심사 일정: <strong class="text-amber-300">매월 5일 ~ 10일 사이</strong> 심사 및 승인
-                        <span class="text-slate-400 text-xs block mt-0.5">(※ 관외팀은 수시 심사 후 순차 승인)</span>
-                    </p>
-                </div>
-                <div class="space-y-1 border-t md:border-t-0 md:border-l border-slate-800 pt-2 md:pt-0 md:pl-4">
-                    <span class="text-slate-400 font-semibold block text-xs">관내 직장팀 심사 서류 제출</span>
-                    <p class="font-medium text-slate-200">
-                        제출 기한: <strong class="text-sky-300">매월 10일까지</strong> 제출된 건에 한해 진행
-                    </p>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm space-y-2">
-                <h3 class="text-[18px] font-bold text-slate-800">공식 팀 등록 조건 및 구비서류 기준</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
-                                <th class="p-2 font-semibold w-24">구분</th>
-                                <th class="p-2 font-semibold">조건 및 내용</th>
-                                <th class="p-2 font-semibold">제출 구비서류 / 비고</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 text-slate-700">
-                            <tr class="bg-slate-50/50">
-                                <td class="p-2.5 font-bold text-slate-900">관내팀<br><span class="text-xs text-slate-500 font-normal">(거주팀)</span></td>
-                                <td class="p-2.5">
-                                    <p class="font-bold text-slate-900">15명 이상으로 이루어진 강동구 거주팀</p>
-                                    <p class="text-slate-600 text-xs mt-0.5">• 강동구 관내에 주소를 둔 회원을 <strong>10명 이상</strong> 보유한 팀</p>
-                                </td>
-                                <td class="p-2.5 text-slate-600">
-                                    <p>주민등록등본 (최근 3개월 이내)</p>
-                                    <p class="text-sky-700 font-semibold text-xs mt-0.5">• 1순위 (추첨 접수 및 잔여석 선착순 접수 가능)</p>
-                                </td>
-                            </tr>
-                            <tr class="bg-slate-50/50">
-                                <td class="p-2.5 font-bold text-slate-900">관내팀<br><span class="text-xs text-slate-500 font-normal">(직장팀)</span></td>
-                                <td class="p-2.5">
-                                    <p class="font-bold text-slate-900">15명 이상으로 이루어진 강동구 직장팀</p>
-                                    <p class="text-slate-600 text-xs mt-0.5">• 강동구 관내에 사업장 주소를 둔 회원이 <strong>10명 이상</strong>인 팀</p>
-                                </td>
-                                <td class="p-2.5 text-slate-600">
-                                    <p class="font-medium text-amber-800">사업자등록증 및 3개월 이내 발급된 재직증명서 제출 필수</p>
-                                    <p class="text-sky-700 font-semibold text-xs mt-0.5">• 1순위 (추첨 접수 및 잔여석 선착순 접수 가능)</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="p-2.5 font-bold text-slate-900">관외팀</td>
-                                <td class="p-2.5">
-                                    <p class="font-bold text-slate-900">관내팀 이외 15명 이상으로 이루어진 팀</p>
-                                </td>
-                                <td class="p-2.5 text-slate-600">
-                                    <p class="text-emerald-700 font-medium">별도 서류 없음 (수시 심사 후 순차 승인)</p>
-                                    <p class="text-slate-500 text-xs mt-0.5">• 2순위 (추첨 후 잔여석 선착순 접수 가능)</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                <div class="lg:col-span-6 bg-white p-4 sm:p-5 rounded-lg border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="text-[18px] font-bold text-slate-800 border-b border-slate-100 pb-2">팀 자격 진단 입력</h3>
-
-                    <div class="space-y-3 text-xs">
-                        <div class="bg-slate-50 p-3 rounded border border-slate-200 space-y-1.5">
-                            <label class="font-bold text-slate-800 block">1. 총 등록 회원 수 (중복 회원 불가)</label>
-                            <div class="flex items-center gap-4">
-                                <label class="flex items-center gap-1.5 cursor-pointer">
-                                    <input type="radio" name="quiz-q1" value="15plus" checked onchange="runTeamQuiz()" class="text-slate-900">
-                                    <span>15명 이상</span>
-                                </label>
-                                <label class="flex items-center gap-1.5 cursor-pointer">
-                                    <input type="radio" name="quiz-q1" value="under15" onchange="runTeamQuiz()" class="text-slate-900">
-                                    <span class="text-rose-700 font-medium">15명 미만 (등록 불가)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-50 p-3 rounded border border-slate-200 space-y-1.5">
-                            <label class="font-bold text-slate-800 block">2. 강동구 관내 회원 구성 요건</label>
-                            <div class="space-y-2">
-                                <label class="flex items-start gap-1.5 cursor-pointer">
-                                    <input type="radio" name="quiz-q2" value="res10" checked onchange="runTeamQuiz()" class="mt-0.5 text-slate-900">
-                                    <div>
-                                        <span class="font-medium text-slate-900">관내 거주팀 조건 충족</span>
-                                        <p class="text-xs text-slate-500">강동구 주소지 회원 10명 이상 보유 (1순위)</p>
-                                    </div>
-                                </label>
-                                <label class="flex items-start gap-1.5 cursor-pointer">
-                                    <input type="radio" name="quiz-q2" value="work10" onchange="runTeamQuiz()" class="mt-0.5 text-slate-900">
-                                    <div>
-                                        <span class="font-medium text-slate-900">관내 직장팀 조건 충족</span>
-                                        <p class="text-xs text-slate-500">강동구 소재 사업장 재직 회원 10명 이상 (1순위)</p>
-                                    </div>
-                                </label>
-                                <label class="flex items-start gap-1.5 cursor-pointer">
-                                    <input type="radio" name="quiz-q2" value="under10" onchange="runTeamQuiz()" class="mt-0.5 text-slate-900">
-                                    <div>
-                                        <span class="font-medium text-slate-900">관내 회원 10명 미만 (관외팀)</span>
-                                        <p class="text-xs text-slate-500">강동구 거주/직장 회원 10명 미만 (2순위)</p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div id="quiz-doc-box" class="bg-slate-50 p-3 rounded border border-slate-200">
-                            <label class="font-bold text-slate-800 block mb-1.5">3. 필수 증빙 서류 제출 준비</label>
-                            <label class="flex items-center gap-1.5 cursor-pointer">
-                                <input type="checkbox" id="quiz-q3-doc" checked onchange="runTeamQuiz()" class="rounded text-slate-900">
-                                <span id="quiz-doc-text" class="text-slate-800 font-medium">최근 3개월 이내 발급 주민등록등본 제출 가능</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-6 bg-slate-900 text-white p-5 rounded-lg border border-slate-800 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
-                            <span class="text-xs text-slate-400 font-medium">진단 결과 및 심사 안내</span>
-                            <span id="team-badge" class="px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                                관내팀 (1순위 - 거주팀)
-                            </span>
-                        </div>
-
-                        <div id="team-result-title" class="text-base font-bold text-white mb-2">
-                            강동구 관내 거주팀 자격 대상입니다.
-                        </div>
-
-                        <p id="team-result-desc" class="text-xs text-slate-300 leading-relaxed mb-4">
-                            추첨 접수 및 잔여석 선착순 접수가 가능한 1순위 권한이 부여됩니다. 총원 15명 이상 및 강동구 주민등록 회원 10명 이상 요건을 충족합니다.
-                        </p>
-
-                        <div class="bg-slate-800 p-3 rounded border border-slate-700 space-y-2 text-xs">
-                            <p class="font-semibold text-slate-200">관내 자격 심사 및 서류 안내:</p>
-                            <ul id="team-result-docs" class="list-disc pl-4 space-y-1 text-slate-300 text-xs">
-                                <li><strong>제출 서류:</strong> 최근 3개월 이내 발급된 주민등록등본 제출</li>
-                                <li><strong>심사 일정:</strong> 매월 5일~10일 사이 심사 및 승인 처리</li>
-                                <li><strong>자격 갱신:</strong> 매년 1월 1일, 7월 1일 (연 2회)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -562,7 +205,7 @@
             <!-- Input Form -->
             <div class="p-2.5 bg-white border-t border-slate-200">
                 <form onsubmit="handleChatSubmit(event)" class="flex items-center gap-2">
-                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 추첨은 한 달에 몇 번 가능한가요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
+                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 자격 갱신은 언제 하나요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
                     <button type="submit" id="chat-send-btn" class="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-xl transition-colors font-medium text-xs shrink-0 flex items-center justify-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
@@ -791,7 +434,6 @@
             }
         ];
 
-        let currentCalcDay = 'weekday';
         let userStoredApiKey = '';
 
         function renderQACards(filterText = '') {
@@ -921,190 +563,6 @@
             renderQACards(input ? input.value : '');
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('bg-slate-900', 'text-white', 'font-semibold');
-                btn.classList.add('text-slate-600');
-            });
-
-            const targetSection = document.getElementById('tab-' + tabId);
-            if (targetSection) targetSection.classList.remove('hidden');
-
-            const activeBtn = document.getElementById('tab-btn-' + tabId);
-            if (activeBtn) {
-                activeBtn.classList.add('bg-slate-900', 'text-white', 'font-semibold');
-                activeBtn.classList.remove('text-slate-600');
-            }
-        }
-
-        function setCalcDay(type) {
-            currentCalcDay = type;
-            const btnWeekday = document.getElementById('calc-day-weekday');
-            const btnWeekend = document.getElementById('calc-day-weekend');
-
-            if (type === 'weekday') {
-                btnWeekday.className = "calc-day-btn py-2 px-3 rounded border border-slate-900 bg-slate-900 text-white font-medium text-xs";
-                btnWeekend.className = "calc-day-btn py-2 px-3 rounded border border-slate-300 bg-white text-slate-700 font-medium text-xs";
-            } else {
-                btnWeekday.className = "calc-day-btn py-2 px-3 rounded border border-slate-300 bg-white text-slate-700 font-medium text-xs";
-                btnWeekend.className = "calc-day-btn py-2 px-3 rounded border border-slate-900 bg-slate-900 text-white font-medium text-xs";
-            }
-            calculateRefund();
-        }
-
-        function calculateRefund() {
-            const totalFee = currentCalcDay === 'weekday' ? 88000 : 114400;
-            const dday = document.getElementById('calc-dday').value;
-            const reason = document.getElementById('calc-reason').value;
-
-            let penaltyRate = 0;
-            let statusText = '';
-            let scriptText = '';
-
-            if (reason !== 'normal') {
-                penaltyRate = 0;
-                statusText = '특별사유 100% 환불';
-                if (reason === 'disaster') {
-                    scriptText = '재해 및 기타 불가항력 사유로 인한 취소 건으로 규정에 따라 위약금 없이 100% 전액 환불됩니다.';
-                } else if (reason === 'official_event') {
-                    scriptText = '국가적 행사 또는 공단 사정으로 인한 취소 건으로 위약금 없이 100% 전액 환불해 드립니다.';
-                } else {
-                    scriptText = '기상 천재지변 또는 운영자 귀책에 따른 취소 건으로 위약금 없이 100% 전액 환불됩니다.';
-                }
-            } else {
-                if (dday === 'd5') {
-                    penaltyRate = 0;
-                    statusText = '100% 전액 환불';
-                    scriptText = '사용 개시일 5일 전 취소 건으로 규정에 따라 위약금 없이 100% 전액 환불 처리됩니다.';
-                } else if (dday === 'd4_1') {
-                    penaltyRate = 0.10;
-                    statusText = '90% 환불 (10% 위약금)';
-                    scriptText = '사용 개시일 4일 전~1일 전 취소 건으로 조례 규정에 따라 사용료의 10% 위약금 차감 후 90% 금액이 환불됩니다.';
-                } else {
-                    penaltyRate = 1.0;
-                    statusText = '환불 불가 (위약금 100%)';
-                    scriptText = '사용 개시일 당일 및 이후 취소 건은 조례 규정에 따라 환불이 불가능합니다.';
-                }
-            }
-
-            const penaltyAmt = Math.floor(totalFee * penaltyRate);
-            const refundAmt = totalFee - penaltyAmt;
-
-            document.getElementById('calc-out-total').textContent = totalFee.toLocaleString() + '원';
-            document.getElementById('calc-out-penalty').textContent = penaltyAmt.toLocaleString() + '원 (' + (penaltyRate * 100) + '%)';
-            document.getElementById('calc-out-refund').textContent = refundAmt.toLocaleString() + '원';
-            document.getElementById('calc-out-script').textContent = scriptText;
-            document.getElementById('calc-status-badge').textContent = statusText;
-        }
-
-        function runTeamQuiz() {
-            const q1Val = document.querySelector('input[name="quiz-q1"]:checked')?.value;
-            const q2Val = document.querySelector('input[name="quiz-q2"]:checked')?.value;
-            const q3DocChecked = document.getElementById('quiz-q3-doc')?.checked;
-
-            const docText = document.getElementById('quiz-doc-text');
-
-            if (q2Val === 'work10') {
-                if (docText) docText.textContent = "사업자등록증 및 3개월 이내 발급된 재직증명서 제출 가능 (매월 10일까지 제출)";
-            } else {
-                if (docText) docText.textContent = "최근 3개월 이내 발급 주민등록등본 제출 가능 (거주팀)";
-            }
-
-            const badge = document.getElementById('team-badge');
-            const title = document.getElementById('team-result-title');
-            const desc = document.getElementById('team-result-desc');
-            const docsList = document.getElementById('team-result-docs');
-
-            if (q1Val === 'under15') {
-                if (badge) {
-                    badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30";
-                    badge.textContent = "등록 불가 (인원 미달)";
-                }
-                if (title) title.textContent = "최소 등록 인원 미달로 팀 등록이 불가능합니다.";
-                if (desc) desc.textContent = "강동구 체육시설 규칙상 팀 등록 최소 인원은 15명 이상입니다. (중복 회원 등록은 불가능합니다.)";
-                if (docsList) {
-                    docsList.innerHTML = `
-                        <li><strong>신청 기준:</strong> 최소 15명 이상의 회원을 확보한 후 신청 가능</li>
-                        <li><strong>중복 검증:</strong> 타 팀 중복 등록 회원 제외 후 15명 이상 필요</li>
-                    `;
-                }
-                return;
-            }
-
-            if (q2Val === 'res10') {
-                if (!q3DocChecked) {
-                    if (badge) {
-                        badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30";
-                        badge.textContent = "서류 미비 (등본 필요)";
-                    }
-                    if (title) title.textContent = "주민등록등본 미제출 시 관내팀 승인이 불가합니다.";
-                    if (desc) desc.textContent = "강동구 거주 회원 10명 이상의 주소를 증빙할 3개월 이내 발급 주민등록등본 제출이 필요합니다.";
-                    if (docsList) {
-                        docsList.innerHTML = `
-                            <li><strong>필수 서류:</strong> 최근 3개월 이내 발급 주민등록등본</li>
-                            <li><strong>심사 일정:</strong> 매월 5일~10일 사이 심사 및 승인 처리</li>
-                        `;
-                    }
-                } else {
-                    if (badge) {
-                        badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
-                        badge.textContent = "관내팀 (1순위 - 거주팀)";
-                    }
-                    if (title) title.textContent = "강동구 관내 거주팀 자격 대상입니다.";
-                    if (desc) desc.textContent = "추첨 접수 및 잔여석 선착순 접수가 가능한 1순위 권한이 부여됩니다. 총원 15명 이상 및 강동구 주민등록 회원 10명 이상 요건을 충족합니다.";
-                    if (docsList) {
-                        docsList.innerHTML = `
-                            <li><strong>제출 서류:</strong> 최근 3개월 이내 발급 주민등록등본 제출</li>
-                            <li><strong>승인 심사:</strong> 매월 5일~10일 사이 심사 및 승인 처리</li>
-                            <li><strong>거주자 자격 갱신:</strong> 매년 1월 1일, 7월 1일 (연 2회)</li>
-                        `;
-                    }
-                }
-            } else if (q2Val === 'work10') {
-                if (!q3DocChecked) {
-                    if (badge) {
-                        badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30";
-                        badge.textContent = "서류 미비 (재직증명서 필요)";
-                    }
-                    if (title) title.textContent = "사업자등록증 및 재직증명서 미제출 시 직장팀 승인이 불가합니다.";
-                    if (desc) desc.textContent = "강동구 소재 사업장 재직 회원 10명 이상 증빙을 위한 사업자등록증 및 3개월 이내 발급된 재직증명서 제출이 필수입니다. (매월 10일까지 제출)";
-                    if (docsList) {
-                        docsList.innerHTML = `
-                            <li><strong>필수 제출 서류:</strong> 사업자등록증 및 3개월 이내 발급된 재직증명서</li>
-                            <li><strong>제출 기한:</strong> 매월 10일까지 축구장 사무실 제출 건에 한해 진행</li>
-                        `;
-                    }
-                } else {
-                    if (badge) {
-                        badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
-                        badge.textContent = "관내팀 (1순위 - 직장팀)";
-                    }
-                    if (title) title.textContent = "강동구 관내 직장팀 자격 대상입니다.";
-                    if (desc) desc.textContent = "추첨 접수 및 잔여석 선착순 접수가 가능한 1순위 권한이 부여됩니다. 강동구 사업장 재직 회원 10명 이상 및 필수 증빙 서류 제출 요건을 충족합니다.";
-                    if (docsList) {
-                        docsList.innerHTML = `
-                            <li><strong>구비서류:</strong> 사업자등록증 및 3개월 이내 발급된 재직증명서 제출 (매월 10일까지)</li>
-                            <li><strong>승인 심사:</strong> 매월 5일~10일 사이 심사 및 승인 처리</li>
-                        `;
-                    }
-                }
-            } else {
-                if (badge) {
-                    badge.className = "px-2.5 py-0.5 rounded text-xs font-medium bg-slate-500/20 text-slate-300 border border-slate-500/30";
-                    badge.textContent = "관외팀 (2순위)";
-                }
-                if (title) title.textContent = "관외팀 자격으로 등록 가능합니다.";
-                if (desc) desc.textContent = "총원 15명 이상 요건은 충족하나 관내 회원 10명 미만으로 2순위(추첨 후 잔여석 선착순 접수 가능)로 분류됩니다.";
-                if (docsList) {
-                    docsList.innerHTML = `
-                        <li><strong>신청 권한:</strong> 2순위 (추첨 후 잔여석 선착순 접수 참여 가능)</li>
-                        <li><strong>승인 방식:</strong> 수시 심사 후 순차 승인 처리 (별도 제출 서류 없음)</li>
-                    `;
-                }
-            }
-        }
-
         function updateLiveClock() {
             const now = new Date();
             const year = now.getFullYear();
@@ -1129,63 +587,37 @@
         }
 
         const SYSTEM_PROMPT = `
-당신은 강동구도시관리공단 '동명근린공원 축구장'의 AI CS 도우미 '동명이'입니다.
-반드시 아래 [동명근린공원 축구장 공식 팩트 기준]에만 근거하여 사실 그대로 답변해야 하며, 정보가 없는 허위 사실(할루시네이션)을 지어내지 마세요.
+당신은 강동구도시관리공단 '동명근린공원 축구장'의 최상위 AI CS 도우미 '동명이'입니다.
+추론이나 창작을 배제하고 제공된 [동명근린공원 축구장 공식 팩트 기준]에만 근거하여 단호하고 정확하게 사실만 답변하십시오.
 
-[답변 작성 원칙]
-1. 정규 추첨 접수 시: "매월 16일~20일 대관사이트(gdgd.igangdong.or.kr)를 통해 접수하며, **등록팀별 월 3회 가능**"함을 명확히 안내하세요.
-2. 관내 자격 갱신 질문 시: "거주자 자격 갱신은 매년 1월 1일과 7월 1일(연 2회)이며, 관내팀 전체 승인 유지는 매년 8월 1일 기준"임을 답변하세요.
-3. 운영시간, 회차별 이용시간, 휴관일 질문 시:
-   - **동절기(10월~3월)**: **06:00 ~ 21:50**
-   - **하절기(4월~9월)**: **08:00 ~ 20:00**
-   - **휴관일**: **신정, 설 연휴, 추석 연휴, 노동절 등**
-   - **회차별 정규 시간(2시간 단위 / 총 6회차)**:
-     * 1회차: **08:00 ~ 10:00**
-     * 2회차: **10:00 ~ 12:00**
-     * 3회차: **12:00 ~ 14:00**
-     * 4회차: **14:00 ~ 16:00**
-     * 5회차: **16:00 ~ 18:00**
-     * 6회차: **18:00 ~ 20:00** (하절기 한시적 운영)
-4. 9월 임시운영 질문 시:
-   - **기간**: **2026년 9월 15일 ~ 9월 22일** (대관료 **전액 무료**)
-   - **운영시간(4타임 한정)**: **1~4회차(08~10시, 10~12시, 12~14시, 14~16시)**
-   - **선착순 접수 오픈**: **9월 8일 아침 10시**
-   - **시설 제약**: **9월 임시운영 기간 동안 샤워실 및 탈의실(지하 1층) 사용 불가**
-5. 팀 등록 및 심사 질문 시:
-   - 신청: **수시 신청 가능**
-   - 관내팀 심사: **매월 5일~10일 사이** (직장팀 서류는 **매월 10일까지** 제출 건에 한함)
-   - 관내팀(1순위): 거주팀(강동구 주소 10명 이상, 3개월 내 등본) / 직장팀(강동구 사업장 10명 이상, **사업자등록증 및 3개월 이내 발급된 재직증명서**)
-6. 대표 전화번호: **02-2045-7835**
-7. 1~3문장 또는 간결한 핵심 요약으로 답변하고, 주요 수치와 핵심 단어는 **굵은 글씨**로 강조하세요.
+[즉각 대응 트리거 (우선순위 1위)]
+- Q: "직장팀 서류" / "직장팀 조건" ➔ A: 총원 15명 이상 중 강동구 사업장 재직 10명 이상 필요. 필수 제출 서류는 **'사업자등록증' 및 '3개월 이내 발급된 재직증명서'**(매월 10일까지 제출).
+- Q: "자격 갱신" / "갱신일" ➔ A: 거주자 자격 갱신은 **매년 1월 1일, 7월 1일 (연 2회)** 진행. 관내팀 전체 승인 유지는 **매년 8월 1일** 기준 심사.
+- Q: "추첨 횟수" / "어디서 신청" ➔ A: 매월 16일~20일 대관사이트(gdgd.igangdong.or.kr)에서 접수하며, **등록팀별 월 3회**만 신청 가능.
+- Q: "샤워실" / "탈의실" ➔ A: **지하 1층**에 구비. 단, **9월 임시운영 기간(9.15~9.22)에는 전면 사용 불가**.
 
 [동명근린공원 축구장 공식 팩트 기준]
 1. 정규 운영시간 및 회차:
-   - 동절기(10월~3월): **06:00 ~ 21:50**
-   - 하절기(4월~9월): **08:00 ~ 20:00**
-   - 휴관일: **신정, 설 연휴, 추석 연휴, 노동절 등**
-   - 회차별 시간: 1회차(08~10시), 2회차(10~12시), 3회차(12~14시), 4회차(14~16시), 5회차(16~18시), 6회차(18~20시, 하절기 한시)
+   - 동절기(10월~3월): 06:00~21:50 / 하절기(4월~9월): 08:00~20:00
+   - 휴관일: 신정, 설 연휴, 추석 연휴, 노동절 등
+   - 회차별 시간(2시간 단위): 1회차(08~10시), 2회차(10~12시), 3회차(12~14시), 4회차(14~16시), 5회차(16~18시), 6회차(18~20시, 하절기 한시)
 2. 9월 임시운영 특별 지침:
-   - 기간: **2026년 9월 15일 ~ 9월 22일** (대관료: **전액 무료**)
-   - 회차: 1~4회차 총 4개 타임만 운영 (**08~10시, 10~12시, 12~14시, 14~16시**)
-   - 선착순 접수: **9월 8일 오전 10시 오픈**
-   - 샤워실/탈의실(지하 1층): **9월 임시운영 기간 사용 불가**
-3. 팀 등록 및 자격 갱신 (※ 중복 회원 등록 불가):
-   - 팀 등록 신청: **수시 신청 가능**
-   - 관내팀 심사 일정: **매월 5일~10일 사이 심사 및 승인 처리** (관내 직장팀 서류는 **매월 10일까지** 제출 건만 진행)
-   - 관외팀 심사 일정: **수시 심사 후 순차 승인 처리**
-   - 관내팀 조건 (1순위 - 추첨 접수 & 잔여석 선착순):
-     * 거주팀: 15명 이상 강동구 거주팀 (강동구 주소 회원 10명 이상, 3개월 내 주민등록등본)
-     * 직장팀: 15명 이상 강동구 직장팀 (강동구 사업장 재직 회원 10명 이상, **사업자등록증 및 3개월 내 재직증명서**)
-   - 관외팀 조건 (2순위 - 추첨 후 잔여석 선착순): 관내팀 이외 15명 이상으로 이루어진 팀
-   - 관내 자격 갱신: 거주자 자격 매년 **1월 1일 / 7월 1일 (연 2회) 갱신**, 관내팀 승인 유지는 매년 **8월 1일** 기준.
+   - 기간: 2026년 9월 15일 ~ 9월 22일 (대관료: 전액 무료)
+   - 운영: 1~4회차(08~16시) 4개 타임만 한정 운영
+   - 예약: 9월 8일 오전 10시 선착순 접수 오픈
+3. 팀 등록 및 자격 갱신 (중복 회원 등록 불가):
+   - 신청: 수시 신청 가능 (온라인)
+   - 관내팀 심사: 매월 5일~10일 사이 심사 및 승인 (직장팀 서류는 매월 10일까지 제출 건만 진행)
+   - 관내 거주팀(1순위): 15명 이상 중 강동구 주소 10명 이상 (3개월 내 주민등록등본)
+   - 관내 직장팀(1순위): 15명 이상 중 강동구 사업장 10명 이상 (사업자등록증 및 3개월 내 재직증명서)
+   - 관외팀(2순위): 관내팀 이외 15명 이상 (별도 서류 없음)
 4. 정규 대관 요금 및 일정:
    - 정규 요금(2시간): 평일 88,000원 / 주말·공휴일 114,400원
-   - 정규 일정: 매월 16~20일 대관사이트(**gdgd.igangdong.or.kr**) 접수 ➔ 21일 10시 추첨 ➔ 익일 23:59 결제마감 ➔ 23일 10시 잔여타임
-   - **추첨 접수 횟수 제한**: **등록팀별 월 3회 가능**
+   - 정규 일정: 매월 16~20일 접수 ➔ 21일 10시 추첨 ➔ 익일 23:59 결제마감 ➔ 23일 10시 잔여타임 오픈
 5. 환불 규정 (정규 대관):
    - 5일 전 100% / 4~1일 전 90% (위약금 10%) / 당일 취소 불가 / 천재지변 100%
 6. 기타 수칙:
-   - SG 스터드 착용 불가, 주차 감면 혜택 없음, 연락처: **02-2045-7835**
+   - SG 스터드 착용 절대 불가, 주차 감면 혜택 없음, 연락처: 02-2045-7835
 `;
 
         function generateOfflineResponse(userText) {
@@ -1203,8 +635,8 @@
                 return "- **거주자 자격 갱신:** 매년 **1월 1일, 7월 1일** (연 2회)\n- **관내팀 승인 유지:** 매년 **8월 1일** 기준 심사 및 업데이트 진행";
             }
 
-            if (query.includes('조건') || query.includes('서류') || query.includes('자격') || query.includes('직장팀') || query.includes('거주팀') || query.includes('재직') || query.includes('등본')) {
-                return "- **팀 등록 공통:** 총원 **15명 이상** (중복 회원 등록 불가)\n- **관내 거주팀 (1순위):** 강동구 주소 회원 10명 이상 (**주민등록등본** 제출)\n- **관내 직장팀 (1순위):** 강동구 사업장 재직 회원 10명 이상 (**사업자등록증 및 3개월 이내 재직증명서** 제출)\n- **관외팀 (2순위):** 관내팀 이외 15명 이상 (별도 서류 없음)";
+            if (query.includes('조건') || query.includes('서류') || query.includes('자격') || query.includes('직장팀') || query.includes('거주팀') || query.includes('재직') || query.includes('등본') || query.includes('사업자')) {
+                return "- **팀 등록 공통:** 총원 **15명 이상** (중복 회원 등록 불가)\n- **관내 거주팀 (1순위):** 강동구 주소 회원 10명 이상 (**주민등록등본** 제출)\n- **관내 직장팀 (1순위):** 강동구 사업장 재직 회원 10명 이상 (**사업자등록증** 및 3개월 이내 **재직증명서** 제출)\n- **관외팀 (2순위):** 관내팀 이외 15명 이상 (별도 서류 없음)";
             }
 
             if (query.includes('임시') || query.includes('9월 8일') || query.includes('9월 15일') || query.includes('무료') || query.includes('4타임')) {
@@ -1212,7 +644,7 @@
             }
 
             if (query.includes('추첨') || query.includes('접수') || query.includes('16일') || query.includes('21일') || query.includes('횟수') || query.includes('몇 번') || query.includes('3회')) {
-                return "- **정규 추첨 접수:** 매월 16일~20일 공식 대관사이트(gdgd.igangdong.or.kr) 접수\n- **신청 제한:** **등록팀별 월 3회 가능**\n- **추첨 일시:** 매월 **21일 오전 10시** (온라인)\n- **결제 마감:** 당첨 후 익일 밤 11시 59분(23:59)까지";
+                return "- **정규 추첨 접수:** 매월 16일~20일 대관사이트(gdgd.igangdong.or.kr) 접수\n- **신청 제한:** **등록팀별 월 3회 가능**\n- **추첨 일시:** 매월 **21일 오전 10시** (온라인)\n- **결제 마감:** 당첨 후 익일 밤 11시 59분(23:59)까지";
             }
 
             if (query.includes('샤워') || query.includes('탈의실')) {
@@ -1417,8 +849,6 @@
 
         window.onload = function() {
             renderQACards();
-            calculateRefund();
-            runTeamQuiz();
             updateLiveClock();
             setInterval(updateLiveClock, 1000);
         };
