@@ -63,7 +63,6 @@
             <div class="flex flex-wrap items-center gap-2.5 text-xs text-slate-600">
                 <span class="bg-amber-100 text-amber-900 font-semibold px-2.5 py-1 rounded border border-amber-200 hidden lg:inline-block">9.15~9.22 임시운영 무료 (정규: 평일 8.8만/주말 11.44만)</span>
                 
-                <!-- 관리자 매뉴얼 다운로드 버튼 신규 추가 -->
                 <a href="/admin_manual.pdf" download="동명근린공원_관리자_매뉴얼.pdf" class="inline-flex items-center gap-1.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold px-3 py-1.5 rounded border border-slate-300 transition-colors shadow-2xs">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -107,12 +106,12 @@
                     <h2 class="text-xl font-bold text-slate-900">CS 응대 스크립트 검색</h2>
                 </div>
                 <span id="qa-count-badge" class="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded border border-slate-200 self-start md:self-auto">
-                    총 24개 항목 노출 중
+                    총 26개 항목 노출 중
                 </span>
             </div>
 
             <div class="relative w-full">
-                <input type="text" id="qa-search-input" onkeyup="filterQA()" placeholder="키워드 검색 (예: 추첨 3회, 대관사이트, 운영시간, 갱신, 직장팀 서류, 9월 8일, 임시운영, 환불)..." class="w-full bg-white border border-slate-300 rounded-lg p-3 pl-10 text-xs text-slate-800 shadow-sm focus:outline-none focus:border-slate-500 font-medium transition-colors">
+                <input type="text" id="qa-search-input" onkeyup="filterQA()" placeholder="키워드 검색 (예: 추첨 3회, 대관사이트, 21일 11시, 결제 22일, 잔여 23일, 관외 24일, 임시운영, 환불)..." class="w-full bg-white border border-slate-300 rounded-lg p-3 pl-10 text-xs text-slate-800 shadow-sm focus:outline-none focus:border-slate-500 font-medium transition-colors">
                 <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -120,6 +119,135 @@
 
             <div id="qa-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- JS will populate Q&A cards here -->
+            </div>
+        </section>
+
+        <!-- TAB 2: REFUND & FEE CALCULATOR -->
+        <section id="tab-calculator" class="hidden space-y-5">
+            <div class="px-1">
+                <h2 class="text-xl font-bold text-slate-900">공식 환불 및 위약금 계산기</h2>
+                <p class="text-xs text-slate-500 mt-1">
+                    취소 신청 시점 및 특별 사유에 따른 정확한 환불액과 위약금, 안내 스크립트를 즉시 확인합니다.
+                </p>
+            </div>
+
+            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm space-y-2">
+                <h3 class="text-[18px] font-bold text-slate-800">강동구 체육시설 운영 조례 및 결제 일정 기준</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
+                                <th class="p-2 font-semibold">구분 / 신청 시점</th>
+                                <th class="p-2 font-semibold">기준 및 기한</th>
+                                <th class="p-2 font-semibold">위약금 / 세부 사항</th>
+                                <th class="p-2 font-semibold">비고</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                            <tr class="bg-emerald-50/70">
+                                <td class="p-2 font-bold text-emerald-900">★ 9월 임시운영 대관</td>
+                                <td class="p-2 font-semibold text-emerald-800">9월 15일 ~ 9월 22일 (08~16시 4타임)</td>
+                                <td class="p-2 font-bold text-emerald-700">전액 무료 (0원)</td>
+                                <td class="p-2 text-slate-500">9월 8일 10시 선착순 접수</td>
+                            </tr>
+                            <tr class="bg-amber-50/50">
+                                <td class="p-2 font-medium text-slate-900">추첨 당첨 건 결제 마감</td>
+                                <td class="p-2 font-semibold text-amber-800">당첨 익일인 매월 22일 밤 11시 59분(23:59)까지</td>
+                                <td class="p-2 text-slate-600">미결제 시 자동 취소</td>
+                                <td class="p-2 text-slate-500">기한 엄수 필수</td>
+                            </tr>
+                            <tr class="bg-slate-50/50">
+                                <td class="p-2 font-medium text-slate-900">잔여회차 선착순 (관내팀)</td>
+                                <td class="p-2 font-semibold text-slate-800">매월 23일 오전 10시 오픈</td>
+                                <td class="p-2 text-slate-600">온라인 선착순 접수</td>
+                                <td class="p-2 text-slate-500">관내팀 대상</td>
+                            </tr>
+                            <tr class="bg-slate-50/50">
+                                <td class="p-2 font-medium text-slate-900">잔여회차 선착순 (관외팀)</td>
+                                <td class="p-2 font-semibold text-slate-800">매월 24일 오전 10시 오픈</td>
+                                <td class="p-2 text-slate-600">온라인 선착순 접수</td>
+                                <td class="p-2 text-slate-500">관외팀까지 확대</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-medium text-slate-900">사용 개시일 5일 전 취소</td>
+                                <td class="p-2 font-semibold text-emerald-700">100% 환불</td>
+                                <td class="p-2 text-slate-500">없음 (0원)</td>
+                                <td class="p-2 text-slate-400">위약금 없음</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-medium text-slate-900">사용 개시일 4일 전 ~ 1일 전 취소</td>
+                                <td class="p-2 font-semibold text-amber-700">90% 환불</td>
+                                <td class="p-2 text-amber-700 font-medium">사용료의 10%</td>
+                                <td class="p-2 text-slate-400">10% 차감 후 환불</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-medium text-slate-900">사용 개시일 당일 및 이후</td>
+                                <td class="p-2 font-semibold text-rose-700">환불 불가</td>
+                                <td class="p-2 text-rose-700 font-medium">사용료의 100%</td>
+                                <td class="p-2 text-slate-400">환불 금액 없음</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-5">
+                <div class="bg-white p-4 sm:p-5 rounded-lg border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-[18px] font-bold text-slate-800 border-b border-slate-100 pb-2">조회 조건 설정</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">1. 이용 요일 구분</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button type="button" onclick="setCalcDay('weekday')" id="calc-day-weekday" class="calc-day-btn py-2 px-3 rounded border border-slate-900 bg-slate-900 text-white font-medium text-xs">
+                                    평일 (88,000원)
+                                </button>
+                                <button type="button" onclick="setCalcDay('weekend')" id="calc-day-weekend" class="calc-day-btn py-2 px-3 rounded border border-slate-300 bg-white text-slate-700 font-medium text-xs">
+                                    주말/공휴일 (114,400원)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">2. 취소 신청 시점 (사용 개시일 기준)</label>
+                            <select id="calc-dday" onchange="calculateRefund()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-2 focus:ring-1 focus:ring-slate-500">
+                                <option value="d5">사용 개시일 5일 전 취소 (100% 환불)</option>
+                                <option value="d4_1">사용 개시일 4일 전 ~ 1일 전 취소 (90% 환불 / 위약금 10%)</option>
+                                <option value="d0">사용 개시일 당일 및 이후 (환불 불가)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">3. 특별 취소 사유 선택</label>
+                            <select id="calc-reason" onchange="calculateRefund()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded p-2 focus:ring-1 focus:ring-slate-500">
+                                <option value="normal">일반 변심 / 개인 사정 / 독감 등 (기본 기준)</option>
+                                <option value="disaster">재해 기타 불가항력 사유 (100% 환불)</option>
+                                <option value="official_event">국가적 행사 또는 공단의 사정 (100% 환불)</option>
+                                <option value="weather_fault">기상 천재지변 또는 운영자 귀책 (100% 환불)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-3 rounded border border-slate-200 text-xs space-y-2">
+                        <span class="font-semibold text-slate-800 block">임시운영 및 대관 접수 빠른 안내:</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-xs text-slate-700 leading-normal">
+                            <div class="bg-emerald-50 p-2 rounded border border-emerald-200 text-emerald-900">
+                                <strong>★ 임시운영:</strong> 9.15~22 무료 (08~16시 4타임, 9.8 10시 선착순)
+                            </div>
+                            <div class="bg-white p-2 rounded border border-slate-200">
+                                <strong>1. 정규 추첨:</strong> 매월 16~20일 접수 ➔ <span class="text-amber-800 font-bold">21일 오전 11시 추첨</span>
+                            </div>
+                            <div class="bg-white p-2 rounded border border-slate-200">
+                                <strong>2. 결제 마감:</strong> 매월 22일 밤 11시 59분 미결제 시 취소
+                            </div>
+                            <div class="bg-white p-2 rounded border border-slate-200">
+                                <strong>3. 잔여타임:</strong> 23일 10시(관내) / 24일 10시(관외 확대)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- (이하 계산기/팀등록 진단기 등은 제외되었으므로 영역을 표출하지 않습니다) -->
             </div>
         </section>
 
@@ -149,7 +277,7 @@
                             <h3 class="font-bold text-xs text-white">AI CS 도우미 동명이</h3>
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                         </div>
-                        <p class="text-[10px] text-slate-400">강동구 체육시설 운영 조례 학습 완료</p>
+                        <p class="text-[10px] text-slate-400">강동구 체육시설 최신 규정 탑재 완료</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
@@ -187,10 +315,9 @@
             <!-- Quick Questions Chips -->
             <div class="bg-slate-50 border-b border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto custom-scrollbar text-[11px] whitespace-nowrap">
                 <span class="text-slate-400 font-semibold px-1">추천:</span>
-                <button onclick="sendQuickQuery('추첨은 한 달에 몇 번 신청할 수 있나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">추첨 접수 횟수</button>
+                <button onclick="sendQuickQuery('추첨 진행 시간과 결제 마감일은 언제인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">추첨/결제 일정</button>
+                <button onclick="sendQuickQuery('잔여회차 선착순 오픈 시간이 팀별로 다른가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">잔여타임 선착순</button>
                 <button onclick="sendQuickQuery('직장팀 제출 서류가 어떻게 되나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">직장팀 구비서류</button>
-                <button onclick="sendQuickQuery('운영시간과 회차별 이용시간, 휴관일은 어떻게 되나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">운영시간·회차</button>
-                <button onclick="sendQuickQuery('9월 임시운영 일정과 대관료는 어떻게 되나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">9월 임시운영</button>
                 <button onclick="sendQuickQuery('관내 자격 갱신은 언제 하나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">자격 갱신일</button>
             </div>
 
@@ -205,7 +332,7 @@
                             안녕하세요! 동명근린공원 축구장 AI CS 도우미 '동명이'입니다. ⚽
                         </p>
                         <p class="text-[11px] text-slate-500 leading-normal">
-                            운영시간 및 회차, 추첨 방법 및 횟수, 팀 등록 조건, 9월 임시운영(무료), 대관 규정 등 무엇이든 편하게 물어보세요!
+                            운영시간 및 회차, 추첨 방법 및 횟수, 팀 등록 조건, 대관 일정(21일 11시 추첨 등) 무엇이든 물어보세요!
                         </p>
                     </div>
                 </div>
@@ -214,7 +341,7 @@
             <!-- Input Form -->
             <div class="p-2.5 bg-white border-t border-slate-200">
                 <form onsubmit="handleChatSubmit(event)" class="flex items-center gap-2">
-                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 자격 갱신은 언제 하나요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
+                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 21일 추첨 시간이 몇 시인가요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
                     <button type="submit" id="chat-send-btn" class="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-xl transition-colors font-medium text-xs shrink-0 flex items-center justify-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
@@ -253,9 +380,9 @@
                 id: 'Q2',
                 category: 'draw',
                 question: '정규 대관(익월) 추첨 신청 및 추첨은 언제, 어떻게 진행되나요?',
-                criteria: '매월 16일~20일 대관사이트(gdgd.igangdong.or.kr) 접수 / 추첨신청은 등록팀별 월 3회 가능 / 매월 21일 10시 추첨.',
-                script: '다음 달 정규 대관 추첨 신청은 매월 16일부터 20일까지 공식 대관사이트(gdgd.igangdong.or.kr)를 통해 접수할 수 있습니다. 추첨 신청은 등록팀별로 월 3회까지만 가능하며, 추첨은 매월 21일 오전 10시에 온라인 전자 추첨으로 진행됩니다.',
-                tags: ['16일~20일', '대관사이트', '월3회', '21일오전10시', '온라인추첨', '익월추첨', '추첨신청']
+                criteria: '매월 16일~20일 대관사이트(gdgd.igangdong.or.kr) 접수 / 추첨신청은 등록팀별 월 3회 가능 / 전 달 21일 오전 11시 추첨 진행.',
+                script: '다음 달 정규 대관 추첨 신청은 매월 16일부터 20일까지 공식 대관사이트(gdgd.igangdong.or.kr)를 통해 접수할 수 있습니다. 추첨 신청은 등록팀별로 월 3회까지만 가능하며, 추첨은 전 달 21일 오전 11시에 온라인 전자 추첨으로 진행됩니다.',
+                tags: ['16일~20일', '대관사이트', '월3회', '21일오전11시', '11시추첨', '온라인추첨', '익월추첨', '추첨신청']
             },
             {
                 id: 'Q3',
@@ -269,9 +396,9 @@
                 id: 'Q4',
                 category: 'draw',
                 question: '추첨 당첨 후 결제 마감 시한은 언제까지인가요?',
-                criteria: '추첨일 다음 날 밤 11시 59분(23:59)까지 결제 미완료 시 자동 취소 처리.',
-                script: '추첨 당첨 건의 결제 마감 기한은 추첨일 다음 날 밤 11시 59분(23:59)까지입니다. 마감 시각까지 결제가 완료되지 않을 경우 당첨이 자동 취소되오니 반드시 기한 내에 결제를 완료해 주시기 바랍니다.',
-                tags: ['추첨', '결제마감', '밤11시59분', '23시59분', '23:59', '자동취소', '당첨']
+                criteria: '당첨자 결제 마감은 추첨 익일인 매월 22일 밤 11시 59분(23:59)까지. 미결제 시 자동 취소.',
+                script: '추첨 당첨 건의 결제 마감 기한은 추첨 익일인 매월 22일 밤 11시 59분(23:59)까지입니다. 해당 시각까지 결제가 완료되지 않을 경우 당첨이 자동으로 취소되오니 반드시 기한 내에 결제를 완료해 주시기 바랍니다.',
+                tags: ['추첨', '결제마감', '22일', '밤11시59분', '23시59분', '23:59', '자동취소', '당첨']
             },
             {
                 id: 'Q5',
@@ -284,13 +411,21 @@
             {
                 id: 'Q6',
                 category: 'draw',
-                question: '추첨 후 남아있는 잔여시간은 언제, 어떻게 신청하나요?',
-                criteria: '추첨일 다다음 날(매월 23일) 오전 10시부터 온라인 선착순 접수로 오픈.',
-                script: '추첨 후 잔여시간(잔여타임) 신청은 추첨일 다다음 날인 매월 23일 오전 10시부터 온라인 선착순 접수로 진행됩니다.',
-                tags: ['잔여시간', '잔여타임', '선착순', '매월23일오전10시', '오전10시', '추첨일다다음날', '접수일정']
+                question: '추첨 후 남아있는 잔여회차 선착순 신청은 언제부터인가요 (관내팀)?',
+                criteria: '매월 23일 오전 10시 추첨 후 잔여 회차 선착순 오픈 (관내팀 대상).',
+                script: '추첨 후 남아있는 잔여 회차(잔여타임)에 대한 선착순 접수는 관내팀을 대상으로 매월 23일 오전 10시에 1차로 오픈됩니다.',
+                tags: ['잔여시간', '잔여타임', '선착순', '매월23일오전10시', '관내팀', '오전10시', '추첨후', '접수일정']
             },
             {
                 id: 'Q7',
+                category: 'draw',
+                question: '관외팀의 잔여회차 선착순 신청은 언제부터 가능한가요?',
+                criteria: '매월 24일 오전 10시부터 관외팀까지 선착순 대상 확대.',
+                script: '관외팀의 경우 잔여 회차 선착순 신청 대상이 확대되는 매월 24일 오전 10시부터 접수가 가능합니다.',
+                tags: ['관외팀', '잔여시간', '잔여타임', '선착순', '매월24일오전10시', '확대', '접수일정']
+            },
+            {
+                id: 'Q8',
                 category: 'field',
                 question: '축구장 구장 규격과 샤워실/탈의실 이용 가능한가요?',
                 criteria: '지상 1층: 인조잔디구장(100m X 64m), 우레탄 트랙 / 지하 1층: 남·여 샤워실 및 탈의실 (※ 단, 9월 임시운영 기간 동안 샤워실 및 탈의실 사용 불가).',
@@ -298,7 +433,7 @@
                 tags: ['시설현황', '구장규격', '100mX64m', '샤워실', '탈의실', '지하1층', '9월사용불가', '임시운영', '화장실']
             },
             {
-                id: 'Q8',
+                id: 'Q9',
                 category: 'weather',
                 question: '오늘 비가 오는데 예약 취소 및 전액 환불이 가능한가요?',
                 criteria: '단순 우천 시 정상 진행. 기상청 호우경보 등 기상특보/천재지변 또는 재해 시에만 100% 환불.',
@@ -306,7 +441,7 @@
                 tags: ['우천', '비', '호우경보', '기상특보', '천재지변', '환불']
             },
             {
-                id: 'Q9',
+                id: 'Q10',
                 category: 'weather',
                 question: '강수량이 어느 정도여야 안전 취소가 되나요?',
                 criteria: '시간당 강수량 10mm 이상 지속 시 현장 운영진 판단에 따라 안전 취소 검토 가능.',
@@ -314,7 +449,7 @@
                 tags: ['강수량', '10mm', '안전취소', '우천취소']
             },
             {
-                id: 'Q10',
+                id: 'Q11',
                 category: 'refund',
                 question: '대관 취소는 몇 일 전까지 해야 위약금이 없나요?',
                 criteria: '사용 개시일 5일 전 취소 시 100% 전액 환불 (위약금 0원).',
@@ -322,7 +457,7 @@
                 tags: ['5일전', '100%', '전액환불', '위약금없음', '환불규정']
             },
             {
-                id: 'Q11',
+                id: 'Q12',
                 category: 'refund',
                 question: '사용 개시일 3일 전에 취소하면 환불을 얼마나 받나요?',
                 criteria: '사용 개시일 4일 전 ~ 1일 전 취소 시 10% 위약금 차감 후 90% 환불.',
@@ -330,7 +465,7 @@
                 tags: ['3일전', '90%', '위약금10%', '차감환불']
             },
             {
-                id: 'Q12',
+                id: 'Q13',
                 category: 'refund',
                 question: '대관 당일에 개인 사정으로 취소하면 환불이 되나요?',
                 criteria: '사용 개시일 당일 및 이용 시간 이후 취소 시 환불 불가 (위약금 100%).',
@@ -338,7 +473,7 @@
                 tags: ['당일취소', '환불불가', '0원', '조례기준']
             },
             {
-                id: 'Q13',
+                id: 'Q14',
                 category: 'refund',
                 question: '온라인에서 취소 신청을 하려면 어디로 들어가야 하나요?',
                 criteria: '마이페이지 > 대관결제내역 > 상세보기 > [취소신청] 버튼 클릭.',
@@ -346,7 +481,7 @@
                 tags: ['취소방법', '온라인취소', '마이페이지', '취소신청']
             },
             {
-                id: 'Q14',
+                id: 'Q15',
                 category: 'field',
                 question: '축구장 주소와 연락처, 대중교통으로 찾아오는 길은 어떻게 되나요?',
                 criteria: '주소: 서울시 강동구 아리수로78길 23 / 연락처: 02.2045.7835 / 버스 3412, 강동02, 강동05, 3324, 8333 도보 5분.',
@@ -354,7 +489,7 @@
                 tags: ['주소', '위치', '연락처', '전화번호', '02.2045.7835', '교통안내', '버스', '오시는길', '아리수로78길']
             },
             {
-                id: 'Q15',
+                id: 'Q16',
                 category: 'field',
                 question: '축구장 이용 시 주차장 무료 이용이나 주차 요금 할인이 가능한가요?',
                 criteria: '동명근린공원 공영주차장 유료 이용 가능. 축구장 이용객 관련 주차 요금 할인 및 감면 혜택 없음.',
@@ -362,7 +497,7 @@
                 tags: ['주차장', '공영주차장', '유료주차', '주차할인없음', '감면없음', '주차요금']
             },
             {
-                id: 'Q16',
+                id: 'Q17',
                 category: 'field',
                 question: '쇠뽕 축구화(SG 스터드)를 신고 뛰어도 되나요?',
                 criteria: 'SG (금속/긴 뽕) 스터드 착용 절대 금지. TF(풋살화) 및 AG/HG 권장.',
@@ -370,7 +505,7 @@
                 tags: ['축구화', 'SG', '쇠뽕', '착용금지', 'TF', '풋살화', '페널티']
             },
             {
-                id: 'Q17',
+                id: 'Q18',
                 category: 'field',
                 question: '구장 내에서 컵라면이나 음주, 흡연이 가능한가요?',
                 criteria: '구장 내부 및 보조 공간 전체 금연, 금주, 음식물 섭취 금지 (물/음료만 가능). 적발 시 이용 제한.',
@@ -378,7 +513,7 @@
                 tags: ['흡연', '음주', '음식물', '금연', '금주', '페널티', '이용금지']
             },
             {
-                id: 'Q18',
+                id: 'Q19',
                 category: 'teams',
                 question: '팀 등록 신청 시기와 심사 및 승인 일정은 어떻게 되나요?',
                 criteria: '팀 등록 신청은 수시 신청 가능 / 관내팀: 매월 5일~10일 사이 심사 및 승인 처리 (관내 직장팀 서류는 매월 10일까지 제출된 건에 한함) / 관외팀: 수시 심사 후 순차 승인 처리.',
@@ -386,7 +521,7 @@
                 tags: ['팀등록', '수시신청', '심사일정', '승인일정', '매월5일~10일', '매월10일까지', '순차승인', '관내팀심사', '관외팀심사']
             },
             {
-                id: 'Q19',
+                id: 'Q20',
                 category: 'teams',
                 question: '관내팀과 관외팀의 팀 등록 조건과 제출 구비서류는 무엇인가요?',
                 criteria: '중복 회원 등록 불가 / 관내팀(1순위: 추첨 및 잔여석 선착순 가능): 총원 15명 이상 & 강동구 거주 10명 이상(3개월 내 등본) 또는 강동구 사업장 재직 10명 이상(사업자등록증 및 3개월 내 재직증명서 제출) / 관외팀(2순위: 잔여석 선착순 가능): 관내팀 이외 15명 이상.',
@@ -394,7 +529,7 @@
                 tags: ['팀등록조건', '관내팀조건', '관외팀조건', '제출서류', '구비서류', '15명이상', '10명이상', '주민등록등본', '사업자등록증', '재직증명서', '중복등록불가', '1순위', '2순위']
             },
             {
-                id: 'Q20',
+                id: 'Q21',
                 category: 'teams',
                 question: '한 사람이 여러 팀에 중복으로 회원 등록할 수 있나요?',
                 criteria: '동일 인물의 다수 팀 중복 등록 절대 불가.',
@@ -402,7 +537,7 @@
                 tags: ['중복등록', '1인1팀', '회원등록', '등록불가']
             },
             {
-                id: 'Q21',
+                id: 'Q22',
                 category: 'teams',
                 question: '관내 자격 갱신은 언제 진행되나요?',
                 criteria: '거주자 자격 갱신: 매년 1월 1일 / 7월 1일 (연 2회). 관내팀 승인 유지: 매년 8월 1일.',
@@ -410,7 +545,7 @@
                 tags: ['자격갱신', '거주자갱신', '8월1일', '1월1일', '7월1일']
             },
             {
-                id: 'Q22',
+                id: 'Q23',
                 category: 'safety',
                 question: '예약된 타임을 다른 팀에게 양도해도 되나요?',
                 criteria: '대관 무단 양도 적발 시 즉시 퇴장 및 축구장 6개월 이용 금지.',
@@ -418,7 +553,7 @@
                 tags: ['양도', '무단양도', '6개월', '이용금지', '적발', '페널티']
             },
             {
-                id: 'Q23',
+                id: 'Q24',
                 category: 'safety',
                 question: '경기 중 다른 팀과 시비가 붙어 싸움이 났을 때 대응은?',
                 criteria: '즉시 경기 중단, 양 팀 퇴장 조치 및 1개월 이용 금지. 필요시 112 경찰 신고.',
@@ -426,7 +561,7 @@
                 tags: ['폭행', '싸움', '분쟁', '112신고', '퇴장', '1개월정지', '비상대응']
             },
             {
-                id: 'Q24',
+                id: 'Q25',
                 category: 'safety',
                 question: '시설물(골대, 펜스 등)을 고의로 파손한 경우 조치는?',
                 criteria: '1회 적발 즉시 퇴장 및 원상복구(배상) 청구.',
@@ -434,7 +569,7 @@
                 tags: ['시설파손', '원상복구', '배상청구', '퇴장', '페널티']
             },
             {
-                id: 'Q25',
+                id: 'Q26',
                 category: 'refund',
                 question: '천재지변이나 국가적 행사로 취소되면 어떻게 되나요?',
                 criteria: '공단 사정, 재해, 국가적 행사로 취소 시 100% 전액 환불.',
@@ -587,12 +722,6 @@
             if (clockEl) {
                 clockEl.textContent = `${year}.${month}.${date} (${dayName}) ${hours}:${minutes}:${seconds}`;
             }
-
-            const badgeEl = document.getElementById('realtime-status-badge');
-            if (badgeEl) {
-                badgeEl.className = "px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
-                badgeEl.textContent = "현재 접수 상태: 팀 등록 신청 접수 중 (9.8 오전 10시 임시운영 선착순 접수 오픈)";
-            }
         }
 
         const SYSTEM_PROMPT = `
@@ -602,7 +731,8 @@
 [즉각 대응 트리거 (우선순위 1위)]
 - Q: "직장팀 서류" / "직장팀 조건" ➔ A: 총원 15명 이상 중 강동구 사업장 재직 10명 이상 필요. 필수 제출 서류는 **'사업자등록증' 및 '3개월 이내 발급된 재직증명서'**(매월 10일까지 제출).
 - Q: "자격 갱신" / "갱신일" ➔ A: 거주자 자격 갱신은 **매년 1월 1일, 7월 1일 (연 2회)** 진행. 관내팀 전체 승인 유지는 **매년 8월 1일** 기준 심사.
-- Q: "추첨 횟수" / "어디서 신청" ➔ A: 매월 16일~20일 대관사이트(gdgd.igangdong.or.kr)에서 접수하며, **등록팀별 월 3회**만 신청 가능.
+- Q: "추첨 횟수" / "어디서 신청" / "일정" ➔ A: 매월 16일~20일 대관사이트에서 접수하며, **월 3회** 가능. **21일 11시** 추첨, 결제는 **22일 23:59** 마감.
+- Q: "잔여타임" / "선착순" ➔ A: 관내팀은 **23일 오전 10시**, 관외팀은 **24일 오전 10시**에 잔여회차 선착순 접수가 오픈됩니다.
 - Q: "샤워실" / "탈의실" ➔ A: **지하 1층**에 구비. 단, **9월 임시운영 기간(9.15~9.22)에는 전면 사용 불가**.
 
 [동명근린공원 축구장 공식 팩트 기준]
@@ -622,7 +752,7 @@
    - 관외팀(2순위): 관내팀 이외 15명 이상 (별도 서류 없음)
 4. 정규 대관 요금 및 일정:
    - 정규 요금(2시간): 평일 88,000원 / 주말·공휴일 114,400원
-   - 정규 일정: 매월 16~20일 접수 ➔ 21일 10시 추첨 ➔ 익일 23:59 결제마감 ➔ 23일 10시 잔여타임 오픈
+   - 정규 일정: 매월 16~20일 접수 ➔ 21일 11시 추첨 ➔ 당첨자 22일 23:59 결제마감 ➔ 잔여타임 오픈: 23일 10시(관내팀), 24일 10시(관외팀 확대)
 5. 환불 규정 (정규 대관):
    - 5일 전 100% / 4~1일 전 90% (위약금 10%) / 당일 취소 불가 / 천재지변 100%
 6. 기타 수칙:
@@ -653,7 +783,7 @@
             }
 
             if (query.includes('추첨') || query.includes('접수') || query.includes('16일') || query.includes('21일') || query.includes('횟수') || query.includes('몇 번') || query.includes('3회')) {
-                return "- **정규 추첨 접수:** 매월 16일~20일 대관사이트(gdgd.igangdong.or.kr) 접수\n- **신청 제한:** **등록팀별 월 3회 가능**\n- **추첨 일시:** 매월 **21일 오전 10시** (온라인)\n- **결제 마감:** 당첨 후 익일 밤 11시 59분(23:59)까지";
+                return "- **정규 추첨 접수:** 전 달 16일~20일 대관사이트(gdgd.igangdong.or.kr) 접수\n- **신청 제한:** **등록팀별 월 3회 가능**\n- **추첨 일시:** 매월 **21일 오전 11시** (온라인)\n- **결제 마감:** 당첨 후 22일 밤 11시 59분(23:59)까지\n- **잔여 선착순:** 23일 10시(관내팀), 24일 10시(관외팀 확대)";
             }
 
             if (query.includes('샤워') || query.includes('탈의실')) {
@@ -672,7 +802,7 @@
                 return "- **착용 절대 금지:** **SG 스터드 (금속 / 긴 뽕)** - 적발 시 즉시 퇴장\n- **착용 가능:** **TF 풋살화(적극 권장)**, AG / HG 축구화";
             }
 
-            return "- **운영시간:** 동절기 06:00~21:50 / 하절기 08:00~20:00 (회차별 2시간 단위)\n- **9월 임시운영:** 9.15~9.22 무료 (08~16시 4타임, 9.8 10시 선착순 접수)\n- **추첨 접수:** 매월 16~20일 사이 **월 3회** 가능\n- **대표 문의:** **02-2045-7835**";
+            return "- **추첨 일정:** 매월 16~20일 접수 ➔ 21일 11시 추첨 ➔ 22일 결제 마감 ➔ 23/24일 잔여 접수\n- **팀 등록:** 수시 신청 (관내팀은 매월 5~10일 심사 / 직장팀 서류는 10일까지)\n- **임시운영:** 9.15~9.22 (무료 4타임, 9.8 10시 접수, 샤워실 불가)\n- **문의처:** 02-2045-7835";
         }
 
         function toggleChatbot() {
