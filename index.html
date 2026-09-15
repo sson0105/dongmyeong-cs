@@ -609,43 +609,56 @@
         }
         .btn-footer-refresh:hover { background: #f1f5f9; color: var(--cal-ink); }
 
-        /* GENERATOR TAB PRINT & LAYOUT STYLES */
+        /* GENERATOR TAB PRINT & LAYOUT STYLES (빈 페이지 발생 완전 차단) */
         @page {
             size: A4 landscape;
-            margin: 0;
+            margin: 0 !important;
         }
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #tab-generator, #tab-generator * {
-                visibility: visible;
-            }
-            #tab-generator {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 297mm !important;
-                height: 210mm !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                background: white !important;
-            }
-            .no-print {
+            header, footer, #live-status-container, #live-clock-display, #tab-qa, #tab-calendar, #chatbot-wrapper, .no-print {
                 display: none !important;
             }
-            .print-page {
+            
+            html, body {
                 width: 297mm !important;
                 height: 210mm !important;
                 max-height: 210mm !important;
                 margin: 0 !important;
-                padding: 5mm 8mm 4mm 8mm !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+                overflow: hidden !important;
+            }
+
+            main {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+            }
+
+            #tab-generator {
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 297mm !important;
+                height: 210mm !important;
+                overflow: hidden !important;
+            }
+
+            .print-page {
+                width: 297mm !important;
+                height: 204mm !important;
+                max-height: 204mm !important;
+                margin: 0 auto !important;
+                padding: 4mm 7mm !important;
                 box-shadow: none !important;
                 border: none !important;
-                page-break-after: avoid !important;
                 page-break-inside: avoid !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
+                box-sizing: border-box !important;
             }
         }
+
         .a4-landscape {
             width: 297mm;
             height: 210mm;
