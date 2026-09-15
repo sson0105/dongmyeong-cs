@@ -63,7 +63,7 @@
             <div class="flex flex-wrap items-center gap-2.5 text-xs text-slate-600">
                 <span class="bg-amber-100 text-amber-900 font-semibold px-2.5 py-1 rounded border border-amber-200 hidden lg:inline-block">9.15~9.22 임시운영 무료 (정규: 평일 8.8만/주말 11.44만)</span>
                 
-                <!-- 관리자 매뉴얼 다운로드 버튼 신규 추가 -->
+                <!-- 관리자 매뉴얼 다운로드 버튼 -->
                 <a href="/admin_manual.pdf" download="동명근린공원_관리자_매뉴얼.pdf" class="inline-flex items-center gap-1.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold px-3 py-1.5 rounded border border-slate-300 transition-colors shadow-2xs">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -79,6 +79,18 @@
                 </a>
             </div>
         </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="bg-slate-50 border-t border-slate-200 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto flex space-x-1 overflow-x-auto custom-scrollbar text-xs font-medium py-1.5">
+                <button onclick="switchTab('qa')" id="tab-btn-qa" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap bg-slate-900 text-white font-semibold shadow-2xs">
+                    Q&A 및 스크립트
+                </button>
+                <button onclick="switchTab('calendar')" id="tab-btn-calendar" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                    대관 일정 캘린더
+                </button>
+            </div>
+        </nav>
     </header>
 
     <!-- Real-Time Clock Bar -->
@@ -100,8 +112,8 @@
     <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
 
-        <!-- CS Q&A SEARCH & SCRIPT BANK -->
-        <section id="tab-qa" class="block space-y-5">
+        <!-- TAB 1: CS Q&A SEARCH & SCRIPT BANK -->
+        <section id="tab-qa" class="tab-content block space-y-5">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 px-1">
                 <div>
                     <h2 class="text-xl font-bold text-slate-900">CS 응대 스크립트 검색</h2>
@@ -120,6 +132,25 @@
 
             <div id="qa-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- JS will populate Q&A cards here -->
+            </div>
+        </section>
+
+        <!-- TAB 2: CALENDAR TAB (깃허브 calendar.html 연동) -->
+        <section id="tab-calendar" class="tab-content hidden space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 px-1">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">대관 일정 캘린더</h2>
+                    <p class="text-xs text-slate-500 mt-1">동명근린공원 축구장의 실시간 예약 현황 및 캘린더를 확인합니다.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden w-full min-h-[750px]">
+                <iframe 
+                    src="./calendar.html" 
+                    title="대관 일정 캘린더" 
+                    class="w-full h-[850px] border-0"
+                    loading="lazy">
+                </iframe>
             </div>
         </section>
 
@@ -300,7 +331,7 @@
                 id: 'Q8',
                 category: 'field',
                 question: '축구장 구장 규격과 샤워실/탈의실 이용 가능한가요?',
-                criteria: '지상 1층: 인조잔디구장(100m X 64m), 우레탄 트랙 / 지하 1층: 남·여 샤워실 및 탈의실 (※ 단, 9월 임시운영 기간 동안 샤워실 및 탈의실 사용 불가).',
+                criteria: '지상 층: 인조잔디구장(100m X 64m), 우레탄 트랙 / 지하 1층: 남·여 샤워실 및 탈의실 (※ 단, 9월 임시운영 기간 동안 샤워실 및 탈의실 사용 불가).',
                 script: '동명근린공원 축구장은 지상 1층에 100m X 64m 규격의 인조잔디구장이 있으며, 지하 1층에 남/여 샤워실과 탈의실이 완비되어 있습니다. 단, 9월 임시운영 기간 동안에는 샤워실과 탈의실 사용이 불가능하오니 양해 부탁드립니다.',
                 tags: ['시설현황', '구장규격', '100mX64m', '샤워실', '탈의실', '지하1층', '9월사용불가', '임시운영', '화장실']
             },
@@ -579,6 +610,23 @@
             renderQACards(input ? input.value : '');
         }
 
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white', 'font-semibold', 'shadow-2xs');
+                btn.classList.add('text-slate-600');
+            });
+
+            const targetSection = document.getElementById('tab-' + tabId);
+            if (targetSection) targetSection.classList.remove('hidden');
+
+            const activeBtn = document.getElementById('tab-btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-slate-900', 'text-white', 'font-semibold', 'shadow-2xs');
+                activeBtn.classList.remove('text-slate-600');
+            }
+        }
+
         function updateLiveClock() {
             const now = new Date();
             const year = now.getFullYear();
@@ -593,12 +641,6 @@
             const clockEl = document.getElementById('live-clock-display');
             if (clockEl) {
                 clockEl.textContent = `${year}.${month}.${date} (${dayName}) ${hours}:${minutes}:${seconds}`;
-            }
-
-            const badgeEl = document.getElementById('realtime-status-badge');
-            if (badgeEl) {
-                badgeEl.className = "px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
-                badgeEl.textContent = "현재 접수 상태: 9월 임시운영 선착순 대관 접수 중";
             }
         }
 
