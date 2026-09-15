@@ -6,18 +6,18 @@
     <title>동명근린공원 축구장 고객 응대(CS) 통합 가이드</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Pretendard Variable Font CDN -->
+    <!-- Fonts CDN -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         body {
-            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
             background-color: #f8fafc;
             color: #1e293b;
             font-size: 12px;
-        }
-        h3 {
-            font-size: 18px !important;
         }
         .font-serif-kr {
             font-family: "Pretendard Variable", Pretendard, sans-serif;
@@ -40,6 +40,569 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
+        /* CALENDAR NATIVE STYLES */
+        :root {
+            --cal-bg: #f8fafc;
+            --cal-paper: #ffffff;
+            --cal-surface: #f8fafc;
+            --cal-ink: #0f172a;
+            --cal-ink-2: #334155;
+            --cal-ink-3: #64748b;
+            --cal-ink-4: #94a3b8;
+            --cal-line: #e2e8f0;
+            --cal-line-2: #f1f5f9;
+
+            --cal-sat: #2563eb;
+            --cal-sat-soft: #eff6ff;
+            --cal-sun: #dc2626;
+            --cal-sun-soft: #fef2f2;
+
+            --cal-today-accent: #2563eb;
+            --cal-today-bg: rgba(37, 99, 235, 0.04);
+            --cal-today-border: #bfdbfe;
+
+            --cal-cat-a: #4f46e5;
+            --cal-cat-a-bg: #eef2ff;
+            --cal-cat-b: #d97706;
+            --cal-cat-b-bg: #fffbeb;
+            --cal-cat-c: #059669;
+            --cal-cat-c-bg: #ecfdf5;
+        }
+
+        .cal-page {
+            width: 100%;
+            background: var(--cal-paper);
+            padding: 24px 28px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--cal-line);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        #auth-gate-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.75);
+            z-index: 100000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        #auth-gate-overlay.hidden { display: none !important; }
+
+        .status-text-pending { color: #dc2626; font-weight: 700; }
+        .status-text-normal { color: var(--cal-ink-2); font-weight: 600; }
+        .tt-status-pending {
+            color: #f87171 !important;
+            font-weight: 800 !important;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .header-upcoming {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            position: relative;
+        }
+        .title-area { display: flex; flex-direction: column; gap: 4px; }
+        .title-row { display: flex; align-items: center; gap: 12px; }
+        .main-heading {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--cal-ink);
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .live-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px 4px 8px;
+            background: #f1f5f9;
+            border: 1px solid var(--cal-line);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--cal-ink-3);
+            transition: all 0.2s ease;
+        }
+        .pulse-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 10px;
+            height: 10px;
+        }
+        .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; }
+        .pulse-ring {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            opacity: 0.5;
+            animation: live-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .live-status-badge.syncing {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #2563eb;
+        }
+        .live-status-badge.syncing .pulse-dot {
+            background: #2563eb;
+            border: 2px solid #93c5fd;
+            border-top-color: #2563eb;
+            animation: cal-spin 0.8s linear infinite;
+            width: 8px;
+            height: 8px;
+        }
+        .live-status-badge.syncing .pulse-ring { display: none; }
+        .live-status-badge.error {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+        .live-status-badge.error .pulse-dot { background: #dc2626; }
+        .live-status-badge.error .pulse-ring { display: none; }
+
+        @keyframes live-pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.8); opacity: 0; }
+            100% { transform: scale(0.95); opacity: 0; }
+        }
+        @keyframes cal-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .picker-trigger-wrapper { position: relative; display: inline-flex; align-items: center; }
+        .sub-date-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 4px 8px 4px 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Manrope', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--cal-ink);
+            letter-spacing: -0.01em;
+            transition: all 0.15s ease;
+        }
+        .sub-date-btn:hover { background: #e2e8f0; color: var(--cal-today-accent); }
+        .picker-caret-svg {
+            display: block;
+            color: var(--cal-ink-3);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s;
+        }
+        .sub-date-btn:hover .picker-caret-svg { color: var(--cal-today-accent); }
+        .sub-date-btn.active .picker-caret-svg { transform: rotate(180deg); color: var(--cal-today-accent); }
+
+        .month-picker-popover {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            z-index: 100;
+            background: #ffffff;
+            border: 1px solid var(--cal-line);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+            padding: 12px;
+            width: 250px;
+        }
+        .popover-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--cal-line-2);
+        }
+        .popover-year-title { font-weight: 800; font-size: 14px; color: var(--cal-ink); }
+        .popover-year-nav { display: flex; gap: 2px; }
+        .popover-year-nav button {
+            background: transparent;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            color: var(--cal-ink-3);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .popover-year-nav button:hover { background: var(--cal-line-2); color: var(--cal-ink); }
+
+        .month-grid-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .btn-month-chip {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 7px 0;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--cal-ink-2);
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .btn-month-chip:hover { background: #f1f5f9; color: var(--cal-ink); }
+        .btn-month-chip.current {
+            background: var(--cal-cat-a-bg);
+            color: var(--cal-cat-a);
+            font-weight: 800;
+            border-color: #c7d2fe;
+        }
+
+        .control-area { display: flex; align-items: center; gap: 10px; }
+        .legend-cluster { display: flex; align-items: center; gap: 10px; padding-right: 4px; }
+        .legend-chip { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--cal-ink-2); }
+        .legend-indicator { width: 9px; height: 9px; border-radius: 2px; }
+        .legend-indicator.a { background: var(--cal-cat-a); }
+        .legend-indicator.c { background: var(--cal-cat-c); }
+        .legend-indicator.b { background: var(--cal-cat-b); }
+
+        .btn-add-booking {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 0 12px;
+            height: 32px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .btn-add-booking:hover { background: #1d4ed8; }
+
+        .nav-capsule {
+            display: inline-flex;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid var(--cal-line);
+            border-radius: 6px;
+            overflow: hidden;
+            height: 32px;
+        }
+        .nav-btn {
+            background: transparent;
+            border: none;
+            padding: 0 11px;
+            height: 100%;
+            color: var(--cal-ink-2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+        .nav-btn.btn-today { font-weight: 700; color: var(--cal-ink); }
+        .nav-btn:hover { background: #f1f5f9; color: var(--cal-ink); }
+        .nav-divider { width: 1px; height: 16px; background: var(--cal-line); }
+
+        .view-segment {
+            display: inline-flex;
+            background: #ffffff;
+            border: 1px solid var(--cal-line);
+            border-radius: 6px;
+            padding: 2px;
+            height: 32px;
+        }
+        .btn-view-toggle {
+            background: transparent;
+            border: none;
+            padding: 0 10px;
+            height: 100%;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--cal-ink-3);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .btn-view-toggle.active { background: #f1f5f9; color: var(--cal-ink); font-weight: 700; }
+
+        .calendar-outer-wrap {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .calendar {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--cal-line);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--cal-paper);
+            flex: 1;
+        }
+
+        .calendar-loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(3px);
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .calendar-loading-overlay.active { display: flex; }
+        .loading-card-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            padding: 10px 18px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--cal-line);
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--cal-ink);
+        }
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2.5px solid #dbeafe;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: cal-spin 0.7s linear infinite;
+        }
+
+        .weekdays-month {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: var(--cal-surface);
+            border-bottom: 1px solid var(--cal-line);
+        }
+        .wd {
+            padding: 9px 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: var(--cal-ink-3);
+            text-transform: uppercase;
+            text-align: left;
+            border-right: 1px solid var(--cal-line);
+        }
+        .wd:last-child { border-right: none; }
+        .wd.sat { color: var(--cal-sat); }
+        .wd.sun { color: var(--cal-sun); }
+
+        .grid-month {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-auto-rows: minmax(115px, 1fr);
+        }
+        .cell {
+            border-right: 1px solid var(--cal-line-2);
+            border-bottom: 1px solid var(--cal-line-2);
+            padding: 8px;
+            position: relative;
+            display: flex; flex-direction: column;
+            background: var(--cal-paper);
+            transition: background 0.1s;
+            cursor: pointer;
+        }
+        .cell:hover { background: #fafcff; }
+        .cell:nth-child(7n) { border-right: none; }
+        .cell.out { background: #fbfcfe; cursor: default; }
+        .cell.out .d-num { color: var(--cal-ink-4); }
+
+        .cell.sat::before, .cell.sun::before, .cell.holiday::before {
+            content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.35;
+        }
+        .cell.sat::before { background: var(--cal-sat-soft); }
+        .cell.sun::before, .cell.holiday::before { background: var(--cal-sun-soft); }
+        .cell > * { position: relative; z-index: 1; }
+
+        .cell.is-today { background-color: var(--cal-today-bg) !important; }
+        .cell.is-today::after {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--cal-today-accent); z-index: 2;
+        }
+        .cell.is-today .d-num {
+            background: var(--cal-today-accent);
+            color: #ffffff !important;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12.5px !important;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+        }
+        .today-tag {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--cal-today-accent);
+            background: #dbeafe;
+            padding: 1px 5px;
+            border-radius: 3px;
+            margin-left: 6px;
+        }
+
+        .cell.holiday .d-num { color: var(--cal-sun) !important; }
+        .holiday-badge {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--cal-sun);
+            background: #fee2e2;
+            padding: 1px 5px;
+            border-radius: 3px;
+            margin-left: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80px;
+        }
+
+        .d-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+        .d-head-left { display: flex; align-items: center; }
+        .d-num { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 800; color: var(--cal-ink); }
+        .cell.sat .d-num { color: var(--cal-sat); }
+        .cell.sun .d-num { color: var(--cal-sun); }
+        .d-tag { font-size: 10px; font-weight: 700; color: var(--cal-ink-4); font-family: 'Manrope', sans-serif; }
+
+        .events { display: flex; flex-direction: column; gap: 4px; flex: 1; min-height: 0; }
+        .ev {
+            display: flex; flex-direction: column;
+            padding: 4px 7px 5px;
+            border-radius: 4px;
+            line-height: 1.35;
+            border-left: 3.5px solid;
+            background: #fff;
+            cursor: pointer;
+            transition: transform 0.08s ease;
+        }
+        .ev:hover { transform: translateY(-1px); }
+
+        .ev-top-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%; }
+        .memo-clip-badge { display: inline-flex; align-items: center; justify-content: center; color: var(--cal-ink-3); opacity: 0.85; }
+        .ev-time { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 10.5px; }
+        .ev-title { font-size: 11.5px; font-weight: 700; color: var(--cal-ink); line-height: 1.3; margin-top: 1px; word-break: keep-all; }
+
+        .ev.a { background: var(--cal-cat-a-bg); border-left-color: var(--cal-cat-a); }
+        .ev.a .ev-time { color: var(--cal-cat-a); }
+        .ev.b { background: var(--cal-cat-b-bg); border-left-color: var(--cal-cat-b); }
+        .ev.b .ev-time { color: var(--cal-cat-b); }
+        .ev.c { background: var(--cal-cat-c-bg); border-left-color: var(--cal-cat-c); }
+        .ev.c .ev-time { color: var(--cal-cat-c); }
+
+        .grid-week-wrapper { display: flex; flex-direction: column; flex: 1; overflow-y: auto; }
+        .week-header {
+            display: grid;
+            grid-template-columns: 90px repeat(7, 1fr);
+            background: var(--cal-surface);
+            border-bottom: 1px solid var(--cal-line);
+            position: sticky; top: 0; z-index: 5;
+        }
+        .week-slot-head { padding: 9px 6px; text-align: center; font-size: 11px; font-weight: 800; color: var(--cal-ink-3); border-right: 1px solid var(--cal-line); }
+        .week-day-col { padding: 8px; text-align: center; border-right: 1px solid var(--cal-line-2); position: relative; }
+        .week-day-col:last-child { border-right: none; }
+        .week-day-col .w-dname { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--cal-ink-3); }
+        .week-day-col .w-dnum { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 800; color: var(--cal-ink); margin-top: 1px; }
+        .week-day-col.sat .w-dname, .week-day-col.sat .w-dnum { color: var(--cal-sat); }
+        .week-day-col.sun .w-dname, .week-day-col.sun .w-dnum { color: var(--cal-sun); }
+        .week-day-col.holiday .w-dname, .week-day-col.holiday .w-dnum { color: var(--cal-sun) !important; }
+        .week-day-col.is-today { background-color: var(--cal-today-bg); }
+        .week-day-col.is-today .w-dnum {
+            background: var(--cal-today-accent);
+            color: #ffffff !important;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1px auto 0;
+        }
+
+        .week-body { display: flex; flex-direction: column; }
+        .week-row { display: grid; grid-template-columns: 90px repeat(7, 1fr); border-bottom: 1px solid var(--cal-line-2); min-height: 90px; }
+        .time-col {
+            padding: 8px 6px; background: var(--cal-surface); border-right: 1px solid var(--cal-line);
+            text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 2px;
+        }
+        .time-col .slot-name { font-size: 11.5px; font-weight: 800; color: var(--cal-ink); }
+        .time-col .slot-hours { font-size: 10px; color: var(--cal-ink-3); font-family: 'Manrope', sans-serif; font-weight: 600; }
+        
+        .slot-cell { border-right: 1px solid var(--cal-line-2); padding: 5px; display: flex; flex-direction: column; gap: 4px; background: var(--cal-paper); cursor: pointer; }
+        .slot-cell:last-child { border-right: none; }
+        .slot-cell.sat { background: #fafcff; }
+        .slot-cell.sun, .slot-cell.holiday { background: #fffafa; }
+        .slot-cell.is-today { background-color: var(--cal-today-bg) !important; }
+
+        #tooltip {
+            position: fixed; display: none; pointer-events: none; z-index: 100000;
+            background: rgba(15, 23, 42, 0.96); color: #fff; padding: 10px 14px;
+            border-radius: 6px; line-height: 1.5; box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+            backdrop-filter: blur(4px); white-space: nowrap;
+        }
+        #tooltip .tt-title {
+            font-weight: 800; font-size: 13px; margin-bottom: 5px; color: #fff;
+            border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 4px;
+        }
+        #tooltip .tt-row { color: #cbd5e1; font-size: 11.5px; margin: 2px 0; }
+        #tooltip .tt-row b { color: #f8fafc; font-weight: 700; }
+        #tooltip .tt-memo { color: #ff9c6e; font-weight: 600; }
+
+        #modal, #holiday-modal, #create-modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+            justify-content: center; align-items: center; z-index: 99999;
+            backdrop-filter: blur(4px);
+        }
+        .modal-box {
+            background: #fff; padding: 22px; border-radius: 10px; width: 420px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
+        }
+        .modal-box h4 { margin-bottom: 12px; font-size: 16px; font-weight: 800; color: var(--cal-ink); }
+        .modal-box p { font-size: 12.5px; margin: 6px 0; color: var(--cal-ink-2); display: flex; justify-content: space-between; gap: 12px; }
+        .modal-box p strong { color: var(--cal-ink); flex-shrink: 0; }
+
+        .cal-form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+        .cal-form-group label { font-size: 11.5px; font-weight: 700; color: var(--cal-ink-2); }
+        .cal-form-group input, .cal-form-group select {
+            padding: 8px 10px; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12.5px; outline: none;
+        }
+
+        .cal-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; color: var(--cal-ink-4); padding-top: 8px; border-top: 1px solid var(--cal-line);
+        }
+        .cal-footer-left { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+        .btn-footer-refresh {
+            background: #ffffff; border: 1px solid var(--cal-line); padding: 4px 9px;
+            border-radius: 4px; font-size: 11px; font-weight: 600; color: var(--cal-ink-2);
+            cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+        }
+        .btn-footer-refresh:hover { background: #f1f5f9; color: var(--cal-ink); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col text-slate-800 antialiased text-xs">
@@ -135,26 +698,238 @@
             </div>
         </section>
 
-        <!-- TAB 2: CALENDAR TAB (깃허브 calendar.html 연동) -->
+        <!-- TAB 2: NATIVE CALENDAR TAB (iframe 없는 직접 통합 영역) -->
         <section id="tab-calendar" class="tab-content hidden space-y-4">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 px-1">
-                <div>
-                    <h2 class="text-xl font-bold text-slate-900">대관 일정 캘린더</h2>
-                    <p class="text-xs text-slate-500 mt-1">동명근린공원 축구장의 실시간 예약 현황 및 캘린더를 확인합니다.</p>
+            
+            <div class="cal-page">
+                <header class="header-upcoming">
+                    <div class="title-area">
+                        <div class="title-row">
+                            <div class="main-heading">동명근린공원 축구장 우선 예약 현황</div>
+                            
+                            <div class="live-status-badge" id="top-status-badge">
+                                <div class="pulse-wrapper">
+                                    <div class="pulse-ring"></div>
+                                    <div class="pulse-dot"></div>
+                                </div>
+                                <span id="top-status-text">실시간 연동 대기</span>
+                            </div>
+                        </div>
+
+                        <div class="picker-trigger-wrapper">
+                            <button class="sub-date-btn" id="btn-picker-trigger" onclick="toggleMonthPicker(event)">
+                                <span id="header-date-title"></span>
+                                <svg class="picker-caret-svg" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="4 6 8 10 12 6"></polyline>
+                                </svg>
+                            </button>
+
+                            <div class="month-picker-popover" id="month-picker-popover" onclick="event.stopPropagation()">
+                                <div class="popover-header">
+                                    <span class="popover-year-title" id="popover-year-title"></span>
+                                    <div class="popover-year-nav">
+                                        <button type="button" onclick="changePickerYear(-1)" title="이전 연도">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="15 18 9 12 15 6"></polyline>
+                                            </svg>
+                                        </button>
+                                        <button type="button" onclick="changePickerYear(1)" title="다음 연도">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="9 18 15 12 9 6"></polyline>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="month-grid-picker" id="month-chips-grid"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-area">
+                        <div class="legend-cluster">
+                            <div class="legend-chip"><span class="legend-indicator a"></span>선예약팀</div>
+                            <div class="legend-chip"><span class="legend-indicator c"></span>고정팀</div>
+                            <div class="legend-chip"><span class="legend-indicator b"></span>행사</div>
+                        </div>
+
+                        <button class="btn-add-booking" onclick="openCreateModal()">+ 신규 예약</button>
+
+                        <div class="nav-capsule">
+                            <button class="nav-btn" onclick="navigateStep(-1)" id="btn-nav-prev">이전 달</button>
+                            <div class="nav-divider"></div>
+                            <button class="nav-btn btn-today" onclick="goToday()">오늘</button>
+                            <div class="nav-divider"></div>
+                            <button class="nav-btn" onclick="navigateStep(1)" id="btn-nav-next">다음 달</button>
+                        </div>
+
+                        <div class="view-segment">
+                            <button class="btn-view-toggle active" id="btn-tab-month" onclick="setViewMode('month')">월간</button>
+                            <button class="btn-view-toggle" id="btn-tab-week" onclick="setViewMode('week')">주간</button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="calendar-outer-wrap">
+                    <div class="calendar" id="calendar-container"></div>
+                    <div class="calendar-loading-overlay" id="calendar-loading-overlay">
+                        <div class="loading-card-pill">
+                            <div class="loading-spinner"></div>
+                            <span id="loading-overlay-text">스프레드시트 데이터 동기화 중...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cal-footer">
+                    <div class="cal-footer-left">
+                        <span>동명근린공원 축구장 대관 관리</span>
+                        <span class="text-slate-300">|</span>
+                        <span id="footer-count-text">총 0건</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="last-sync-time">동기화 대기 중</span>
+                        <button class="btn-footer-refresh" onclick="openHolidayModal()">⚙️ 공휴일 관리</button>
+                        <button class="btn-footer-refresh" onclick="renderCalendar(true)">🔄 새로고침</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden w-full min-h-[750px]">
-                <iframe 
-                    src="./calendar.html" 
-                    title="대관 일정 캘린더" 
-                    class="w-full h-[850px] border-0"
-                    loading="lazy">
-                </iframe>
-            </div>
         </section>
 
     </main>
+
+    <!-- CALENDAR PORTAL MODALS -->
+    <!-- 1차 보안 접속 잠금 게이트웨이 -->
+    <div id="auth-gate-overlay" class="hidden">
+        <div style="background: #ffffff; padding: 32px 28px; border-radius: 12px; width: 340px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.08); text-align: center;">
+            <div style="font-size: 32px; margin-bottom: 12px;">🔒</div>
+            <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">동명근린공원 대관 관리</h3>
+            <p style="font-size: 12.5px; color: #64748b; margin-bottom: 20px;">보안을 위해 접속 비밀번호를 입력해주세요.</p>
+            
+            <form onsubmit="handleGateAuth(event)" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="password" id="gate-password-input" placeholder="비밀번호 입력" style="padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 14px; text-align: center; outline: none;">
+                <div id="gate-error-msg" style="color: #dc2626; font-size: 12px; font-weight: 600; display: none;">비밀번호가 일치하지 않습니다.</div>
+                <button type="submit" id="btn-gate-submit" style="margin-top: 6px; padding: 10px; background: #2563eb; color: #ffffff; border: none; border-radius: 6px; font-size: 13.5px; font-weight: 700; cursor: pointer;">접속하기</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="tooltip"></div>
+
+    <!-- 예약 상세 모달 -->
+    <div id="modal" onclick="closeModal(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h4 id="m-team">대관 상세</h4>
+            <p><strong>일시:</strong> <span id="m-time"></span></p>
+            <p><strong>구분:</strong> <span id="m-cat"></span></p>
+            <p><strong>요청 기관:</strong> <span id="m-agency"></span></p>
+            <p><strong>대관료:</strong> <span id="m-fee"></span></p>
+            <p><strong>현재 상태:</strong> <span id="m-status"></span></p>
+
+            <div id="m-memo-container" style="display:none;">
+                <p><strong>비고:</strong> <span id="m-memo" style="color: var(--cal-ink-2); word-break: break-all;"></span></p>
+            </div>
+
+            <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cal-line); display: flex; flex-direction: column; gap: 8px;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--cal-ink-3);">상태 즉시 변경</div>
+                <div style="display: flex; gap: 6px;">
+                    <button type="button" onclick="quickUpdateStatus('등록 대기')" style="flex: 1; padding: 8px 4px; background: var(--cal-line-2); color: #2563eb; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">등록 대기</button>
+                    <button type="button" onclick="quickUpdateStatus('결제 대기')" style="flex: 1; padding: 8px 4px; background: var(--cal-line-2); color: #d97706; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">결제 대기</button>
+                    <button type="button" onclick="quickUpdateStatus('결제 완료')" style="flex: 1; padding: 8px 4px; background: var(--cal-line-2); color: #059669; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">결제 완료</button>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 14px;">
+                <button type="button" onclick="deleteCurrentEvent()" style="flex: 1; padding: 9px; background: transparent; color: var(--cal-ink-3); border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">삭제</button>
+                <button type="button" onclick="document.getElementById('modal').style.display='none'" style="flex: 1.5; padding: 9px; background: var(--cal-ink); color: #ffffff; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 신규 예약 모달 -->
+    <div id="create-modal" onclick="closeCreateModal(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h4 style="margin-bottom: 14px;">➕ 새 대관 예약 등록</h4>
+            <form onsubmit="handleCreateBooking(event)">
+                <div class="cal-form-group">
+                    <label>예약일자</label>
+                    <input type="date" id="new-date" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div class="cal-form-group">
+                        <label>회차 / 시간</label>
+                        <select id="new-time" required>
+                            <option value="1회차 (08:00~10:00)">1회차 (08:00~10:00)</option>
+                            <option value="2회차 (10:00~12:00)">2회차 (10:00~12:00)</option>
+                            <option value="3회차 (12:00~14:00)">3회차 (12:00~14:00)</option>
+                            <option value="4회차 (14:00~16:00)">4회차 (14:00~16:00)</option>
+                            <option value="5회차 (16:00~18:00)">5회차 (16:00~18:00)</option>
+                            <option value="6회차 (18:00~20:00)">6회차 (18:00~20:00)</option>
+                            <option value="종일">종일 (행사)</option>
+                        </select>
+                    </div>
+                    <div class="cal-form-group">
+                        <label>구분</label>
+                        <select id="new-category" required>
+                            <option value="선예약팀">선예약팀</option>
+                            <option value="고정팀">고정팀</option>
+                            <option value="행사">행사</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="cal-form-group">
+                    <label>사용처 / 팀명</label>
+                    <input type="text" id="new-team" placeholder="예: 동명FC" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div class="cal-form-group">
+                        <label>요청 기관</label>
+                        <input type="text" id="new-agency" placeholder="예: 강동구축구협회">
+                    </div>
+                    <div class="cal-form-group">
+                        <label>진행 상태</label>
+                        <select id="new-status">
+                            <option value="등록 대기">등록 대기</option>
+                            <option value="결제 대기">결제 대기</option>
+                            <option value="결제 완료">결제 완료</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="cal-form-group">
+                    <label>대관료 (원)</label>
+                    <select id="new-fee">
+                        <option value="무료">무료</option>
+                        <option value="88,000">88,000</option>
+                        <option value="114,400">114,400</option>
+                    </select>
+                </div>
+                <div class="cal-form-group">
+                    <label>비고</label>
+                    <input type="text" id="new-memo" placeholder="특이사항 입력">
+                </div>
+                <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
+                    <button type="button" onclick="document.getElementById('create-modal').style.display='none'" style="padding: 8px 16px; background: #f1f5f9; color: var(--cal-ink-2); border: 1px solid var(--cal-line); border-radius: 6px; font-weight: 600; cursor: pointer;">취소</button>
+                    <button type="submit" id="btn-save-booking" style="padding: 8px 18px; background: #2563eb; color: #fff; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">스프레드시트에 저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 공휴일 모달 -->
+    <div id="holiday-modal" onclick="closeHolidayModal(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h4 style="margin-bottom: 12px; font-size: 16px; font-weight: 800; color: var(--cal-ink);">공휴일 관리</h4>
+            <div style="display: flex; gap: 8px; margin-bottom: 12px; align-items: center;">
+                <input type="date" id="input-holiday-date" style="flex: 1.3; padding: 7px 8px; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12px;">
+                <input type="text" id="input-holiday-name" placeholder="공휴일명" style="flex: 1; padding: 7px 8px; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12px;">
+                <button type="button" onclick="addCustomHoliday()" style="padding: 7px 12px; background: var(--cal-today-accent); color: #fff; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">추가</button>
+            </div>
+            <div id="holiday-list-box" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--cal-line); border-radius: 6px; padding: 6px 10px; margin-bottom: 12px;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <button type="button" onclick="resetDefaultHolidays()" style="background: none; border: none; color: var(--cal-sun); font-size: 11.5px; cursor: pointer; text-decoration: underline;">기본 복원</button>
+                <button type="button" onclick="document.getElementById('holiday-modal').style.display='none'" style="padding: 6px 14px; background: var(--cal-ink-2); color: #fff; border: none; border-radius: 6px; cursor: pointer;">닫기</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Floating AI Chatbot Button & Dialog Window -->
     <div id="chatbot-wrapper">
@@ -169,12 +944,9 @@
         </button>
 
         <div id="chatbot-modal" class="fixed bottom-20 right-4 sm:right-6 w-[360px] sm:w-[400px] max-w-[calc(100vw-2rem)] h-[540px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col hidden z-50 overflow-hidden transition-all duration-200">
-            <!-- Header -->
             <div class="bg-slate-900 text-white p-3.5 flex items-center justify-between border-b border-slate-800">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 font-bold text-xs">
-                        동명
-                    </div>
+                    <div class="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 font-bold text-xs">동명</div>
                     <div>
                         <div class="flex items-center gap-1.5">
                             <h3 class="font-bold text-xs text-white">AI CS 도우미 동명이</h3>
@@ -198,54 +970,38 @@
                 </div>
             </div>
 
-            <!-- Drawer -->
             <div id="apikey-drawer" class="bg-slate-800 text-slate-200 p-2.5 text-xs border-b border-slate-700 space-y-2 hidden">
                 <div class="flex items-center justify-between">
                     <span class="font-bold text-emerald-400">Gemini AI 실시간 응용 답변 설정</span>
                     <span class="text-[10px] text-slate-400">무료 키 적용</span>
                 </div>
-                <p class="text-[11px] text-slate-300">
-                    로컬 다운로드 파일 실행 시에만 입력해 주세요. (Vercel 배포 사이트는 환경변수로 자동 작동합니다)
-                </p>
                 <div class="flex items-center gap-1.5">
                     <input type="password" id="user-api-key-input" placeholder="Google Gemini API Key 입력..." class="flex-1 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                    <button onclick="saveApiKey()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded text-xs transition-colors">
-                        저장
-                    </button>
+                    <button onclick="saveApiKey()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded text-xs">저장</button>
                 </div>
             </div>
 
-            <!-- Quick Questions Chips -->
             <div class="bg-slate-50 border-b border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto custom-scrollbar text-[11px] whitespace-nowrap">
                 <span class="text-slate-400 font-semibold px-1">추천:</span>
-                <button onclick="sendQuickQuery('추첨 진행 시간과 결제 마감일은 언제인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">추첨/결제 일정</button>
-                <button onclick="sendQuickQuery('잔여회차 선착순 오픈 시간이 팀별로 다른가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">잔여타임 선착순</button>
-                <button onclick="sendQuickQuery('직장팀 제출 서류가 어떻게 되나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">직장팀 구비서류</button>
-                <button onclick="sendQuickQuery('관내 자격 갱신은 언제 하나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700 shadow-2xs">자격 갱신일</button>
+                <button onclick="sendQuickQuery('추첨 진행 시간과 결제 마감일은 언제인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700">추첨/결제 일정</button>
+                <button onclick="sendQuickQuery('잔여회차 선착순 오픈 시간이 팀별로 다른가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700">잔여타임 선착순</button>
+                <button onclick="sendQuickQuery('직장팀 제출 서류가 어떻게 되나요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700">직장팀 구비서류</button>
             </div>
 
-            <!-- Messages Container -->
             <div id="chat-messages" class="flex-1 p-3.5 overflow-y-auto custom-scrollbar space-y-3 bg-slate-50/50 text-xs">
                 <div class="flex gap-2">
-                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
-                        동명
-                    </div>
+                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">동명</div>
                     <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-800 shadow-2xs space-y-1.5 max-w-[85%]">
-                        <p class="leading-relaxed font-medium">
-                            안녕하세요! 동명근린공원 축구장 AI CS 도우미 '동명이'입니다. ⚽
-                        </p>
-                        <p class="text-[11px] text-slate-500 leading-normal">
-                            운영시간 및 회차, 추첨 방법 및 횟수, 팀 등록 조건, 대관 일정(21일 11시 추첨 등) 무엇이든 물어보세요!
-                        </p>
+                        <p class="leading-relaxed font-medium">안녕하세요! 동명근린공원 축구장 AI CS 도우미 '동명이'입니다. ⚽</p>
+                        <p class="text-[11px] text-slate-500 leading-normal">운영시간, 추첨 일정, 대관 예약 및 규정 등 무엇이든 편하게 물어보세요!</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Input Form -->
             <div class="p-2.5 bg-white border-t border-slate-200">
                 <form onsubmit="handleChatSubmit(event)" class="flex items-center gap-2">
-                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요 (예: 21일 추첨 시간이 몇 시인가요?)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
-                    <button type="submit" id="chat-send-btn" class="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-xl transition-colors font-medium text-xs shrink-0 flex items-center justify-center">
+                    <input type="text" id="chat-input" placeholder="문의사항을 입력하세요" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-slate-500 font-medium">
+                    <button type="submit" id="chat-send-btn" class="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-xl transition-colors shrink-0 flex items-center justify-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                         </svg>
@@ -268,7 +1024,7 @@
         </div>
     </footer>
 
-    <!-- JAVASCRIPT LOGIC & VERCEL SERVERLESS INTEGRATION -->
+    <!-- MAIN APP SCRIPT -->
     <script>
         const qaData = [
             {
@@ -277,7 +1033,7 @@
                 question: '9월 임시운영 기간과 접수 일정, 운영 시간 및 이용 요금은 어떻게 되나요?',
                 criteria: '임시운영 기간: 9월 15일~9월 22일 / 이용 요금: 전액 무료 / 접수: 9월 8일 오전 10시 선착순 접수 / 운영 시간: 08~10시, 10~12시, 12~14시, 14~16시 (4개 타임만 운영) / 팀등록: 수시 접수 중.',
                 script: '동명근린공원 축구장 9월 임시운영 기간은 [9월 15일 ~ 9월 22일]이며 [전액 무료]로 운영됩니다. 임시운영 선착순 대관 신청은 [9월 8일 아침 10시]에 오픈되며, 운영 시간은 [08~10시, 10~12시, 12~14시, 14~16시] 총 4개 타임만 운영됩니다. 팀 등록은 온라인으로 상시 수시 접수 가능합니다.',
-                tags: ['임시운영', '9월15일', '9월22일', '9월8일', '9월1일', '무료', '4타임', '08시~10시', '10시~12시', '12시~14시', '14시~16시', '선착순접수']
+                tags: ['임시운영', '9월15일', '9월22일', '9월8일', '9월1일', '무료', '4타임', '08시~10시', '선착순접수']
             },
             {
                 id: 'Q2',
@@ -293,7 +1049,7 @@
                 question: '축구장 정규 운영시간과 회차별 이용시간, 휴관일은 어떻게 되나요?',
                 criteria: '운영시간: 동절기(10월~3월) 06:00~21:50, 하절기(4월~9월) 08:00~20:00 / 휴관일: 신정, 설 연휴, 추석 연휴, 노동절 등 / 회차(2시간 단위): 1회차(08~10), 2회차(10~12), 3회차(12~14), 4회차(14~16), 5회차(16~18), 6회차(18~20, 하절기 한시 운영).',
                 script: '축구장 정규 운영시간은 [동절기(10~3월) 06:00~21:50], [하절기(4~9월) 08:00~20:00]이며, 휴관일은 [신정, 설 연휴, 추석 연휴, 노동절 등]입니다. 회차별 이용시간은 1회차(08:00~10:00), 2회차(10:00~12:00), 3회차(12:00~14:00), 4회차(14:00~16:00), 5회차(16:00~18:00), 6회차(18:00~20:00, 하절기 한시)로 운영됩니다.',
-                tags: ['운영시간', '휴관일', '회차', '이용시간', '동절기', '하절기', '06:00~21:50', '08:00~20:00', '1회차', '2회차', '3회차', '4회차', '5회차', '6회차', '신정', '설연휴', '추석연휴', '노동절']
+                tags: ['운영시간', '휴관일', '회차', '동절기', '하절기', '신정', '설연휴', '추석연휴', '노동절']
             },
             {
                 id: 'Q4',
@@ -301,7 +1057,7 @@
                 question: '추첨 당첨 후 결제 마감 시한은 언제까지인가요?',
                 criteria: '당첨자 결제 마감은 추첨 익일인 매월 22일 밤 11시 59분(23:59)까지. 미결제 시 자동 취소.',
                 script: '추첨 당첨 건의 결제 마감 기한은 추첨 익일인 매월 22일 밤 11시 59분(23:59)까지입니다. 해당 시각까지 결제가 완료되지 않을 경우 당첨이 자동으로 취소되오니 반드시 기한 내에 결제를 완료해 주시기 바랍니다.',
-                tags: ['추첨', '결제마감', '22일', '밤11시59분', '23시59분', '23:59', '자동취소', '당첨']
+                tags: ['추첨', '결제마감', '22일', '밤11시59분', '23시59분', '자동취소', '당첨']
             },
             {
                 id: 'Q5',
@@ -309,7 +1065,7 @@
                 question: '정규 대관 사용료 납부 및 결제 방식은 어떻게 되나요?',
                 criteria: '대관 예약 신청 시 시스템상 온라인 결제(카드결제)로 납부. (임시운영 기간은 무료)',
                 script: '동명근린공원 축구장 정규 사용료는 평일 88,000원, 주말 114,400원이며 예약 시 온라인 카드결제로 납부합니다. (단, 9월 15일~22일 임시운영 기간은 무료 대관입니다.)',
-                tags: ['사용료납부', '온라인결제', '카드결제', '결제방법', '88000원', '114400원', '무료']
+                tags: ['사용료납부', '온라인결제', '카드결제', '88000원', '114400원', '무료']
             },
             {
                 id: 'Q6',
@@ -317,7 +1073,7 @@
                 question: '추첨 후 남아있는 잔여회차 선착순 신청은 언제부터인가요 (관내팀)?',
                 criteria: '매월 23일 오전 10시 추첨 후 잔여 회차 선착순 오픈 (관내팀 대상).',
                 script: '추첨 후 남아있는 잔여 회차(잔여타임)에 대한 선착순 접수는 관내팀을 대상으로 매월 23일 오전 10시에 1차로 오픈됩니다.',
-                tags: ['잔여시간', '잔여타임', '선착순', '매월23일오전10시', '관내팀', '오전10시', '추첨후', '접수일정']
+                tags: ['잔여시간', '선착순', '매월23일오전10시', '관내팀', '추첨후']
             },
             {
                 id: 'Q7',
@@ -325,15 +1081,15 @@
                 question: '관외팀의 잔여회차 선착순 신청은 언제부터 가능한가요?',
                 criteria: '매월 24일 오전 10시부터 관외팀까지 선착순 대상 확대.',
                 script: '관외팀의 경우 잔여 회차 선착순 신청 대상이 확대되는 매월 24일 오전 10시부터 접수가 가능합니다.',
-                tags: ['관외팀', '잔여시간', '잔여타임', '선착순', '매월24일오전10시', '확대', '접수일정']
+                tags: ['관외팀', '잔여시간', '선착순', '매월24일오전10시', '확대']
             },
             {
                 id: 'Q8',
                 category: 'field',
                 question: '축구장 구장 규격과 샤워실/탈의실 이용 가능한가요?',
-                criteria: '지상 층: 인조잔디구장(100m X 64m), 우레탄 트랙 / 지하 1층: 남·여 샤워실 및 탈의실 (※ 단, 9월 임시운영 기간 동안 샤워실 및 탈의실 사용 불가).',
+                criteria: '지상 1층: 인조잔디구장(100m X 64m), 우레탄 트랙 / 지하 1층: 남·여 샤워실 및 탈의실 (※ 단, 9월 임시운영 기간 동안 샤워실 및 탈의실 사용 불가).',
                 script: '동명근린공원 축구장은 지상 1층에 100m X 64m 규격의 인조잔디구장이 있으며, 지하 1층에 남/여 샤워실과 탈의실이 완비되어 있습니다. 단, 9월 임시운영 기간 동안에는 샤워실과 탈의실 사용이 불가능하오니 양해 부탁드립니다.',
-                tags: ['시설현황', '구장규격', '100mX64m', '샤워실', '탈의실', '지하1층', '9월사용불가', '임시운영', '화장실']
+                tags: ['시설현황', '구장규격', '100mX64m', '샤워실', '탈의실', '지하1층', '9월사용불가']
             },
             {
                 id: 'Q9',
@@ -341,7 +1097,7 @@
                 question: '오늘 비가 오는데 예약 취소 및 전액 환불이 가능한가요?',
                 criteria: '단순 우천 시 정상 진행. 기상청 호우경보 등 기상특보/천재지변 또는 재해 시에만 100% 환불.',
                 script: '동명근린공원 축구장은 야외 잔디 전용 시설로 단순 우천 시에는 정상 운영됩니다. 규정에 따라 당일 단순 취소는 환불이 불가합니다. 단, 이용 시간에 호우경보 등 기상특보가 발효되거나 천재지변 발생 시 100% 전액 환불 또는 일정 변경을 도와드리고 있습니다.',
-                tags: ['우천', '비', '호우경보', '기상특보', '천재지변', '환불']
+                tags: ['우천', '호우경보', '기상특보', '천재지변', '환불']
             },
             {
                 id: 'Q10',
@@ -389,7 +1145,7 @@
                 question: '축구장 주소와 연락처, 대중교통으로 찾아오는 길은 어떻게 되나요?',
                 criteria: '주소: 서울시 강동구 아리수로78길 23 / 연락처: 02.2045.7835 / 버스 3412, 강동02, 강동05, 3324, 8333 도보 5분.',
                 script: '동명근린공원 축구장 주소는 [서울특별시 강동구 아리수로78길 23]이며, 대표 문의 연락처는 [02.2045.7835]입니다. 대중교통 이용 시 버스 3412, 강동02, 강동05(고덕초 하차) 또는 3324, 8333(고덕풍경채 하차) 후 도보 5분 거리에 위치해 있습니다.',
-                tags: ['주소', '위치', '연락처', '전화번호', '02.2045.7835', '교통안내', '버스', '오시는길', '아리수로78길']
+                tags: ['주소', '위치', '연락처', '02.2045.7835', '교통안내', '아리수로78길']
             },
             {
                 id: 'Q16',
@@ -397,7 +1153,7 @@
                 question: '축구장 이용 시 주차장 무료 이용이나 주차 요금 할인이 가능한가요?',
                 criteria: '동명근린공원 공영주차장 유료 이용 가능. 축구장 이용객 관련 주차 요금 할인 및 감면 혜택 없음.',
                 script: '축구장 이용 시 인근 동명근린공원 공영주차장을 유료로 이용하실 수 있습니다. 축구장 이용객에 대한 별도의 주차 할인 및 감면 혜택은 제공되지 않으므로 일반 주차 요금이 부과됩니다.',
-                tags: ['주차장', '공영주차장', '유료주차', '주차할인없음', '감면없음', '주차요금']
+                tags: ['주차장', '공영주차장', '유료주차', '주차할인없음', '감면없음']
             },
             {
                 id: 'Q17',
@@ -421,7 +1177,7 @@
                 question: '팀 등록 신청 시기와 심사 및 승인 일정은 어떻게 되나요?',
                 criteria: '팀 등록 신청은 수시 신청 가능 / 관내팀: 매월 5일~10일 사이 심사 및 승인 처리 (관내 직장팀 서류는 매월 10일까지 제출된 건에 한함) / 관외팀: 수시 심사 후 순차 승인 처리.',
                 script: '동명근린공원 축구장 팀 등록 신청은 상시 [수시 신청]이 가능합니다. 관내팀은 [매월 5일~10일 사이]에 심사 및 승인이 진행되며(직장팀 심사 서류는 매월 10일까지 제출 건에 한함), 관외팀은 [수시 심사 후 순차 승인] 처리됩니다.',
-                tags: ['팀등록', '수시신청', '심사일정', '승인일정', '매월5일~10일', '매월10일까지', '순차승인', '관내팀심사', '관외팀심사']
+                tags: ['팀등록', '수시신청', '심사일정', '승인일정', '매월5일~10일', '매월10일까지', '순차승인']
             },
             {
                 id: 'Q20',
@@ -429,7 +1185,7 @@
                 question: '관내팀과 관외팀의 팀 등록 조건과 제출 구비서류는 무엇인가요?',
                 criteria: '중복 회원 등록 불가 / 관내팀(1순위: 추첨 및 잔여석 선착순 가능): 총원 15명 이상 & 강동구 거주 10명 이상(3개월 내 등본) 또는 강동구 사업장 재직 10명 이상(사업자등록증 및 3개월 내 재직증명서 제출) / 관외팀(2순위: 잔여석 선착순 가능): 관내팀 이외 15명 이상.',
                 script: '팀 등록은 [중복 회원 등록이 불가]하며 총원 15명 이상이어야 합니다. [관내 거주팀]은 강동구 주소 회원 10명 이상(주민등록등본), [관내 직장팀]은 강동구 사업장 재직 회원 10명 이상(사업자등록증 및 3개월 이내 발급된 재직증명서 제출) 요건을 갖추면 1순위(추첨 및 잔여석 접수) 권한을 얻습니다. 관외팀은 15명 이상 시 2순위(잔여석 접수)로 등록됩니다.',
-                tags: ['팀등록조건', '관내팀조건', '관외팀조건', '제출서류', '구비서류', '15명이상', '10명이상', '주민등록등본', '사업자등록증', '재직증명서', '중복등록불가', '1순위', '2순위']
+                tags: ['팀등록조건', '관내팀조건', '관외팀조건', '제출서류', '주민등록등본', '사업자등록증', '재직증명서']
             },
             {
                 id: 'Q21',
@@ -453,7 +1209,7 @@
                 question: '예약된 타임을 다른 팀에게 양도해도 되나요?',
                 criteria: '대관 무단 양도 적발 시 즉시 퇴장 및 축구장 6개월 이용 금지.',
                 script: '대관 양도는 엄격히 금지되어 있습니다. 무단 양도 적발 시 당일 즉시 퇴장 조치되며, 양도한 팀과 양수한 팀 모두 6개월간 축구장 이용이 금지됩니다.',
-                tags: ['양도', '무단양도', '6개월', '이용금지', '적발', '페널티']
+                tags: ['양도', '무단양도', '6개월', '이용금지', '페널티']
             },
             {
                 id: 'Q24',
@@ -461,7 +1217,7 @@
                 question: '경기 중 다른 팀과 시비가 붙어 싸움이 났을 때 대응은?',
                 criteria: '즉시 경기 중단, 양 팀 퇴장 조치 및 1개월 이용 금지. 필요시 112 경찰 신고.',
                 script: '신체적 충돌 및 폭행 발생 시 현장 매니저가 즉시 경기를 중단시키고 양 팀 모두 퇴장 조치합니다. 1개월 이용 금지 페널티가 부과되며 112 신고 조치됩니다.',
-                tags: ['폭행', '싸움', '분쟁', '112신고', '퇴장', '1개월정지', '비상대응']
+                tags: ['폭행', '싸움', '분쟁', '112신고', '퇴장', '1개월정지']
             },
             {
                 id: 'Q25',
@@ -499,9 +1255,7 @@
             });
 
             const countBadge = document.getElementById('qa-count-badge');
-            if (countBadge) {
-                countBadge.textContent = `총 ${filtered.length}개 항목 노출 중`;
-            }
+            if (countBadge) countBadge.textContent = `총 ${filtered.length}개 항목 노출 중`;
 
             if (filtered.length === 0) {
                 container.innerHTML = `
@@ -535,36 +1289,20 @@
                                 }">${catText}</span>
                             </div>
                             <h3 class="font-bold text-slate-900 text-[18px] leading-snug">${item.question}</h3>
-                            
-                            <div class="text-[15px] text-[#1158cb] font-semibold leading-relaxed py-1">
-                                A. ${item.criteria}
-                            </div>
-
+                            <div class="text-[15px] text-[#1158cb] font-semibold leading-relaxed py-1">A. ${item.criteria}</div>
                             <div class="bg-slate-100 text-slate-700 p-3 rounded text-xs leading-relaxed space-y-1.5">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-1.5">
-                                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <circle cx="9" cy="8" r="3.5" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 19c0-3.3 2.7-6 6-6h0c3.3 0 6 2.7 6 6" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 7a3 3 0 010 5" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5a5.5 5.5 0 010 9" />
-                                        </svg>
-                                    </div>
+                                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 19c0-3.3 2.7-6 6-6h0c3.3 0 6 2.7 6 6"/><path stroke-linecap="round" stroke-linejoin="round" d="M17 7a3 3 0 010 5"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5a5.5 5.5 0 010 9"/></svg>
                                     <button onclick="copyToClipboard('${item.id}-script', this)" class="flex items-center gap-1 text-[11px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
-                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
+                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                         <span>복사</span>
                                     </button>
                                 </div>
                                 <p id="${item.id}-script" class="whitespace-pre-line font-serif-kr text-slate-700 text-[15px] leading-relaxed tracking-wide">${item.script}</p>
                             </div>
                         </div>
-
                         <div class="pt-2 flex items-center justify-between border-t border-slate-100">
-                            <div class="flex flex-wrap gap-1">
-                                ${item.tags.map(t => `<span class="text-xs bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">#${t}</span>`).join('')}
-                            </div>
+                            <div class="flex flex-wrap gap-1">${item.tags.map(t => `<span class="text-xs bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">#${t}</span>`).join('')}</div>
                         </div>
                     </div>
                 `;
@@ -575,7 +1313,6 @@
         function copyToClipboard(elementId, btn) {
             const el = document.getElementById(elementId);
             const textToCopy = el ? el.innerText.trim() : elementId;
-            
             const textarea = document.createElement('textarea');
             textarea.value = textToCopy;
             textarea.setAttribute('readonly', '');
@@ -583,26 +1320,14 @@
             textarea.style.left = '-9999px';
             document.body.appendChild(textarea);
             textarea.select();
-            
             try {
-                const successful = document.execCommand('copy');
-                if (successful && btn) {
+                if (document.execCommand('copy') && btn) {
                     const originalHtml = btn.innerHTML;
-                    btn.innerHTML = `
-                        <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                        </svg>
-                        <span class="text-emerald-700 font-bold">복사완료!</span>
-                    `;
-                    setTimeout(() => {
-                        btn.innerHTML = originalHtml;
-                    }, 1500);
+                    btn.innerHTML = `<span class="text-emerald-700 font-bold">복사완료!</span>`;
+                    setTimeout(() => { btn.innerHTML = originalHtml; }, 1500);
                 }
-            } catch (err) {
-                console.error('클립보드 복사 실패:', err);
-            } finally {
-                document.body.removeChild(textarea);
-            }
+            } catch (err) { console.error('복사 실패:', err); }
+            finally { document.body.removeChild(textarea); }
         }
 
         function filterQA() {
@@ -624,6 +1349,10 @@
             if (activeBtn) {
                 activeBtn.classList.add('bg-slate-900', 'text-white', 'font-semibold', 'shadow-2xs');
                 activeBtn.classList.remove('text-slate-600');
+            }
+
+            if (tabId === 'calendar') {
+                checkAuthGate();
             }
         }
 
@@ -682,46 +1411,21 @@
         function generateOfflineResponse(userText) {
             const query = userText.toLowerCase().trim();
 
-            if (query.includes('운영시간') || query.includes('회차') || query.includes('휴관일') || query.includes('몇 시') || query.includes('시간대') || query.includes('동절기') || query.includes('하절기') || query.includes('6회차')) {
+            if (query.includes('운영시간') || query.includes('회차') || query.includes('휴관일') || query.includes('동절기') || query.includes('하절기')) {
                 return "- **운영시간:** **동절기(10~3월)** 06:00~21:50 / **하절기(4~9월)** 08:00~20:00\n- **휴관일:** **신정, 설 연휴, 추석 연휴, 노동절 등**\n- **회차별 이용시간:** 1회차(08~10), 2회차(10~12), 3회차(12~14), 4회차(14~16), 5회차(16~18), 6회차(18~20, 하절기 한시)\n*(※ 9.15~9.22 임시운영은 08~16시 4타임만 무료 운영)*";
             }
-
-            if (query.includes('심사') || query.includes('언제 승인') || query.includes('신청 시기') || query.includes('신청 언제')) {
-                return "- **팀 등록 신청:** **수시 신청 가능**\n- **관내팀 심사·승인:** **매월 5일~10일 사이** (직장팀 서류는 **매월 10일까지** 제출 건에 한함)\n- **관외팀 심사·승인:** **수시 심사 후 순차 승인**";
-            }
-
-            if (query.includes('갱신') || query.includes('유지') || query.includes('자격 갱신')) {
-                return "- **거주자 자격 갱신:** 매년 **1월 1일, 7월 1일** (연 2회)\n- **관내팀 승인 유지:** 매년 **8월 1일** 기준 심사 및 업데이트 진행";
-            }
-
-            if (query.includes('조건') || query.includes('서류') || query.includes('자격') || query.includes('직장팀') || query.includes('거주팀') || query.includes('재직') || query.includes('등본') || query.includes('사업자')) {
+            if (query.includes('조건') || query.includes('서류') || query.includes('직장팀') || query.includes('거주팀') || query.includes('사업자')) {
                 return "- **팀 등록 공통:** 총원 **15명 이상** (중복 회원 등록 불가)\n- **관내 거주팀 (1순위):** 강동구 주소 회원 10명 이상 (**주민등록등본** 제출)\n- **관내 직장팀 (1순위):** 강동구 사업장 재직 회원 10명 이상 (**사업자등록증** 및 3개월 이내 **재직증명서** 제출)\n- **관외팀 (2순위):** 관내팀 이외 15명 이상 (별도 서류 없음)";
             }
-
-            if (query.includes('임시') || query.includes('9월 8일') || query.includes('9월 15일') || query.includes('무료') || query.includes('4타임')) {
-                return "- **임시운영 기간:** **9월 15일 ~ 9월 22일** (대관료 **전액 무료**)\n- **운영 시간 (4개 타임):** **08~10시, 10~12시, 12~14시, 14~16시**\n- **임시운영 선착순 접수:** **9월 8일 아침 10시** 오픈\n- **★ 주의:** 임시운영 기간 동안 **샤워실·탈의실(지하 1층) 사용 불가**";
-            }
-
-            if (query.includes('추첨') || query.includes('접수') || query.includes('16일') || query.includes('21일') || query.includes('횟수') || query.includes('몇 번') || query.includes('3회')) {
+            if (query.includes('추첨') || query.includes('접수') || query.includes('16일') || query.includes('21일') || query.includes('3회')) {
                 return "- **정규 추첨 접수:** 전 달 16일~20일 대관사이트(gdgd.igangdong.or.kr) 접수\n- **신청 제한:** **등록팀별 월 3회 가능**\n- **추첨 일시:** 매월 **21일 오전 11시** (온라인)\n- **결제 마감:** 당첨 후 22일 밤 11시 59분(23:59)까지\n- **잔여 선착순:** 23일 10시(관내팀), 24일 10시(관외팀 확대)";
             }
-
-            if (query.includes('샤워') || query.includes('탈의실')) {
-                return "- **샤워실/탈의실 위치:** **지하 1층**에 구비되어 있습니다.\n- **★ 이용 제약:** **9월 임시운영 기간(9.15~9.22) 동안에는 사용 불가**합니다.";
+            if (query.includes('임시') || query.includes('9월 8일') || query.includes('9월 15일') || query.includes('무료')) {
+                return "- **임시운영 기간:** **9월 15일 ~ 9월 22일** (대관료 **전액 무료**)\n- **운영 시간 (4개 타임):** **08~10시, 10~12시, 12~14시, 14~16시**\n- **임시운영 선착순 접수:** **9월 8일 아침 10시** 오픈\n- **★ 주의:** 임시운영 기간 동안 **샤워실·탈의실(지하 1층) 사용 불가**";
             }
-
-            if (query.includes('전화') || query.includes('연락처') || query.includes('문의') || query.includes('번호')) {
+            if (query.includes('전화') || query.includes('연락처') || query.includes('문의')) {
                 return "- **동명근린공원 축구장 대표 문의:** **02-2045-7835**\n- **주소:** 서울특별시 강동구 아리수로78길 23";
             }
-
-            if (query.includes('환불') || query.includes('취소') || query.includes('위약금') || query.includes('5일') || query.includes('3일')) {
-                return "- **사용 5일 전:** **100% 전액 환불** (위약금 0원)\n- **사용 4일 전 ~ 1일 전:** **90% 환불** (위약금 10% 차감)\n- **사용 당일 및 이용 후:** **환불 불가** (위약금 100%)\n*(9.15~9.22 임시운영은 전액 무료 대관입니다)*";
-            }
-
-            if (query.includes('축구화') || query.includes('sg') || query.includes('쇠뽕') || query.includes('스터드')) {
-                return "- **착용 절대 금지:** **SG 스터드 (금속 / 긴 뽕)** - 적발 시 즉시 퇴장\n- **착용 가능:** **TF 풋살화(적극 권장)**, AG / HG 축구화";
-            }
-
             return "- **추첨 일정:** 매월 16~20일 접수 ➔ 21일 11시 추첨 ➔ 22일 결제 마감 ➔ 23/24일 잔여 접수\n- **팀 등록:** 수시 신청 (관내팀은 매월 5~10일 심사 / 직장팀 서류는 10일까지)\n- **임시운영:** 9.15~9.22 (무료 4타임, 9.8 10시 접수, 샤워실 불가)\n- **문의처:** 02-2045-7835";
         }
 
@@ -737,9 +1441,7 @@
 
         function toggleApiKeySettings() {
             const drawer = document.getElementById('apikey-drawer');
-            if (drawer) {
-                drawer.classList.toggle('hidden');
-            }
+            if (drawer) drawer.classList.toggle('hidden');
         }
 
         function saveApiKey() {
@@ -770,23 +1472,20 @@
             const userText = inputEl.value.trim();
             if (!userText) return;
 
-            const userMsgHTML = `
+            messagesContainer.innerHTML += `
                 <div class="flex justify-end">
                     <div class="bg-slate-900 text-white p-3 rounded-2xl rounded-tr-none text-xs max-w-[85%] leading-relaxed shadow-2xs font-medium">
                         ${escapeHTML(userText)}
                     </div>
                 </div>
             `;
-            messagesContainer.innerHTML += userMsgHTML;
             inputEl.value = '';
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
             const loadingId = 'loading-' + Date.now();
-            const loadingHTML = `
+            messagesContainer.innerHTML += `
                 <div id="${loadingId}" class="flex gap-2">
-                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
-                        동명
-                    </div>
+                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">동명</div>
                     <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-500 text-xs shadow-2xs flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
                         <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
@@ -795,31 +1494,20 @@
                     </div>
                 </div>
             `;
-            messagesContainer.innerHTML += loadingHTML;
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
             let aiResponseText = "";
-
             try {
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        prompt: userText,
-                        systemInstruction: SYSTEM_PROMPT
-                    })
+                    body: JSON.stringify({ prompt: userText, systemInstruction: SYSTEM_PROMPT })
                 });
-
                 if (response.ok) {
                     const data = await response.json();
-                    const extracted = data?.text || data?.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (extracted) {
-                        aiResponseText = extracted;
-                    }
+                    aiResponseText = data?.text || data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
                 }
-            } catch (err) {
-                console.warn("Vercel Serverless 호출 실패, 대체 로직 진행:", err);
-            }
+            } catch (err) {}
 
             if (!aiResponseText && userStoredApiKey) {
                 try {
@@ -833,13 +1521,8 @@
                         })
                     });
                     const data = await response.json();
-                    const extracted = data?.text || data?.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (extracted) {
-                        aiResponseText = extracted;
-                    }
-                } catch (err) {
-                    console.warn("로컬 직접 API 호출 실패:", err);
-                }
+                    aiResponseText = data?.text || data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                } catch (err) {}
             }
 
             if (!aiResponseText) {
@@ -849,51 +1532,19 @@
             const loadingEl = document.getElementById(loadingId);
             if (loadingEl) loadingEl.remove();
 
-            const speechBtnId = 'tts-btn-' + Date.now();
-
-            const aiMsgHTML = `
+            messagesContainer.innerHTML += `
                 <div class="flex gap-2">
-                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
-                        동명
-                    </div>
+                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">동명</div>
                     <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-800 text-xs shadow-2xs space-y-2 max-w-[85%]">
                         <div class="whitespace-pre-line leading-relaxed font-medium">${formatBotResponse(aiResponseText)}</div>
-                        <div class="pt-1 border-t border-slate-100 flex items-center justify-end">
-                            <button id="${speechBtnId}" onclick="speakText('${escapeSpeechText(aiResponseText)}', '${speechBtnId}')" class="text-[10px] text-slate-500 hover:text-slate-900 flex items-center gap-1 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded transition-colors">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                </svg>
-                                <span>음성 듣기</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
             `;
-            messagesContainer.innerHTML += aiMsgHTML;
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        async function speakText(text, buttonId) {
-            const btn = document.getElementById(buttonId);
-            if (btn) btn.innerText = "음성 재생 중...";
-
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const cleanText = text.replace(/[*#`_]/g, '');
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.lang = 'ko-KR';
-                utterance.rate = 1.0;
-                utterance.onend = () => { if (btn) btn.innerText = "음성 듣기"; };
-                utterance.onerror = () => { if (btn) btn.innerText = "음성 듣기"; };
-                window.speechSynthesis.speak(utterance);
-            } else {
-                if (btn) btn.innerText = "음성 듣기";
-            }
-        }
-
         function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
         }
 
         function formatBotResponse(str) {
@@ -902,15 +1553,689 @@
                 .replace(/`([^`]+)`/g, '<code class="bg-slate-100 text-slate-800 px-1 py-0.5 rounded text-[11px] font-mono">$1</code>');
         }
 
-        function escapeSpeechText(str) {
-            return str.replace(/['"\n\r]/g, ' ').replace(/\*/g, '');
+        /* -------------------------------------------------------------
+           NATIVE CALENDAR LOGIC (FROM calendar.html)
+        ------------------------------------------------------------- */
+        const CAL_API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz2F6v6AkZxLm2Krw-0rXaeX6buTAd3FJpTaP6tSbEC2mFGTQyCzJHuXBk7mx_9a5fX6g/exec';
+        const calDataCache = {};
+
+        const calSystemToday = new Date();
+        const calTodayY = calSystemToday.getFullYear();
+        const calTodayM = calSystemToday.getMonth() + 1;
+        const calTodayD = calSystemToday.getDate();
+        const calTodayDateStr = `${calTodayY}-${String(calTodayM).padStart(2, '0')}-${String(calTodayD).padStart(2, '0')}`;
+
+        const initNextMonthDate = new Date();
+        initNextMonthDate.setDate(1);
+        initNextMonthDate.setMonth(initNextMonthDate.getMonth() + 1);
+
+        let calViewMode = 'month';
+        let calCurrentYear = initNextMonthDate.getFullYear();
+        let calCurrentMonth = initNextMonthDate.getMonth() + 1;
+        let calCurrentWeekStart = new Date(calCurrentYear, calCurrentMonth - 1, 1);
+        let calPickerYear = calCurrentYear;
+        let calSelectedEvent = null;
+        let serverHolidays = {};
+
+        function getStoredAuth() {
+            return sessionStorage.getItem('dm_calendar_token') || '';
         }
+
+        async function checkAuthGate() {
+            const token = getStoredAuth();
+            const overlay = document.getElementById('auth-gate-overlay');
+
+            if (token && token.trim() !== '') {
+                if (overlay) overlay.classList.add('hidden');
+                await fetchHolidaysFromServer();
+                renderCalendar(true);
+            } else {
+                if (overlay) overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    const input = document.getElementById('gate-password-input');
+                    if (input) input.focus();
+                }, 100);
+            }
+        }
+
+        async function handleGateAuth(e) {
+            e.preventDefault();
+            const input = document.getElementById('gate-password-input');
+            const errEl = document.getElementById('gate-error-msg');
+            const btn = document.getElementById('btn-gate-submit');
+            const enteredPw = input.value.trim();
+            if (!enteredPw) return;
+
+            btn.disabled = true;
+            btn.innerText = '인증 확인 중...';
+            errEl.style.display = 'none';
+
+            try {
+                const res = await fetch(`${CAL_API_ENDPOINT}?type=checkAuth&auth=${encodeURIComponent(enteredPw)}`, { redirect: 'follow' });
+                const data = await res.json();
+                if (data && data.authenticated) {
+                    sessionStorage.setItem('dm_calendar_token', enteredPw);
+                    const overlay = document.getElementById('auth-gate-overlay');
+                    if (overlay) overlay.classList.add('hidden');
+                    await fetchHolidaysFromServer();
+                    renderCalendar(true);
+                } else {
+                    errEl.style.display = 'block';
+                    input.value = '';
+                    input.focus();
+                }
+            } catch (err) {
+                alert('인증 서버 연결 실패: ' + err);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '접속하기';
+            }
+        }
+
+        function openCreateModal(defaultDate = '') {
+            const dInput = document.getElementById('new-date');
+            if (defaultDate) dInput.value = defaultDate;
+            else dInput.value = `${calCurrentYear}-${String(calCurrentMonth).padStart(2, '0')}-01`;
+
+            document.getElementById('new-team').value = '';
+            document.getElementById('new-agency').value = '';
+            document.getElementById('new-category').value = '선예약팀';
+            document.getElementById('new-status').value = '등록 대기';
+            document.getElementById('new-fee').value = '무료';
+            document.getElementById('new-memo').value = '';
+            document.getElementById('create-modal').style.display = 'flex';
+        }
+
+        function closeCreateModal(e) {
+            if (e.target.id === 'create-modal') {
+                document.getElementById('create-modal').style.display = 'none';
+            }
+        }
+
+        async function handleCreateBooking(e) {
+            e.preventDefault();
+            const date = document.getElementById('new-date').value;
+            const time = document.getElementById('new-time').value;
+            const category = document.getElementById('new-category').value;
+            const team = document.getElementById('new-team').value.trim();
+            const agency = document.getElementById('new-agency').value.trim();
+            const status = document.getElementById('new-status').value;
+            const fee = document.getElementById('new-fee').value;
+            const memo = document.getElementById('new-memo').value.trim();
+
+            const dObj = new Date(date);
+            const targetSheetName = `${dObj.getFullYear()}년 ${dObj.getMonth() + 1}월`;
+
+            const btn = document.getElementById('btn-save-booking');
+            btn.disabled = true;
+            btn.innerText = '시트에 저장 중...';
+
+            const payload = {
+                action: 'createReservation',
+                sheetName: targetSheetName,
+                date, time, category, team, agency, status, fee, memo,
+                auth: getStoredAuth()
+            };
+
+            try {
+                await fetch(CAL_API_ENDPOINT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                document.getElementById('create-modal').style.display = 'none';
+                setTimeout(() => renderCalendar(true), 1200);
+            } catch (err) {
+                alert('예약 등록 실패: ' + err);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '스프레드시트에 저장';
+            }
+        }
+
+        async function quickUpdateStatus(newStatus) {
+            if (!calSelectedEvent || !calSelectedEvent.rowIndex) {
+                alert('선택된 예약 정보가 유효하지 않습니다.');
+                return;
+            }
+            if (!confirm(`대관 상태를 '${newStatus}'(으)로 변경하시겠습니까?`)) return;
+
+            const payload = {
+                action: 'updateReservationStatus',
+                sheetName: calSelectedEvent.sheetName,
+                rowIndex: calSelectedEvent.rowIndex,
+                newStatus: newStatus,
+                auth: getStoredAuth()
+            };
+
+            try {
+                await fetch(CAL_API_ENDPOINT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                document.getElementById('modal').style.display = 'none';
+                setTimeout(() => renderCalendar(true), 1000);
+            } catch (err) { alert('상태 변경 중 오류: ' + err); }
+        }
+
+        async function deleteCurrentEvent() {
+            if (!calSelectedEvent || !calSelectedEvent.rowIndex) return;
+            if (!confirm(`[${calSelectedEvent.title}] 예약을 스프레드시트에서 완전히 삭제하시겠습니까?`)) return;
+
+            const payload = {
+                action: 'deleteReservation',
+                sheetName: calSelectedEvent.sheetName,
+                rowIndex: calSelectedEvent.rowIndex,
+                auth: getStoredAuth()
+            };
+
+            try {
+                await fetch(CAL_API_ENDPOINT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                document.getElementById('modal').style.display = 'none';
+                setTimeout(() => renderCalendar(true), 1000);
+            } catch (err) { alert('삭제 중 오류: ' + err); }
+        }
+
+        function fetchHolidaysFromServer() {
+            const token = getStoredAuth();
+            if (!token) return Promise.resolve({});
+            return fetch(`${CAL_API_ENDPOINT}?type=holidays&auth=${encodeURIComponent(token)}`, { redirect: 'follow' })
+                .then(res => res.json())
+                .then(data => {
+                    serverHolidays = (data && !data.error) ? data : {};
+                    return serverHolidays;
+                })
+                .catch(() => ({}));
+        }
+
+        async function openHolidayModal() {
+            document.getElementById('holiday-modal').style.display = 'flex';
+            const box = document.getElementById('holiday-list-box');
+            box.innerHTML = '<div style="color: var(--cal-ink-3); text-align: center; padding: 16px 0; font-size: 11px;">공휴일 목록 동기화 중...</div>';
+            try { await fetchHolidaysFromServer(); } catch(e){}
+            renderHolidayListBox();
+        }
+
+        function closeHolidayModal(e) {
+            if (e.target.id === 'holiday-modal') document.getElementById('holiday-modal').style.display = 'none';
+        }
+
+        function renderHolidayListBox() {
+            const box = document.getElementById('holiday-list-box');
+            box.innerHTML = '';
+            const keys = Object.keys(serverHolidays).sort();
+            if (keys.length === 0) {
+                box.innerHTML = '<div style="color: var(--cal-ink-4); text-align: center; padding: 16px 0;">등록된 공휴일이 없습니다.</div>';
+                return;
+            }
+            keys.forEach(dateStr => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 5px 2px; border-bottom: 1px solid var(--cal-line-2); font-size: 12px;';
+                row.innerHTML = `
+                    <span><strong style="color: var(--cal-ink); font-family: Manrope;">${dateStr}</strong> <span style="color: var(--cal-sun); font-weight: 600; margin-left: 4px;">${serverHolidays[dateStr]}</span></span>
+                    <button type="button" onclick="deleteCustomHoliday('${dateStr}')" style="background: none; border: none; color: var(--cal-sun); cursor: pointer; font-size: 11px;">삭제</button>
+                `;
+                box.appendChild(row);
+            });
+        }
+
+        async function postHolidayAction(payload) {
+            payload.auth = getStoredAuth();
+            try {
+                await fetch(CAL_API_ENDPOINT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                setTimeout(async () => {
+                    await fetchHolidaysFromServer();
+                    renderHolidayListBox();
+                    renderCalendar(true);
+                }, 1000);
+            } catch(e) { alert('오류: ' + e); }
+        }
+
+        function addCustomHoliday() {
+            const dInput = document.getElementById('input-holiday-date');
+            const nInput = document.getElementById('input-holiday-name');
+            if (!dInput.value || !nInput.value.trim()) return alert('날짜와 공휴일명을 입력하세요.');
+            postHolidayAction({ action: 'add', date: dInput.value, name: nInput.value.trim() });
+            dInput.value = ''; nInput.value = '';
+        }
+
+        function deleteCustomHoliday(dateStr) {
+            if (confirm(`${dateStr} 공휴일을 삭제하시겠습니까?`)) postHolidayAction({ action: 'delete', date: dateStr });
+        }
+
+        function resetDefaultHolidays() {
+            if (confirm('기본 공휴일 목록으로 되돌리시겠습니까?')) postHolidayAction({ action: 'reset' });
+        }
+
+        const CAL_ALL_SLOTS = [
+            { name: '1회차', time: '08:00~10:00' },
+            { name: '2회차', time: '10:00~12:00' },
+            { name: '3회차', time: '12:00~14:00' },
+            { name: '4회차', time: '14:00~16:00' },
+            { name: '5회차', time: '16:00~18:00' },
+            { name: '6회차', time: '18:00~20:00' }
+        ];
+
+        function getOperationalSlots(month) {
+            return (month >= 10 || month <= 3) ? CAL_ALL_SLOTS.slice(0, 5) : CAL_ALL_SLOTS;
+        }
+
+        function getCategoryClass(cat) {
+            if (cat.includes('선예약')) return 'ev a';
+            if (cat.includes('고정')) return 'ev c';
+            return 'ev b';
+        }
+
+        function toggleMonthPicker(e) {
+            e.stopPropagation();
+            const popover = document.getElementById('month-picker-popover');
+            const trigger = document.getElementById('btn-picker-trigger');
+            const isOpen = popover.style.display === 'block';
+            if (isOpen) closeMonthPicker();
+            else {
+                calPickerYear = calCurrentYear;
+                renderPickerContent();
+                popover.style.display = 'block';
+                trigger.classList.add('active');
+            }
+        }
+
+        function closeMonthPicker() {
+            const popover = document.getElementById('month-picker-popover');
+            const trigger = document.getElementById('btn-picker-trigger');
+            if (popover) popover.style.display = 'none';
+            if (trigger) trigger.classList.remove('active');
+        }
+
+        function changePickerYear(delta) {
+            calPickerYear += delta;
+            renderPickerContent();
+        }
+
+        function renderPickerContent() {
+            document.getElementById('popover-year-title').innerText = `${calPickerYear}년`;
+            const grid = document.getElementById('month-chips-grid');
+            let html = '';
+            for (let m = 1; m <= 12; m++) {
+                const isCurrent = (calPickerYear === calCurrentYear && m === calCurrentMonth);
+                html += `<button class="${isCurrent ? 'btn-month-chip current' : 'btn-month-chip'}" onclick="selectQuickMonth(${calPickerYear}, ${m})">${m}월</button>`;
+            }
+            grid.innerHTML = html;
+        }
+
+        function selectQuickMonth(year, month) {
+            calCurrentYear = year;
+            calCurrentMonth = month;
+            if (calViewMode === 'week') calCurrentWeekStart = getSunday(new Date(calCurrentYear, calCurrentMonth - 1, 1));
+            closeMonthPicker();
+            renderCalendar();
+        }
+
+        function setViewMode(mode) {
+            calViewMode = mode;
+            document.getElementById('btn-tab-month').classList.toggle('active', mode === 'month');
+            document.getElementById('btn-tab-week').classList.toggle('active', mode === 'week');
+            document.getElementById('btn-nav-prev').innerText = mode === 'month' ? '이전 달' : '이전 주';
+            document.getElementById('btn-nav-next').innerText = mode === 'month' ? '다음 달' : '다음 주';
+            if (mode === 'week') calCurrentWeekStart = getSunday(new Date(calCurrentYear, calCurrentMonth - 1, 4));
+            renderCalendar();
+        }
+
+        function goToday() {
+            const now = new Date();
+            calCurrentYear = now.getFullYear();
+            calCurrentMonth = now.getMonth() + 1;
+            calCurrentWeekStart = getSunday(now);
+            renderCalendar();
+        }
+
+        function getSunday(d) {
+            const date = new Date(d);
+            const diff = date.getDate() - date.getDay();
+            return new Date(date.setDate(diff));
+        }
+
+        function navigateStep(delta) {
+            if (calViewMode === 'month') {
+                calCurrentMonth += delta;
+                if (calCurrentMonth > 12) { calCurrentMonth = 1; calCurrentYear++; }
+                if (calCurrentMonth < 1) { calCurrentMonth = 12; calCurrentYear--; }
+            } else {
+                calCurrentWeekStart.setDate(calCurrentWeekStart.getDate() + (delta * 7));
+                calCurrentYear = calCurrentWeekStart.getFullYear();
+                calCurrentMonth = calCurrentWeekStart.getMonth() + 1;
+            }
+            renderCalendar();
+        }
+
+        function setBadgeState(state, text) {
+            const badge = document.getElementById('top-status-badge');
+            const label = document.getElementById('top-status-text');
+            if (badge && label) {
+                badge.className = 'live-status-badge ' + state;
+                label.innerText = text;
+            }
+        }
+
+        function showLoadingOverlay(text) {
+            const overlay = document.getElementById('calendar-loading-overlay');
+            const textEl = document.getElementById('loading-overlay-text');
+            if (textEl) textEl.innerText = text;
+            if (overlay) overlay.classList.add('active');
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('calendar-loading-overlay');
+            if (overlay) overlay.classList.remove('active');
+        }
+
+        function renderCalendar(forceRefresh = false) {
+            const token = getStoredAuth();
+            if (!token) return;
+
+            const titleEl = document.getElementById('header-date-title');
+            if (calViewMode === 'month') {
+                titleEl.innerText = `${calCurrentYear}년 ${calCurrentMonth}월`;
+            } else {
+                const weekEnd = new Date(calCurrentWeekStart);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+                titleEl.innerText = `${calCurrentYear}년 ${calCurrentMonth}월 (${calCurrentWeekStart.getMonth()+1}.${calCurrentWeekStart.getDate()} ~ ${weekEnd.getMonth()+1}.${weekEnd.getDate()})`;
+            }
+
+            const sheetName = `${calCurrentYear}년 ${calCurrentMonth}월`;
+            const cachedEntry = calDataCache[sheetName];
+            const isCacheValid = cachedEntry && (Date.now() - cachedEntry.timestamp < 300000);
+
+            if (!cachedEntry) drawView([]);
+
+            if (!forceRefresh && isCacheValid) {
+                hideLoadingOverlay();
+                drawView(cachedEntry.data);
+                setBadgeState('', '캐시 연동됨');
+                document.getElementById('footer-count-text').innerText = `총 ${cachedEntry.data.length}건`;
+                return;
+            }
+
+            if (forceRefresh) {
+                showLoadingOverlay(`${sheetName} 데이터 동기화 중...`);
+                delete calDataCache[sheetName];
+                setBadgeState('syncing', '서버 갱신 중...');
+            } else {
+                setBadgeState('syncing', '동기화 중...');
+            }
+
+            fetch(`${CAL_API_ENDPOINT}?sheet=${encodeURIComponent(sheetName)}&auth=${encodeURIComponent(token)}${forceRefresh ? `&_t=${Date.now()}` : ''}`, { redirect: 'follow' })
+                .then(res => res.json())
+                .then(events => {
+                    const freshData = Array.isArray(events) ? events : [];
+                    calDataCache[sheetName] = { data: freshData, timestamp: Date.now() };
+                    drawView(freshData);
+                    setBadgeState('', '실시간 연동됨');
+                    document.getElementById('footer-count-text').innerText = `총 ${freshData.length}건`;
+                    document.getElementById('last-sync-time').innerText = `최근 동기화: ${new Date().toLocaleTimeString('ko-KR')}`;
+                })
+                .catch(() => setBadgeState('error', '동기화 오류'))
+                .finally(() => hideLoadingOverlay());
+        }
+
+        function drawView(events) {
+            if (calViewMode === 'month') buildMonthGrid(events);
+            else buildWeekGrid(events);
+        }
+
+        function buildMonthGrid(events) {
+            const container = document.getElementById('calendar-container');
+            container.innerHTML = `
+                <div class="weekdays-month">
+                    <div class="wd sun">Sun</div><div class="wd">Mon</div><div class="wd">Tue</div>
+                    <div class="wd">Wed</div><div class="wd">Thu</div><div class="wd">Fri</div><div class="wd sat">Sat</div>
+                </div>
+                <div class="grid-month" id="month-grid-cells"></div>
+            `;
+
+            const grid = document.getElementById('month-grid-cells');
+            const firstDay = new Date(calCurrentYear, calCurrentMonth - 1, 1);
+            const lastDay = new Date(calCurrentYear, calCurrentMonth, 0);
+            const startCol = firstDay.getDay();
+            const totalDays = lastDay.getDate();
+            const prevMonthLastDay = new Date(calCurrentYear, calCurrentMonth - 1, 0).getDate();
+
+            for (let i = startCol - 1; i >= 0; i--) {
+                const cell = document.createElement('div');
+                cell.className = 'cell out';
+                cell.innerHTML = `<div class="d-head"><span class="d-num">${prevMonthLastDay - i}</span></div>`;
+                grid.appendChild(cell);
+            }
+
+            for (let day = 1; day <= totalDays; day++) {
+                const dateStr = `${calCurrentYear}-${String(calCurrentMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayOfWeek = new Date(calCurrentYear, calCurrentMonth - 1, day).getDay();
+                const isToday = (dateStr === calTodayDateStr);
+                const holidayName = serverHolidays[dateStr];
+
+                const cell = document.createElement('div');
+                let cellClasses = ['cell'];
+                if (dayOfWeek === 6) cellClasses.push('sat');
+                if (dayOfWeek === 0) cellClasses.push('sun');
+                if (holidayName) cellClasses.push('holiday');
+                if (isToday) cellClasses.push('is-today');
+                cell.className = cellClasses.join(' ');
+
+                cell.onclick = (e) => {
+                    if (e.target.closest('.ev')) return;
+                    openCreateModal(dateStr);
+                };
+
+                let tagHtml = (day === 1) ? `<span class="d-tag">${calCurrentMonth}월</span>` : '';
+                let todayTagHtml = isToday ? `<span class="today-tag">오늘</span>` : '';
+                let holidayTagHtml = holidayName ? `<span class="holiday-badge" title="${holidayName}">${holidayName}</span>` : '';
+
+                cell.innerHTML = `
+                    <div class="d-head">
+                        <div class="d-head-left"><span class="d-num">${day}</span>${todayTagHtml}${holidayTagHtml}</div>
+                        ${tagHtml}
+                    </div>
+                    <div class="events" id="ev-container-${day}"></div>
+                `;
+                grid.appendChild(cell);
+
+                const dayEvents = events.filter(e => e.start.startsWith(dateStr));
+                const evContainer = cell.querySelector('.events');
+
+                dayEvents.forEach(ev => {
+                    const evClass = getCategoryClass(ev.extendedProps?.category || '');
+                    const rawTime = ev.extendedProps?.rawTime || '';
+                    const memo = ev.extendedProps?.memo || '';
+
+                    const evEl = document.createElement('div');
+                    evEl.className = evClass;
+                    evEl.innerHTML = `
+                        <div class="ev-top-row">
+                            <span class="ev-time">${rawTime}</span>
+                            ${memo ? `<span class="memo-clip-badge" title="비고: ${memo}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l7.88-7.88"></path></svg></span>` : ''}
+                        </div>
+                        <span class="ev-title">${ev.title.replace(/\[.*?\]\s*/, '')}</span>
+                    `;
+                    evEl.onclick = (e) => { e.stopPropagation(); openModal(ev); };
+                    evEl.onmouseenter = (e) => showTooltip(e, ev);
+                    evEl.onmousemove = (e) => moveTooltip(e);
+                    evEl.onmouseleave = hideTooltip;
+                    evContainer.appendChild(evEl);
+                });
+            }
+
+            const remaining = (7 - (grid.children.length % 7)) % 7;
+            for (let i = 1; i <= remaining; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell out';
+                cell.innerHTML = `<div class="d-head"><span class="d-num">${i}</span>${i === 1 ? `<span class="d-tag">${(calCurrentMonth % 12) + 1}월</span>` : ''}</div>`;
+                grid.appendChild(cell);
+            }
+        }
+
+        function buildWeekGrid(events) {
+            const container = document.getElementById('calendar-container');
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const weekDays = [];
+            const activeSlots = getOperationalSlots(calCurrentMonth);
+
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(calCurrentWeekStart);
+                d.setDate(d.getDate() + i);
+                weekDays.push(d);
+            }
+
+            let html = `<div class="grid-week-wrapper"><div class="week-header"><div class="week-slot-head">회차 / 시간</div>`;
+            weekDays.forEach((d, idx) => {
+                const colDateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                const isToday = (colDateStr === calTodayDateStr);
+                const holidayName = serverHolidays[colDateStr];
+
+                let colClass = 'week-day-col';
+                if (idx === 6) colClass += ' sat';
+                if (idx === 0) colClass += ' sun';
+                if (holidayName) colClass += ' holiday';
+                if (isToday) colClass += ' is-today';
+
+                html += `
+                    <div class="${colClass}">
+                        <div class="w-dname">${dayNames[idx]}</div>
+                        <div class="w-dnum">${d.getMonth()+1}.${d.getDate()}</div>
+                        ${holidayName ? `<div style="font-size:9.5px; font-weight:800; color:var(--cal-sun);">${holidayName}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            html += `</div><div class="week-body">`;
+            activeSlots.forEach((slot, slotIdx) => {
+                const slotNum = slotIdx + 1;
+                const slotStartTime = slot.time.split('~')[0];
+
+                html += `<div class="week-row"><div class="time-col"><span class="slot-name">${slot.name}</span><span class="slot-hours">${slot.time}</span></div>`;
+                weekDays.forEach((d, idx) => {
+                    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    const holidayName = serverHolidays[dateStr];
+                    let cellClass = 'slot-cell';
+                    if (idx === 6) cellClass += ' sat';
+                    if (idx === 0) cellClass += ' sun';
+                    if (holidayName) cellClass += ' holiday';
+                    if (dateStr === calTodayDateStr) cellClass += ' is-today';
+
+                    const matched = events.filter(e => {
+                        if (!e.start.startsWith(dateStr)) return false;
+                        const raw = e.extendedProps?.rawTime || '';
+                        if (raw.includes('종일')) return true;
+                        const roundMatch = raw.match(/(\d+)회차/);
+                        if (roundMatch) return parseInt(roundMatch[1], 10) === slotNum;
+                        const timeMatch = raw.match(/(\d{1,2}:\d{2})\s*~/);
+                        return timeMatch ? timeMatch[1].padStart(5, '0') === slotStartTime : false;
+                    });
+
+                    html += `<div class="${cellClass}" onclick="openCreateModal('${dateStr}')">`;
+                    matched.forEach(ev => {
+                        const evClass = getCategoryClass(ev.extendedProps?.category || '');
+                        html += `
+                            <div class="${evClass}" onclick='event.stopPropagation(); openModal(${JSON.stringify(ev)})' onmouseenter='showTooltip(event, ${JSON.stringify(ev)})' onmousemove='moveTooltip(event)' onmouseleave='hideTooltip()'>
+                                <div class="ev-top-row"><span class="ev-time">${ev.extendedProps?.rawTime || ''}</span></div>
+                                <span class="ev-title">${ev.title.replace(/\[.*?\]\s*/, '')}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                });
+                html += `</div>`;
+            });
+            html += `</div></div>`;
+            container.innerHTML = html;
+        }
+
+        const tooltip = document.getElementById('tooltip');
+        function showTooltip(e, ev) {
+            const rawTime = ev.extendedProps?.rawTime || ev.start;
+            const status = ev.extendedProps?.status || '등록 대기';
+            const fee = ev.extendedProps?.fee || '무료';
+            const memo = ev.extendedProps?.memo || '';
+            const isPending = status.replace(/\s+/g, '').includes('결제대기');
+
+            tooltip.innerHTML = `
+                <div class="tt-title">${ev.title.replace(/\[.*?\]\s*/, '')}</div>
+                <div class="tt-row">시간: <b>${rawTime}</b></div>
+                <div class="tt-row">요청기관: <b>${ev.extendedProps?.agency || '-'}</b></div>
+                <div class="tt-row">대관료: <b>${typeof fee === 'number' ? fee.toLocaleString() + '원' : fee}</b></div>
+                <div class="tt-row">상태: ${isPending ? `<b class="tt-status-pending">⚠️ ${status}</b>` : `<b>${status}</b>`}</div>
+                ${memo ? `<div class="tt-row tt-memo">비고: <b>${memo}</b></div>` : ''}
+            `;
+            tooltip.style.display = 'block';
+            moveTooltip(e);
+        }
+
+        function moveTooltip(e) {
+            tooltip.style.left = `${e.clientX + 12}px`;
+            tooltip.style.top = `${e.clientY + 12}px`;
+        }
+
+        function hideTooltip() { tooltip.style.display = 'none'; }
+
+        function openModal(ev) {
+            hideTooltip();
+            calSelectedEvent = ev;
+            const status = ev.extendedProps?.status || '등록 대기';
+            const fee = ev.extendedProps?.fee || '무료';
+
+            document.getElementById('m-team').innerText = ev.title;
+            document.getElementById('m-time').innerText = ev.extendedProps?.rawTime || ev.start;
+            document.getElementById('m-cat').innerText = ev.extendedProps?.category || '-';
+            document.getElementById('m-agency').innerText = ev.extendedProps?.agency || '-';
+            document.getElementById('m-fee').innerText = typeof fee === 'number' ? fee.toLocaleString() + '원' : fee;
+
+            const statusEl = document.getElementById('m-status');
+            statusEl.innerHTML = status.replace(/\s+/g, '').includes('결제대기')
+                ? `<span class="status-text-pending">${status}</span>`
+                : `<span class="status-text-normal">${status}</span>`;
+
+            const memo = ev.extendedProps?.memo || '';
+            const memoContainer = document.getElementById('m-memo-container');
+            if (memo) {
+                document.getElementById('m-memo').innerText = memo;
+                memoContainer.style.display = 'block';
+            } else {
+                memoContainer.style.display = 'none';
+            }
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none';
+        }
+
+        document.addEventListener('click', () => closeMonthPicker());
 
         window.onload = function() {
             renderQACards();
             updateLiveClock();
             setInterval(updateLiveClock, 1000);
         };
+
+        window.addEventListener('focus', () => {
+            if (typeof renderCalendar === 'function') renderCalendar(false);
+        });
+
+        setInterval(() => {
+            if (typeof renderCalendar === 'function') renderCalendar(false);
+        }, 30000);
     </script>
 </body>
 </html>
