@@ -10,8 +10,13 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- React & Babel for Generator Tab -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
         body {
             font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
@@ -603,12 +608,63 @@
             cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
         }
         .btn-footer-refresh:hover { background: #f1f5f9; color: var(--cal-ink); }
+
+        /* GENERATOR TAB PRINT & LAYOUT STYLES */
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #tab-generator, #tab-generator * {
+                visibility: visible;
+            }
+            #tab-generator {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 297mm !important;
+                height: 210mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-page {
+                width: 297mm !important;
+                height: 210mm !important;
+                max-height: 210mm !important;
+                margin: 0 !important;
+                padding: 5mm 8mm 4mm 8mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+            }
+        }
+        .a4-landscape {
+            width: 297mm;
+            height: 210mm;
+            max-height: 210mm;
+            box-sizing: border-box;
+        }
+        .noon-divider {
+            border-bottom: 2.3px dashed #c9c9c9 !important;
+            margin-top: 1px !important;
+            margin-bottom: 1px !important;
+            height: 0 !important;
+            width: 100% !important;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col text-slate-800 antialiased text-xs">
 
     <!-- Header -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-md bg-slate-900 flex items-center justify-center font-bold text-xs text-white">
@@ -643,7 +699,7 @@
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
+        <!-- Navigation Tabs (3개 탭 구성) -->
         <nav class="bg-slate-50 border-t border-slate-200 px-4 sm:px-6 lg:px-8">
             <div class="max-w-7xl mx-auto flex space-x-1 overflow-x-auto custom-scrollbar text-xs font-medium py-1.5">
                 <button onclick="switchTab('qa')" id="tab-btn-qa" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap bg-slate-900 text-white font-semibold shadow-2xs">
@@ -652,12 +708,15 @@
                 <button onclick="switchTab('calendar')" id="tab-btn-calendar" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     대관 일정 캘린더
                 </button>
+                <button onclick="switchTab('generator')" id="tab-btn-generator" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                    캘린더 생성기
+                </button>
             </div>
         </nav>
     </header>
 
     <!-- Real-Time Clock Bar -->
-    <section class="bg-slate-900 text-white border-b border-slate-800 py-1.5 px-4 sm:px-6 lg:px-8">
+    <section class="bg-slate-900 text-white border-b border-slate-800 py-1.5 px-4 sm:px-6 lg:px-8 no-print">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
             <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -698,9 +757,8 @@
             </div>
         </section>
 
-        <!-- TAB 2: NATIVE CALENDAR TAB (iframe 없는 직접 통합 영역) -->
+        <!-- TAB 2: NATIVE CALENDAR TAB -->
         <section id="tab-calendar" class="tab-content hidden space-y-4">
-            
             <div class="cal-page">
                 <header class="header-upcoming">
                     <div class="title-area">
@@ -804,7 +862,11 @@
                     </div>
                 </div>
             </div>
+        </section>
 
+        <!-- TAB 3: CALENDAR GENERATOR TAB (React 네이티브 통합) -->
+        <section id="tab-generator" class="tab-content hidden space-y-4">
+            <div id="generator-root" class="w-full flex justify-center"></div>
         </section>
 
     </main>
@@ -944,7 +1006,7 @@
     </div>
 
     <!-- Floating AI Chatbot Button & Dialog Window -->
-    <div id="chatbot-wrapper">
+    <div id="chatbot-wrapper" class="no-print">
         <button onclick="toggleChatbot()" id="chatbot-fab" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white hover:bg-slate-800 p-3.5 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2 group">
             <div class="relative">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1024,7 +1086,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 text-slate-500 text-xs py-5 mt-8">
+    <footer class="bg-white border-t border-slate-200 text-slate-500 text-xs py-5 mt-8 no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-2">
             <div>
                 <p class="font-semibold text-slate-700 text-xs">강동구도시관리공단 - 동명근린공원 축구장 현장 CS 매뉴얼</p>
@@ -1422,7 +1484,6 @@
 
         function generateOfflineResponse(userText) {
             const query = userText.toLowerCase().trim();
-
             if (query.includes('운영시간') || query.includes('회차') || query.includes('휴관일') || query.includes('동절기') || query.includes('하절기')) {
                 return "- **운영시간:** **동절기(10~3월)** 06:00~21:50 / **하절기(4~9월)** 08:00~20:00\n- **휴관일:** **신정, 설 연휴, 추석 연휴, 노동절 등**\n- **회차별 이용시간:** 1회차(08~10), 2회차(10~12), 3회차(12~14), 4회차(14~16), 5회차(16~18), 6회차(18~20, 하절기 한시)\n*(※ 9.15~9.22 임시운영은 08~16시 4타임만 무료 운영)*";
             }
@@ -2248,6 +2309,301 @@
         setInterval(() => {
             if (typeof renderCalendar === 'function') renderCalendar(false);
         }, 30000);
+    </script>
+
+    <!-- REACT CALENDAR GENERATOR SCRIPT -->
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+
+        const SUMMER_PARTS = ['1부', '2부', '3부', '4부', '5부', '6부'];
+        const WINTER_PARTS = ['1부', '2부', '3부', '4부', '5부'];
+
+        function CalendarGeneratorApp() {
+            const [events, setEvents] = useState([]);
+            const [yearMonth, setYearMonth] = useState('');
+            const [fileName, setFileName] = useState('');
+
+            const handleFileUpload = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                setFileName(file.name);
+                const reader = new FileReader();
+
+                reader.onload = (evt) => {
+                    try {
+                        const text = evt.target.result;
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(text, 'text/html');
+                        const trList = Array.from(doc.querySelectorAll('tr'));
+
+                        if (trList.length <= 1) {
+                            alert("데이터가 없거나 올바른 파일이 아닙니다.");
+                            return;
+                        }
+
+                        const headers = Array.from(trList[0].querySelectorAll('th, td')).map(el => el.textContent.trim());
+                        const dateIdx = headers.indexOf('대관일');
+                        const timeIdx = headers.indexOf('대관시간');
+                        const teamIdx = headers.indexOf('팀명');
+                        const statusIdx = headers.indexOf('결제상태');
+
+                        const parsedList = [];
+
+                        for (let i = 1; i < trList.length; i++) {
+                            const tds = Array.from(trList[i].querySelectorAll('td')).map(el => el.textContent.trim());
+                            if (!tds || tds.length === 0) continue;
+
+                            const status = tds[statusIdx] || '';
+                            if (status.includes('취소')) continue;
+
+                            const rawDate = tds[dateIdx] || '';
+                            const dateMatch = rawDate.match(/\d{4}-\d{2}-\d{2}/);
+                            if (!dateMatch) continue;
+
+                            const date = dateMatch[0];
+                            const rawTime = tds[timeIdx] || '';
+                            
+                            const partMatch = rawTime.match(/[1-6]부/);
+                            const part = partMatch ? partMatch[0] : (rawTime.split('.')[0] || '');
+                            const team = (tds[teamIdx] || '').trim();
+
+                            parsedList.push({
+                                date,
+                                part,
+                                time: rawTime,
+                                team,
+                                status
+                            });
+                        }
+
+                        if (parsedList.length === 0) {
+                            alert("유효한 대관 예약 내역이 없습니다.");
+                            return;
+                        }
+
+                        setEvents(parsedList);
+                        setYearMonth(parsedList[0].date.substring(0, 7));
+                    } catch (err) {
+                        console.error(err);
+                        alert("파일 분석 중 오류가 발생했습니다.");
+                    }
+                };
+
+                reader.readAsText(file, 'utf-8');
+            };
+
+            const isWinter = useMemo(() => {
+                if (!yearMonth) return false;
+                const month = parseInt(yearMonth.split('-')[1], 10);
+                return month >= 10 || month <= 3;
+            }, [yearMonth]);
+
+            const activeParts = isWinter ? WINTER_PARTS : SUMMER_PARTS;
+
+            const { calendarDays, totalWeeks } = useMemo(() => {
+                if (!yearMonth) return { calendarDays: [], totalWeeks: 5 };
+                const [year, month] = yearMonth.split('-').map(Number);
+                const firstDayIndex = new Date(year, month - 1, 1).getDay();
+                const lastDate = new Date(year, month, 0).getDate();
+
+                const days = [];
+                for (let i = 0; i < firstDayIndex; i++) {
+                    days.push({ day: null, dateStr: '' });
+                }
+                for (let d = 1; d <= lastDate; d++) {
+                    const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    days.push({ day: d, dateStr });
+                }
+                while (days.length % 7 !== 0) {
+                    days.push({ day: null, dateStr: '' });
+                }
+
+                const weeks = days.length / 7;
+                return { calendarDays: days, totalWeeks: weeks };
+            }, [yearMonth]);
+
+            const eventsMap = useMemo(() => {
+                const map = {};
+                events.forEach(ev => {
+                    if (!map[ev.date]) map[ev.date] = {};
+                    map[ev.date][ev.part] = ev;
+                });
+                return map;
+            }, [events]);
+
+            return (
+                <div className="w-full flex flex-col items-center py-2">
+                    {events.length === 0 && (
+                        <div className="my-10 w-full max-w-lg bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center space-y-6">
+                            <div className="space-y-2">
+                                <h2 className="text-xl font-bold text-slate-900">축구장 대관 캘린더 생성기</h2>
+                                <p className="text-xs text-slate-500">대관 현황 엑셀/HTML 문서를 업로드하면 동절기/하절기 규격에 맞춰 인쇄용 캘린더가 생성됩니다.</p>
+                            </div>
+                            <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 bg-slate-50 flex flex-col items-center justify-center">
+                                <input type="file" accept=".xls,.xlsx,.html" onChange={handleFileUpload} id="excelUpload" className="hidden" />
+                                <label htmlFor="excelUpload" className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg text-xs shadow transition">
+                                    파일 선택
+                                </label>
+                                <span className="text-[11px] text-slate-400 mt-2">.xls, .xlsx, .html 파일 지원 (동절기 5부 / 하절기 6부 자동 적용)</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {events.length > 0 && (
+                        <>
+                            {/* 컨트롤 바 */}
+                            <div className="no-print w-[297mm] bg-white p-2.5 rounded-lg shadow-sm border border-slate-200 mb-3 flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <span className="text-xs font-bold text-slate-500">등록 파일:</span>
+                                    <span className="text-xs bg-slate-100 text-slate-800 px-2.5 py-0.5 rounded font-mono truncate max-w-xs">{fileName}</span>
+                                    <span className={`text-xs px-2 py-0.5 rounded font-bold ${isWinter ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}`}>
+                                        {isWinter ? '동절기 운영 (1~5부)' : '하절기 운영 (1~6부)'}
+                                    </span>
+                                    <label htmlFor="reUpload" className="text-xs text-blue-600 hover:underline cursor-pointer ml-2 font-semibold">
+                                        파일 변경
+                                    </label>
+                                    <input type="file" accept=".xls,.xlsx,.html" onChange={handleFileUpload} id="reUpload" className="hidden" />
+                                </div>
+
+                                <button 
+                                    onClick={() => window.print()} 
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 px-5 rounded-md text-xs shadow transition"
+                                >
+                                    PDF 저장 / 인쇄
+                                </button>
+                            </div>
+
+                            {/* A4 1장 캔버스 */}
+                            <div className="print-page a4-landscape bg-white p-2.5 shadow-xl border border-slate-200 flex flex-col justify-between overflow-hidden">
+                                
+                                {/* 상단 타이틀 */}
+                                <div className="flex justify-between items-center border-b-2 border-slate-900 pb-0.5 mb-1 shrink-0">
+                                    <div className="flex items-baseline space-x-2">
+                                        <h1 className="text-base font-black text-slate-900 tracking-tight">동명근린공원 축구장 대관 현황</h1>
+                                        <span className="text-[10.5px] text-slate-600 font-medium">
+                                            {isWinter 
+                                                ? '오전: 1부(08~10), 2부(10~12) | 오후: 3부(12~14), 4부(14~16), 5부(16~18) [동절기]' 
+                                                : '오전: 1부(08~10), 2부(10~12) | 오후: 3부(12~14), 4부(14~16), 5부(16~18), 6부(18~20) [하절기]'
+                                            }
+                                        </span>
+                                    </div>
+                                    <span className="text-base font-black text-blue-900 tracking-wider font-mono">{yearMonth}</span>
+                                </div>
+
+                                {/* 요일 바 */}
+                                <div className="grid grid-cols-7 border-b border-slate-400 text-center font-bold text-[11px] py-0.5 bg-slate-100 shrink-0">
+                                    <div className="text-red-600">일</div>
+                                    <div>월</div>
+                                    <div>화</div>
+                                    <div>수</div>
+                                    <div>목</div>
+                                    <div>금</div>
+                                    <div className="text-blue-600">토</div>
+                                </div>
+
+                                {/* 달력 본체 그리드 */}
+                                <div 
+                                    className="grid grid-cols-7 border-l border-t border-slate-300 flex-1"
+                                    style={{
+                                        gridTemplateRows: `repeat(${totalWeeks}, minmax(0, 1fr))`
+                                    }}
+                                >
+                                    {calendarDays.map((item, idx) => {
+                                        const dayObj = item.dateStr ? (eventsMap[item.dateStr] || {}) : null;
+                                        const isSun = idx % 7 === 0;
+                                        const isSat = idx % 7 === 6;
+
+                                        return (
+                                            <div 
+                                                key={idx} 
+                                                className="border-r border-b border-slate-300 p-0.5 flex flex-col justify-between bg-white overflow-hidden"
+                                            >
+                                                {/* 날짜 헤더 */}
+                                                <div className="flex justify-between items-center px-0.5 mb-[1px]">
+                                                    {item.day ? (
+                                                        <span className={`font-black text-[11.5px] leading-none ${isSun ? 'text-red-500' : isSat ? 'text-blue-600' : 'text-slate-800'}`}>
+                                                            {item.day}
+                                                        </span>
+                                                    ) : <span />}
+                                                </div>
+                                                
+                                                {/* 1부~6부 슬롯 + 12시 독립 점선 분할 */}
+                                                {item.day ? (
+                                                    <div className="flex flex-col justify-between flex-1 h-full">
+                                                        {/* 오전 그룹 (1부, 2부) */}
+                                                        <div className="flex flex-col justify-between flex-1">
+                                                            {['1부', '2부'].map((part) => {
+                                                                const ev = dayObj ? dayObj[part] : null;
+                                                                return (
+                                                                    <div 
+                                                                        key={part} 
+                                                                        className={`flex items-center px-1 rounded-[1px] leading-none h-[48%] overflow-hidden ${
+                                                                            ev 
+                                                                                ? 'bg-blue-50/90 border border-blue-200 text-slate-950 font-bold' 
+                                                                                : 'bg-slate-50/40 border border-slate-100 text-slate-300'
+                                                                        }`}
+                                                                    >
+                                                                        <span className={`text-[9px] font-black mr-1 shrink-0 ${ev ? 'text-blue-700' : 'text-slate-300'}`}>
+                                                                            {part.replace('부', '')}
+                                                                        </span>
+                                                                        <span className="text-[10.5px] tracking-tight truncate flex-1">
+                                                                            {ev ? ev.team : ''}
+                                                                        </span>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+
+                                                        {/* 12시 독립 점선 */}
+                                                        <div className="noon-divider"></div>
+
+                                                        {/* 오후 그룹 (3부 ~ 5/6부) */}
+                                                        <div className="flex flex-col justify-between flex-[2]">
+                                                            {activeParts.slice(2).map((part) => {
+                                                                const ev = dayObj ? dayObj[part] : null;
+                                                                return (
+                                                                    <div 
+                                                                        key={part} 
+                                                                        className={`flex items-center px-1 rounded-[1px] leading-none my-[0.5px] flex-1 overflow-hidden ${
+                                                                            ev 
+                                                                                ? 'bg-blue-50/90 border border-blue-200 text-slate-950 font-bold' 
+                                                                                : 'bg-slate-50/40 border border-slate-100 text-slate-300'
+                                                                        }`}
+                                                                    >
+                                                                        <span className={`text-[9px] font-black mr-1 shrink-0 ${ev ? 'text-blue-700' : 'text-slate-300'}`}>
+                                                                            {part.replace('부', '')}
+                                                                        </span>
+                                                                        <span className="text-[10.5px] tracking-tight truncate flex-1">
+                                                                            {ev ? ev.team : ''}
+                                                                        </span>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex-1 bg-slate-50/30" />
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* 푸터 */}
+                                <div className="text-[8.5px] text-slate-400 pt-0.5 border-t border-slate-100 flex justify-between shrink-0">
+                                    <span>* 굵은 점선 기준 상단: 오전(08:00~12:00) / 하단: 오후(12:00 이후)</span>
+                                    <span>동명근린공원 축구장 현장 관리용</span>
+                                </div>
+
+                            </div>
+                        </>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('generator-root')).render(<CalendarGeneratorApp />);
     </script>
 </body>
 </html>
