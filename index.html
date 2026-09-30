@@ -710,6 +710,9 @@
         .work-kind-tag.leave { background: var(--cal-sun-soft); color: var(--cal-sun); }
         /* 시차·대직 표시: 테두리 없이 글씨만 */
         .work-hourly-badge { margin-left: auto; flex-shrink: 0; font-size: 10.5px; font-weight: 800; color: var(--cal-sun); }
+        .work-time-note { flex-shrink: 0; margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); }
+        .work-cover-badge + .work-time-note { margin-left: 4px; }
+        .work-week-table td .work-time-note { margin: 1px 0 0; }
         .work-cover-badge { flex-shrink: 0; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); }
         .work-shift .work-cover-badge { margin-left: auto; }
         .work-shift .work-cover-badge + .work-hourly-badge { margin-left: 4px; }
@@ -2147,11 +2150,12 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         // ===== 근무표 =====
         // 기본 근무: offDays(0=일 ~ 6=토)는 고정 휴무, 나머지 요일은 shift 근무.
         // workDays가 있으면 그 요일에만 shift 근무하고 나머지 요일은 기본 근무 없음(대직 가능).
+        // start가 있으면 기본 근무일의 출근 시간이 근무 종류의 기본 시간 대신 이 시간이 됨.
         const WORK_STAFF = [
             { id: 'eunji', name: '손은지', shift: 'open', offDays: [0, 1] },
             { id: 'b', name: '최일영', shift: 'close', offDays: [3, 4] },
             { id: 'c', name: '윤보혁', shift: 'open', offDays: [5, 6] },
-            { id: 'wonchang', name: '장원창', shift: 'close', workDays: [3, 4], offDays: [] }
+            { id: 'wonchang', name: '장원창', shift: 'close', workDays: [3, 4], offDays: [], start: '16:30' }
         ];
         const WORK_SHIFTS = {
             open: { label: '개시', time: '07:30~', start: '07:30' },
@@ -2274,10 +2278,19 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             return staff.offDays.includes(date.getDay()) ? 'off' : staff.shift;
         }
 
+        // 출근 시간: 기본 근무일에 기본 근무 종류로 일하면 직원별 시간(start), 아니면 근무 종류의 기본 시간
+        function workStartFor(staff, date, shift) {
+            const base = WORK_SHIFTS[shift]?.start || '';
+            return staff.start && workDefaultShift(staff, date) === shift ? staff.start : base;
+        }
+
         function workShiftFor(staff, date) {
             const override = workOverrides[smsToISO(date)]?.[staff.id];
-            if (override) return { shift: override.shift, memo: override.memo || '', hourly: override.hourly || null, changed: true };
-            return { shift: workDefaultShift(staff, date), memo: '', hourly: null, changed: false };
+            const entry = override
+                ? { shift: override.shift, memo: override.memo || '', hourly: override.hourly || null, changed: true }
+                : { shift: workDefaultShift(staff, date), memo: '', hourly: null, changed: false };
+            entry.start = entry.shift ? workStartFor(staff, date, entry.shift) : '';
+            return entry;
         }
 
         // 시간 연차: 30분 단위, "09:00" 형식
@@ -2300,16 +2313,18 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         // 시차를 반영한 실제 근무 시간.
         // 근무 시작부터 쓴 시차는 시작 시간을 뒤로 미룸 (마감 09:30~ + 3시간 → 12:30~),
         // 중간·끝에 쓴 시차는 시작 시간은 그대로 두고 시차 시간대를 따로 표시
+        // custom = 근무 종류의 기본 시간과 다른 출근 시간 (예: 장원창 마감 16:30~)
         function workTimeInfo(entry) {
-            const s = WORK_SHIFTS[entry.shift];
-            if (!s.start) return { time: '', hourly: '', delayed: false };
-            if (!entry.hourly) return { time: `${s.start}~`, hourly: '', delayed: false };
+            const start = entry.start;
+            if (!start) return { time: '', hourly: '', delayed: false, custom: false };
+            const custom = start !== WORK_SHIFTS[entry.shift].start;
+            if (!entry.hourly) return { time: `${start}~`, hourly: '', delayed: false, custom };
             const hours = workHourlyHours(entry.hourly);
-            const delayed = entry.hourly.from <= s.start && entry.hourly.to > s.start;
+            const delayed = entry.hourly.from <= start && entry.hourly.to > start;
             return {
-                time: `${delayed ? entry.hourly.to : s.start}~`,
+                time: `${delayed ? entry.hourly.to : start}~`,
                 hourly: delayed ? `시차 ${hours}h` : `시차 ${entry.hourly.from}~${entry.hourly.to}`,
-                delayed
+                delayed, custom
             };
         }
 
@@ -2331,7 +2346,10 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const s = WORK_SHIFTS[entry.shift];
             const info = workTimeInfo(entry);
             const cover = workIsCover(staff, date, entry) ? `<span class="work-cover-badge">대직</span>` : '';
-            const badge = cover + (entry.hourly ? `<span class="work-hourly-badge">${info.delayed ? info.time : '시차'}</span>` : '');
+            const time = entry.hourly
+                ? `<span class="work-hourly-badge">${info.delayed ? info.time : '시차'}</span>`
+                : (info.custom ? `<span class="work-time-note">${info.time}</span>` : '');
+            const badge = cover + time;
             return `<div class="work-shift ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(workChipTitle(staff, entry))}"
                 onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
                 <span class="work-kind-tag ${entry.shift}">${WORK_ICONS[entry.shift] || ''}${s.label}</span><span>${staff.name}</span>${badge}</div>`;
@@ -2343,7 +2361,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const cover = workIsCover(staff, date, entry) ? `<span class="work-cover-badge">대직</span>` : '';
             const timeLine = cover + (entry.hourly
                 ? `<span class="work-name-chip-time">${info.time}</span><span class="work-hourly-badge">${info.hourly}</span>`
-                : '');
+                : (info.custom ? `<span class="work-time-note">${info.time}</span>` : ''));
             return `<div class="work-shift work-name-chip ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(workChipTitle(staff, entry))}"
                 onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
                 <span class="work-name-chip-name">${staff.name}</span>${timeLine}${entry.memo ? `<small>${smsEscape(entry.memo)}</small>` : ''}</div>`;
@@ -2363,7 +2381,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 .filter(x => x.entry.shift === key)
                 .map(x => {
                     const info = workTimeInfo(x.entry);
-                    return info.delayed ? `${x.staff.name}(${info.time})` : x.staff.name;
+                    return info.delayed || info.custom ? `${x.staff.name}(${info.time})` : x.staff.name;
                 }).join(', ') || '없음';
             el.innerHTML = `<span class="text-slate-400">오늘 근무</span>
                 <span class="work-kind-tag open">${WORK_ICONS.open}개시</span><span>${group('open')}</span>
@@ -2487,7 +2505,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             document.getElementById('work-modal-shift').innerHTML = Object.entries(WORK_SHIFTS).map(([key, s]) =>
                 `<button type="button" class="${key === workModalState.shift ? 'active' : ''}" onclick="selectWorkModalShift('${key}')">${s.label}${s.time ? ' ' + s.time : ''}</button>`).join('');
             const def = workDefaultShift(staff, new Date(y, m - 1, d));
-            document.getElementById('work-modal-default').innerText = `기본 근무: ${def ? WORK_SHIFTS[def].label : '없음'}`;
+            document.getElementById('work-modal-default').innerText = `기본 근무: ${def ? WORK_SHIFTS[def].label + (def !== 'off' ? ' ' + workStartFor(staff, new Date(y, m - 1, d), def) + '~' : '') : '없음'}`;
             document.getElementById('work-modal-reset').style.visibility = workModalState.changed ? 'visible' : 'hidden';
 
             // 시간 연차는 개시·마감 근무일 때만 사용
@@ -2509,7 +2527,9 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         function toggleWorkHourly(on) {
-            const start = workModalState.shift === 'close' ? '09:30' : '07:30';
+            const [y, mo, d] = workModalState.date.split('-').map(Number);
+            const staff = WORK_STAFF.find(s => s.id === workModalState.staff);
+            const start = workStartFor(staff, new Date(y, mo - 1, d), workModalState.shift);
             const [h, m] = start.split(':').map(Number);
             workModalState.hourly = on ? { from: start, to: `${String(h + 2).padStart(2, '0')}:${String(m).padStart(2, '0')}` } : null;
             renderWorkModal();
