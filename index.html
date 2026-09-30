@@ -580,7 +580,7 @@
         #tooltip .tt-row b { color: #f8fafc; font-weight: 700; }
         #tooltip .tt-memo { color: #ff9c6e; font-weight: 600; }
 
-        #modal, #holiday-modal, #create-modal {
+        #modal, #holiday-modal, #create-modal, #work-modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
             justify-content: center; align-items: center; z-index: 99999;
             backdrop-filter: blur(4px);
@@ -598,6 +598,179 @@
         .cal-form-group input, .cal-form-group select {
             padding: 8px 10px; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12.5px; outline: none;
         }
+
+        /* 안내 문자 입력 컨트롤 (캘린더 컨트롤과 같은 규격) */
+        .sms-fields { display: flex; flex-wrap: wrap; gap: 10px 12px; }
+        .sms-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .sms-field-grow { flex: 1 1 120px; }
+        .sms-label { font-size: 11.5px; font-weight: 700; color: var(--cal-ink-2); }
+        .sms-control {
+            height: 32px; padding: 0 10px; background: #ffffff;
+            border: 1px solid var(--cal-line); border-radius: 6px;
+            font-size: 12.5px; font-weight: 600; color: var(--cal-ink); outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s; width: 100%;
+        }
+        .sms-control::placeholder { color: var(--cal-ink-4); font-weight: 500; }
+        .sms-control:hover { border-color: #cbd5e1; }
+        .sms-control:focus, .sms-stepper:focus-within {
+            border-color: var(--cal-today-border); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        select.sms-control {
+            appearance: none; -webkit-appearance: none; padding-right: 28px; cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 10px center;
+        }
+        input[type="date"].sms-control { cursor: pointer; }
+        .sms-stepper {
+            display: inline-flex; align-items: center; height: 32px; background: #ffffff;
+            border: 1px solid var(--cal-line); border-radius: 6px; overflow: hidden;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .sms-stepper button {
+            width: 30px; height: 100%; border: none; background: transparent; cursor: pointer;
+            color: var(--cal-ink-3); display: flex; align-items: center; justify-content: center;
+        }
+        .sms-stepper button:hover { background: #f1f5f9; color: var(--cal-ink); }
+        .sms-stepper-divider { width: 1px; height: 16px; background: var(--cal-line); }
+        .sms-stepper-value {
+            display: flex; align-items: center; justify-content: center;
+            min-width: 48px; text-align: center; font-size: 12.5px; font-weight: 700; color: var(--cal-ink);
+            border: none; outline: none; background: transparent; padding: 0 4px; height: 100%;
+            font-variant-numeric: tabular-nums;
+        }
+        .sms-picker { position: relative; display: inline-flex; }
+        .sms-picker-trigger {
+            display: inline-flex; align-items: center; justify-content: space-between; gap: 10px;
+            width: auto; min-width: 140px; cursor: pointer; text-align: left;
+        }
+        .sms-picker-trigger .picker-caret-svg { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s; }
+        .sms-picker-trigger.active { border-color: var(--cal-today-border); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .sms-picker-trigger.active .picker-caret-svg { transform: rotate(180deg); color: var(--cal-today-accent); }
+        .sms-picker .month-picker-popover { top: calc(100% + 6px); }
+        .sms-picker .sms-date-popover { width: 292px; padding: 14px; }
+        .sms-date-weekdays, .sms-date-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+        .sms-date-weekdays { margin-bottom: 4px; }
+        .sms-date-weekdays span {
+            text-align: center; font-size: 11px; font-weight: 700; color: var(--cal-ink-3); padding: 4px 0;
+        }
+        .sms-date-weekdays span:first-child, .sms-date-cell.sun { color: var(--cal-sun); }
+        .sms-date-weekdays span:last-child, .sms-date-cell.sat { color: var(--cal-sat); }
+        .sms-date-cell {
+            height: 36px; border: 1px solid transparent; border-radius: 6px; background: transparent;
+            font-size: 12.5px; font-weight: 600; color: var(--cal-ink-2); cursor: pointer;
+            font-variant-numeric: tabular-nums; transition: all 0.1s;
+        }
+        .sms-date-cell:hover { background: #f1f5f9; color: var(--cal-ink); }
+        .sms-date-cell.other { color: var(--cal-ink-4); font-weight: 500; }
+        .sms-date-cell.today { border-color: var(--cal-today-border); color: var(--cal-today-accent); }
+        .sms-date-cell.selected {
+            background: var(--cal-cat-a-bg); color: var(--cal-cat-a); font-weight: 800; border-color: #c7d2fe;
+        }
+        .sms-date-footer {
+            display: flex; justify-content: flex-end; margin-top: 8px; padding-top: 8px;
+            border-top: 1px solid var(--cal-line-2);
+        }
+        .sms-date-footer button {
+            border: 1px solid var(--cal-line); background: #ffffff; border-radius: 6px; height: 28px; padding: 0 10px;
+            font-size: 11.5px; font-weight: 700; color: var(--cal-ink-2); cursor: pointer;
+        }
+        .sms-date-footer button:hover { background: #f1f5f9; color: var(--cal-ink); }
+        input.sms-stepper-value { width: 48px; -moz-appearance: textfield; }
+        input.sms-stepper-value::-webkit-outer-spin-button,
+        input.sms-stepper-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* 근무표 */
+        .work-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+        .work-title { font-size: 20px; font-weight: 800; color: var(--cal-ink); letter-spacing: -0.01em; }
+        .work-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .work-btn-primary {
+            height: 32px; padding: 0 12px; border-radius: 6px; border: none; background: var(--cal-ink); color: #fff;
+            font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .work-btn-primary:hover { background: #1e293b; }
+        .work-legend { display: flex; flex-wrap: wrap; gap: 10px 14px; font-size: 11.5px; font-weight: 600; color: var(--cal-ink-2); }
+        .work-legend span { display: inline-flex; align-items: center; gap: 5px; }
+        .work-dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+        .work-board { border: 1px solid var(--cal-line); border-radius: 8px; overflow: hidden; background: var(--cal-paper); }
+
+        .work-shift {
+            display: flex; align-items: center; gap: 4px; border-radius: 4px; padding: 2px 6px;
+            font-size: 11px; font-weight: 700; line-height: 1.5; cursor: pointer; border: 1px solid transparent;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .work-shift .work-shift-kind { font-weight: 800; }
+        .work-shift.open { background: var(--cal-sat-soft); color: var(--cal-sat); }
+        .work-shift.close { background: var(--cal-cat-a-bg); color: var(--cal-cat-a); }
+        .work-shift.off { background: var(--cal-line-2); color: var(--cal-ink-4); font-weight: 600; }
+        .work-shift.leave { background: var(--cal-sun-soft); color: var(--cal-sun); }
+        .work-shift.changed { border-color: #fbbf24; box-shadow: inset 3px 0 0 #f59e0b; }
+        .work-hourly-badge {
+            margin-left: auto; flex-shrink: 0; font-size: 10px; font-weight: 800; color: var(--cal-sun);
+            background: #fff; border: 1px solid #fecaca; border-radius: 3px; padding: 0 4px; line-height: 1.5;
+        }
+        .work-week-table td .work-hourly-badge { margin: 3px 0 0; }
+        .work-hourly-range { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+        .work-hourly-range select { width: auto; min-width: 88px; }
+        .work-hourly-range > span { font-size: 12px; font-weight: 700; color: var(--cal-ink-3); }
+        .work-hourly-range .work-hourly-hours { color: var(--cal-sun); margin-left: 2px; }
+        .work-shift:hover { filter: brightness(0.96); }
+
+        .work-month-head, .work-month-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+        .work-month-head div {
+            padding: 8px; text-align: center; font-size: 11.5px; font-weight: 700; color: var(--cal-ink-3);
+            background: var(--cal-surface); border-bottom: 1px solid var(--cal-line);
+        }
+        .work-month-head div:first-child { color: var(--cal-sun); }
+        .work-month-head div:last-child { color: var(--cal-sat); }
+        .work-day {
+            min-height: 112px; padding: 6px; border-right: 1px solid var(--cal-line-2); border-bottom: 1px solid var(--cal-line-2);
+            display: flex; flex-direction: column; gap: 3px; cursor: pointer; min-width: 0;
+        }
+        .work-day:nth-child(7n) { border-right: none; }
+        .work-day:hover { background: #fafbfc; }
+        .work-day.other { background: var(--cal-surface); }
+        .work-day.other > * { opacity: 0.45; }
+        .work-day.today { background: var(--cal-today-bg); }
+        .work-day-num { font-size: 12px; font-weight: 700; color: var(--cal-ink-2); margin-bottom: 2px; }
+        .work-day.sun .work-day-num { color: var(--cal-sun); }
+        .work-day.sat .work-day-num { color: var(--cal-sat); }
+        .work-day.today .work-day-num {
+            color: #fff; background: var(--cal-today-accent); border-radius: 999px; width: 22px; height: 22px;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+
+        .work-week-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .work-week-table th, .work-week-table td { border-bottom: 1px solid var(--cal-line-2); border-right: 1px solid var(--cal-line-2); padding: 8px 6px; }
+        .work-week-table th:last-child, .work-week-table td:last-child { border-right: none; }
+        .work-week-table thead th {
+            background: var(--cal-surface); border-bottom: 1px solid var(--cal-line); font-size: 11.5px; font-weight: 700;
+            color: var(--cal-ink-3); text-align: center;
+        }
+        .work-week-table thead th .work-week-date { display: block; font-size: 13px; color: var(--cal-ink); font-weight: 800; margin-top: 1px; }
+        .work-week-table thead th.sun, .work-week-table thead th.sun .work-week-date { color: var(--cal-sun); }
+        .work-week-table thead th.sat, .work-week-table thead th.sat .work-week-date { color: var(--cal-sat); }
+        .work-week-table thead th.today { background: var(--cal-today-bg); box-shadow: inset 0 -2px 0 var(--cal-today-accent); }
+        .work-week-table td.today { background: var(--cal-today-bg); }
+        .work-week-name { width: 96px; text-align: left !important; font-size: 12.5px; font-weight: 800; color: var(--cal-ink); background: #fff; }
+        .work-week-name small { display: block; font-size: 10.5px; font-weight: 600; color: var(--cal-ink-4); margin-top: 1px; }
+        .work-week-table td .work-shift { justify-content: center; padding: 6px 4px; flex-direction: column; gap: 0; }
+        .work-week-table td .work-shift small { font-size: 10.5px; font-weight: 600; opacity: 0.85; }
+        .work-empty { display: block; text-align: center; color: var(--cal-ink-4); font-size: 11px; cursor: pointer; padding: 6px 0; border-radius: 4px; }
+        .work-empty:hover { background: var(--cal-line-2); color: var(--cal-ink-2); }
+
+        .work-seg { display: flex; flex-wrap: wrap; gap: 6px; }
+        .work-seg button {
+            height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--cal-line); background: #fff;
+            font-size: 12px; font-weight: 700; color: var(--cal-ink-2); cursor: pointer;
+        }
+        .work-seg button:hover { background: #f1f5f9; }
+        .work-seg button.active { background: var(--cal-cat-a-bg); color: var(--cal-cat-a); border-color: #c7d2fe; }
+        .work-modal-actions { display: flex; justify-content: space-between; gap: 8px; margin-top: 16px; }
+        .work-modal-actions button { height: 34px; padding: 0 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .work-btn-ghost { border: 1px solid var(--cal-line); background: #fff; color: var(--cal-ink-2); }
+        .work-btn-ghost:hover { background: #f1f5f9; }
+        .work-btn-danger { border: 1px solid #fecaca; background: #fff; color: var(--cal-sun); }
+        .work-btn-danger:hover { background: var(--cal-sun-soft); }
 
         .cal-footer {
             display: flex; justify-content: space-between; align-items: center;
@@ -695,7 +868,7 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-2.5 text-xs text-slate-600">
-                <span class="bg-amber-100 text-amber-900 font-semibold px-2.5 py-1 rounded border border-amber-200 hidden lg:inline-block">9.15~9.22 임시운영 무료 (정규: 평일 8.8만/주말 11.44만)</span>
+                <span class="bg-amber-100 text-amber-900 font-semibold px-2.5 py-1 rounded border border-amber-200 hidden lg:inline-block">요금: 평일 8.8만/주말 및 공휴일 11.44만</span>
                 
                 <!-- 관리자 매뉴얼 다운로드 버튼 -->
                 <a href="/admin_manual.pdf" download="동명근린공원_관리자_매뉴얼.pdf" class="inline-flex items-center gap-1.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold px-3 py-1.5 rounded border border-slate-300 transition-colors shadow-2xs">
@@ -726,6 +899,12 @@
                 <button onclick="switchTab('generator')" id="tab-btn-generator" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     캘린더 생성기
                 </button>
+                <button onclick="switchTab('sms')" id="tab-btn-sms" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                    안내문자 템플릿
+                </button>
+                <button onclick="switchTab('work')" id="tab-btn-work" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                    근무표
+                </button>
             </div>
         </nav>
     </header>
@@ -740,7 +919,7 @@
             </div>
             <div id="live-status-container" class="flex items-center gap-2">
                 <span id="realtime-status-badge" class="px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    현재 접수 상태: 10월 추첨 접수 중
+                    현재 접수 상태: -
                 </span>
             </div>
         </div>
@@ -756,12 +935,12 @@
                     <h2 class="text-xl font-bold text-slate-900">CS 응대 스크립트 검색</h2>
                 </div>
                 <span id="qa-count-badge" class="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded border border-slate-200 self-start md:self-auto">
-                    총 26개 항목 노출 중
+                    총 28개 항목 노출 중
                 </span>
             </div>
 
             <div class="relative w-full">
-                <input type="text" id="qa-search-input" onkeyup="filterQA()" placeholder="키워드 검색 (예: 추첨 3회, 대관사이트, 21일 11시, 결제 22일, 잔여 23일, 관외 24일, 임시운영, 환불)..." class="w-full bg-white border border-slate-300 rounded-lg p-3 pl-10 text-xs text-slate-800 shadow-sm focus:outline-none focus:border-slate-500 font-medium transition-colors">
+                <input type="text" id="qa-search-input" onkeyup="filterQA()" placeholder="키워드 검색 (예: 추첨 3회, 대관사이트, 21일 11시, 결제 22일, 잔여 23일, 관외 24일, 환불)..." class="w-full bg-white border border-slate-300 rounded-lg p-3 pl-10 text-xs text-slate-800 shadow-sm focus:outline-none focus:border-slate-500 font-medium transition-colors">
                 <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -884,7 +1063,115 @@
             <div id="generator-root" class="w-full flex justify-center"></div>
         </section>
 
+        <!-- TAB 4: SMS TEMPLATES -->
+        <section id="tab-sms" class="tab-content hidden space-y-5">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 px-1">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">안내문자 템플릿</h2>
+                    <p class="text-xs text-slate-500 mt-1">빈칸을 채우면 문자에 바로 반영됩니다. 복사 버튼을 눌러 문자 발송 화면에 붙여넣으세요.</p>
+                </div>
+                <span id="sms-count-badge" class="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded border border-slate-200 self-start md:self-auto"></span>
+            </div>
+
+            <div class="relative w-full">
+                <input type="text" id="sms-search-input" oninput="renderSmsCards()" placeholder="문자 검색 (예: 결제, 추첨, 취소, 계좌, 서류)..." class="w-full bg-white border border-slate-300 rounded-lg p-3 pl-10 text-xs text-slate-800 shadow-sm focus:outline-none focus:border-slate-500 font-medium transition-colors">
+                <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+
+            <div id="sms-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- JS will populate SMS cards here -->
+            </div>
+        </section>
+
+        <!-- TAB 5: WORK SCHEDULE -->
+        <section id="tab-work" class="tab-content hidden space-y-4">
+            <div class="work-header">
+                <div>
+                    <div class="work-title" id="work-title"></div>
+                    <p class="text-xs text-slate-500 mt-1">기본 근무는 자동으로 표시됩니다. 연차·대직 등 바뀌는 날만 등록하세요.</p>
+                    <p class="text-[11px] mt-1 flex items-center gap-2">
+                        <span id="work-sync-status" class="text-slate-400"></span>
+                        <button type="button" onclick="fetchWorkOverrides()" class="text-slate-500 hover:text-slate-900 underline underline-offset-2">새로고침</button>
+                    </p>
+                </div>
+                <div class="work-controls">
+                    <div class="nav-capsule">
+                        <button class="nav-btn" onclick="navigateWork(-1)" id="work-nav-prev">이전 달</button>
+                        <div class="nav-divider"></div>
+                        <button class="nav-btn btn-today" onclick="goWorkToday()">오늘</button>
+                        <div class="nav-divider"></div>
+                        <button class="nav-btn" onclick="navigateWork(1)" id="work-nav-next">다음 달</button>
+                    </div>
+                    <div class="view-segment">
+                        <button class="btn-view-toggle active" id="work-view-month" onclick="setWorkView('month')">월간</button>
+                        <button class="btn-view-toggle" id="work-view-week" onclick="setWorkView('week')">주간</button>
+                    </div>
+                    <button class="work-btn-primary" onclick="openWorkModal()">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                        일정 등록
+                    </button>
+                </div>
+            </div>
+
+            <div class="work-legend" id="work-legend"></div>
+            <div class="work-board" id="work-board"></div>
+        </section>
+
     </main>
+
+    <!-- 근무 일정 등록 모달 -->
+    <div id="work-modal" onclick="closeWorkModal(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h4 style="margin-bottom: 14px;">근무 일정 등록</h4>
+            <div class="cal-form-group">
+                <label>날짜</label>
+                <div class="sms-stepper" style="width: fit-content;">
+                    <button type="button" aria-label="전날" onclick="stepWorkModalDate(-1)"></button>
+                    <span class="sms-stepper-divider"></span>
+                    <span id="work-modal-date" class="sms-stepper-value" style="min-width: 150px;"></span>
+                    <span class="sms-stepper-divider"></span>
+                    <button type="button" aria-label="다음날" onclick="stepWorkModalDate(1)"></button>
+                </div>
+            </div>
+            <div class="cal-form-group">
+                <label>직원</label>
+                <div class="work-seg" id="work-modal-staff"></div>
+            </div>
+            <div class="cal-form-group">
+                <label>근무</label>
+                <div class="work-seg" id="work-modal-shift"></div>
+                <span id="work-modal-default" class="text-[11px] text-slate-400"></span>
+            </div>
+            <div class="cal-form-group" id="work-modal-hourly-group">
+                <label>시간 연차</label>
+                <div class="work-seg" id="work-modal-hourly-toggle"></div>
+                <div id="work-modal-hourly-range" class="work-hourly-range">
+                    <select id="work-modal-hourly-from" class="sms-control" onchange="updateWorkHourly()"></select>
+                    <span>~</span>
+                    <select id="work-modal-hourly-to" class="sms-control" onchange="updateWorkHourly()"></select>
+                    <span id="work-modal-hourly-hours" class="work-hourly-hours"></span>
+                </div>
+            </div>
+            <div class="cal-form-group">
+                <label for="work-modal-memo">메모</label>
+                <input type="text" id="work-modal-memo" placeholder="예: 손은지 연차로 대직">
+            </div>
+            <div class="cal-form-group" id="work-modal-password-group">
+                <label for="work-modal-password">수정 비밀번호</label>
+                <input type="password" id="work-modal-password" placeholder="처음 한 번만 입력하면 이 브라우저에서 기억합니다" autocomplete="off">
+                <span id="work-modal-password-error" class="text-[11px]" style="color: var(--cal-sun);"></span>
+            </div>
+            <div class="work-modal-actions">
+                <button type="button" id="work-modal-reset" class="work-btn-danger" onclick="resetWorkOverride()">기본 근무로 되돌리기</button>
+                <div style="display: flex; gap: 8px; margin-left: auto;">
+                    <button type="button" class="work-btn-ghost" onclick="closeWorkModal()">취소</button>
+                    <button type="button" id="work-modal-save" class="work-btn-primary" style="height: 34px;" onclick="saveWorkOverride()">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- CALENDAR PORTAL MODALS -->
     <!-- 1차 보안 접속 잠금 게이트웨이 -->
@@ -1105,7 +1392,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-2">
             <div>
                 <p class="font-semibold text-slate-700 text-xs">강동구도시관리공단 - 동명근린공원 축구장 현장 CS 매뉴얼</p>
-                <p class="text-slate-400 text-xs mt-0.5">서울특별시 강동구 아리수로78길 23 | 관리사무실: 02.2045.7835 | 조례 기준 적용</p>
+                <p class="text-slate-400 text-xs mt-0.5">서울특별시 강동구 아리수로78길 23 | 관리사무실: 02-2045-7835~7 | 조례 기준 적용</p>
             </div>
             <div class="text-slate-400 text-xs">
                 동명근린공원 축구장 현장 CS 시스템
@@ -1118,14 +1405,22 @@
         const qaData = [
             {
                 id: 'Q1',
-                category: 'temp',
-                question: '9월 임시운영 기간과 접수 일정, 운영 시간 및 이용 요금은 어떻게 되나요?',
-                criteria: '임시운영 기간: 9월 15일~9월 22일 / 이용 요금: 전액 무료 / 접수: 9월 8일 오전 10시 선착순 접수 / 운영 시간: 08~10시, 10~12시, 12~14시, 14~16시 (4개 타임만 운영) / 팀등록: 수시 접수 중.',
-                script: '동명근린공원 축구장 9월 임시운영 기간은 [9월 15일 ~ 9월 22일]이며 [전액 무료]로 운영됩니다. 임시운영 선착순 대관 신청은 [9월 8일 아침 10시]에 오픈되며, 운영 시간은 [08~10시, 10~12시, 12~14시, 14~16시] 총 4개 타임만 운영됩니다. 팀 등록은 온라인으로 상시 수시 접수 가능합니다.',
-                tags: ['임시운영', '9월15일', '9월22일', '9월8일', '9월1일', '무료', '4타임', '08시~10시', '선착순접수']
+                category: 'youth',
+                question: '중고등학생 무료 개방(Team Friends)은 누가, 언제 이용할 수 있나요?',
+                criteria: '프로그램명: Team Friends / 대상: 관내 서류 증빙 가능한 중고등학생 (초등학생 제외) / 일시: 10월 1일(목)부터 평일 5회차(16:00~18:00, 2시간), 주말 및 공휴일 제외.',
+                script: '10월 1일(목)부터 평일 5회차(16:00~18:00, 2시간)에 관내 중고등학생을 대상으로 축구장 무료 개방 프로그램 [Team Friends]를 운영하고 있습니다. 초등학생은 이용 대상에서 제외되며, 주말 및 공휴일에는 운영하지 않습니다.',
+                tags: ['TeamFriends', '팀프렌즈', '중고등학생', '초등학생제외', '학생무료', '무료개방', '5회차', '평일16시', '10월1일']
             },
             {
                 id: 'Q2',
+                category: 'youth',
+                question: 'Team Friends는 어떻게 이용하고, 무엇을 챙겨가야 하나요?',
+                criteria: '관내 학생 증빙 서류 지참 / 현장에서 입장 명부 작성 후 자유 이용 / 축구화 및 축구공 개별 지참 / 샤워실 및 탈의실 이용 불가.',
+                script: '관내 학생임을 증빙할 수 있는 서류를 지참하시고, 현장에서 입장 명부를 작성하신 뒤 자유롭게 이용하시면 됩니다. 축구화와 축구공은 개별 지참해 주셔야 하며, 샤워실 및 탈의실은 이용하실 수 없습니다.',
+                tags: ['TeamFriends', '팀프렌즈', '이용방법', '입장명부', '증빙서류', '준비물', '축구화지참', '축구공지참', '샤워실불가']
+            },
+            {
+                id: 'Q3',
                 category: 'draw',
                 question: '정규 대관(익월) 추첨 신청 및 추첨은 언제, 어떻게 진행되나요?',
                 criteria: '매월 16일~20일 대관사이트(gdgd.igangdong.or.kr) 접수 / 추첨신청은 등록팀별 월 3회 가능 / 전 달 21일 오전 11시 추첨 진행.',
@@ -1133,15 +1428,15 @@
                 tags: ['16일~20일', '대관사이트', '월3회', '21일오전11시', '11시추첨', '온라인추첨', '익월추첨', '추첨신청']
             },
             {
-                id: 'Q3',
+                id: 'Q4',
                 category: 'field',
                 question: '축구장 정규 운영시간과 회차별 이용시간, 휴관일은 어떻게 되나요?',
-                criteria: '운영시간: 동절기(10월~3월) 06:00~21:50, 하절기(4월~9월) 08:00~20:00 / 휴관일: 신정, 설 연휴, 추석 연휴, 노동절 등 / 회차(2시간 단위): 1회차(08~10), 2회차(10~12), 3회차(12~14), 4회차(14~16), 5회차(16~18), 6회차(18~20, 하절기 한시 운영).',
-                script: '축구장 정규 운영시간은 [동절기(10~3월) 06:00~21:50], [하절기(4~9월) 08:00~20:00]이며, 휴관일은 [신정, 설 연휴, 추석 연휴, 노동절 등]입니다. 회차별 이용시간은 1회차(08:00~10:00), 2회차(10:00~12:00), 3회차(12:00~14:00), 4회차(14:00~16:00), 5회차(16:00~18:00), 6회차(18:00~20:00, 하절기 한시)로 운영됩니다.',
+                criteria: '운영시간: 동절기(10월~3월) 08:00~18:00, 하절기(4월~9월) 08:00~20:00 / 휴관일: 신정, 설 연휴, 추석 연휴, 노동절 등 / 회차(2시간 단위): 1회차(08~10), 2회차(10~12), 3회차(12~14), 4회차(14~16), 5회차(16~18), 6회차(18~20, 하절기 한시 운영).',
+                script: '축구장 정규 운영시간은 [동절기(10~3월) 08:00~18:00], [하절기(4~9월) 08:00~20:00]이며, 휴관일은 [신정, 설 연휴, 추석 연휴, 노동절 등]입니다. 회차별 이용시간은 1회차(08:00~10:00), 2회차(10:00~12:00), 3회차(12:00~14:00), 4회차(14:00~16:00), 5회차(16:00~18:00), 6회차(18:00~20:00, 하절기 한시)로 운영됩니다.',
                 tags: ['운영시간', '휴관일', '회차', '동절기', '하절기', '신정', '설연휴', '추석연휴', '노동절']
             },
             {
-                id: 'Q4',
+                id: 'Q5',
                 category: 'draw',
                 question: '추첨 당첨 후 결제 마감 시한은 언제까지인가요?',
                 criteria: '당첨자 결제 마감은 추첨 익일인 매월 22일 밤 11시 59분(23:59)까지. 미결제 시 자동 취소.',
@@ -1149,39 +1444,47 @@
                 tags: ['추첨', '결제마감', '22일', '밤11시59분', '23시59분', '자동취소', '당첨']
             },
             {
-                id: 'Q5',
-                category: 'draw',
-                question: '정규 대관 사용료 납부 및 결제 방식은 어떻게 되나요?',
-                criteria: '대관 예약 신청 시 시스템상 온라인 결제(카드결제)로 납부. (임시운영 기간은 무료)',
-                script: '동명근린공원 축구장 정규 사용료는 평일 88,000원, 주말 114,400원이며 예약 시 온라인 카드결제로 납부합니다. (단, 9월 15일~22일 임시운영 기간은 무료 대관입니다.)',
-                tags: ['사용료납부', '온라인결제', '카드결제', '88000원', '114400원', '무료']
-            },
-            {
                 id: 'Q6',
                 category: 'draw',
-                question: '추첨 후 남아있는 잔여회차 선착순 신청은 언제부터인가요 (관내팀)?',
-                criteria: '매월 23일 오전 10시 추첨 후 잔여 회차 선착순 오픈 (관내팀 대상).',
-                script: '추첨 후 남아있는 잔여 회차(잔여타임)에 대한 선착순 접수는 관내팀을 대상으로 매월 23일 오전 10시에 1차로 오픈됩니다.',
-                tags: ['잔여시간', '선착순', '매월23일오전10시', '관내팀', '추첨후']
+                question: '정규 대관 사용료 납부 및 결제 방식은 어떻게 되나요?',
+                criteria: '대관 예약 신청 시 시스템상 온라인 결제(카드결제)로 납부.',
+                script: '동명근린공원 축구장 정규 사용료는 평일 88,000원, 주말 및 공휴일 114,400원이며 예약 시 온라인 카드결제로 납부합니다.',
+                tags: ['사용료납부', '온라인결제', '카드결제', '88000원', '114400원']
             },
             {
                 id: 'Q7',
                 category: 'draw',
-                question: '관외팀의 잔여회차 선착순 신청은 언제부터 가능한가요?',
-                criteria: '매월 24일 오전 10시부터 관외팀까지 선착순 대상 확대.',
-                script: '관외팀의 경우 잔여 회차 선착순 신청 대상이 확대되는 매월 24일 오전 10시부터 접수가 가능합니다.',
-                tags: ['관외팀', '잔여시간', '선착순', '매월24일오전10시', '확대']
+                question: '대관료 거래명세표는 어떻게 발급받나요?',
+                criteria: '마이페이지 > 대관결제내역 > 상세보기 > 결제 정보의 접수번호 옆 [거래명세표] 버튼 클릭.',
+                script: '공단 홈페이지 로그인 후 [마이페이지] > [대관결제내역]으로 이동하시어 해당 대관 건의 [상세보기]를 클릭해 주세요. 결제 정보의 접수번호 옆에 있는 [거래명세표] 버튼을 누르시면 바로 발급받으실 수 있습니다.',
+                tags: ['거래명세표', '명세표발급', '증빙서류', '결제내역', '마이페이지', '대관결제내역']
             },
             {
                 id: 'Q8',
-                category: 'field',
-                question: '축구장 구장 규격과 샤워실/탈의실 이용 가능한가요?',
-                criteria: '지상 1층: 인조잔디구장(100m X 64m), 우레탄 트랙 / 지하 1층: 남·여 샤워실 및 탈의실 (※ 단, 9월 임시운영 기간 동안 샤워실 및 탈의실 사용 불가).',
-                script: '동명근린공원 축구장은 지상 1층에 100m X 64m 규격의 인조잔디구장이 있으며, 지하 1층에 남/여 샤워실과 탈의실이 완비되어 있습니다. 단, 9월 임시운영 기간 동안에는 샤워실과 탈의실 사용이 불가능하오니 양해 부탁드립니다.',
-                tags: ['시설현황', '구장규격', '100mX64m', '샤워실', '탈의실', '지하1층', '9월사용불가']
+                category: 'draw',
+                question: '추첨 후 남아있는 잔여회차 선착순 신청은 언제부터인가요 (관내팀)?',
+                criteria: '매월 23일 오전 11시 추첨 후 잔여 회차 선착순 오픈 (관내팀 대상).',
+                script: '추첨 후 남아있는 잔여 회차(잔여타임)에 대한 선착순 접수는 관내팀을 대상으로 매월 23일 오전 11시에 1차로 오픈됩니다.',
+                tags: ['잔여시간', '선착순', '매월23일오전11시', '관내팀', '추첨후']
             },
             {
                 id: 'Q9',
+                category: 'draw',
+                question: '관외팀의 잔여회차 선착순 신청은 언제부터 가능한가요?',
+                criteria: '매월 24일 오전 11시부터 관외팀까지 선착순 대상 확대.',
+                script: '관외팀의 경우 잔여 회차 선착순 신청 대상이 확대되는 매월 24일 오전 11시부터 접수가 가능합니다.',
+                tags: ['관외팀', '잔여시간', '선착순', '매월24일오전11시', '확대']
+            },
+            {
+                id: 'Q10',
+                category: 'field',
+                question: '축구장 구장 규격과 샤워실/탈의실 이용 가능한가요?',
+                criteria: '지상 1층: 인조잔디구장(100m X 64m), 우레탄 트랙 / 지하 1층: 남·여 샤워실 및 탈의실 (※ 중고등학생 무료 개방(Team Friends) 이용 시 제공되지 않음).',
+                script: '동명근린공원 축구장은 지상 1층에 100m X 64m 규격의 인조잔디구장이 있으며, 지하 1층에 남/여 샤워실과 탈의실이 완비되어 있습니다. 단, 중고등학생 무료 개방(Team Friends) 이용 시에는 샤워실과 탈의실이 제공되지 않습니다.',
+                tags: ['시설현황', '구장규격', '100mX64m', '샤워실', '탈의실', '지하1층']
+            },
+            {
+                id: 'Q11',
                 category: 'weather',
                 question: '오늘 비가 오는데 예약 취소 및 전액 환불이 가능한가요?',
                 criteria: '단순 우천 시 정상 진행. 기상청 호우경보 등 기상특보/천재지변 또는 재해 시에만 100% 환불.',
@@ -1189,7 +1492,7 @@
                 tags: ['우천', '호우경보', '기상특보', '천재지변', '환불']
             },
             {
-                id: 'Q10',
+                id: 'Q12',
                 category: 'weather',
                 question: '강수량이 어느 정도여야 안전 취소가 되나요?',
                 criteria: '시간당 강수량 10mm 이상 지속 시 현장 운영진 판단에 따라 안전 취소 검토 가능.',
@@ -1197,7 +1500,7 @@
                 tags: ['강수량', '10mm', '안전취소', '우천취소']
             },
             {
-                id: 'Q11',
+                id: 'Q13',
                 category: 'refund',
                 question: '대관 취소는 몇 일 전까지 해야 위약금이 없나요?',
                 criteria: '사용 개시일 5일 전 취소 시 100% 전액 환불 (위약금 0원).',
@@ -1205,7 +1508,7 @@
                 tags: ['5일전', '100%', '전액환불', '위약금없음', '환불규정']
             },
             {
-                id: 'Q12',
+                id: 'Q14',
                 category: 'refund',
                 question: '사용 개시일 3일 전에 취소하면 환불을 얼마나 받나요?',
                 criteria: '사용 개시일 4일 전 ~ 1일 전 취소 시 10% 위약금 차감 후 90% 환불.',
@@ -1213,7 +1516,7 @@
                 tags: ['3일전', '90%', '위약금10%', '차감환불']
             },
             {
-                id: 'Q13',
+                id: 'Q15',
                 category: 'refund',
                 question: '대관 당일에 개인 사정으로 취소하면 환불이 되나요?',
                 criteria: '사용 개시일 당일 및 이용 시간 이후 취소 시 환불 불가 (위약금 100%).',
@@ -1221,7 +1524,7 @@
                 tags: ['당일취소', '환불불가', '0원', '조례기준']
             },
             {
-                id: 'Q14',
+                id: 'Q16',
                 category: 'refund',
                 question: '온라인에서 취소 신청을 하려면 어디로 들어가야 하나요?',
                 criteria: '마이페이지 > 대관결제내역 > 상세보기 > [취소신청] 버튼 클릭.',
@@ -1229,15 +1532,15 @@
                 tags: ['취소방법', '온라인취소', '마이페이지', '취소신청']
             },
             {
-                id: 'Q15',
+                id: 'Q17',
                 category: 'field',
                 question: '축구장 주소와 연락처, 대중교통으로 찾아오는 길은 어떻게 되나요?',
-                criteria: '주소: 서울시 강동구 아리수로78길 23 / 연락처: 02.2045.7835 / 버스 3412, 강동02, 강동05, 3324, 8333 도보 5분.',
-                script: '동명근린공원 축구장 주소는 [서울특별시 강동구 아리수로78길 23]이며, 대표 문의 연락처는 [02.2045.7835]입니다. 대중교통 이용 시 버스 3412, 강동02, 강동05(고덕초 하차) 또는 3324, 8333(고덕풍경채 하차) 후 도보 5분 거리에 위치해 있습니다.',
-                tags: ['주소', '위치', '연락처', '02.2045.7835', '교통안내', '아리수로78길']
+                criteria: '주소: 서울시 강동구 아리수로78길 23 / 연락처: 02-2045-7835~7 / 버스 3412, 강동02, 강동05, 3324, 8333 도보 5분.',
+                script: '동명근린공원 축구장 주소는 [서울특별시 강동구 아리수로78길 23]이며, 대표 문의 연락처는 [02-2045-7835~7]입니다. 대중교통 이용 시 버스 3412, 강동02, 강동05(고덕초 하차) 또는 3324, 8333(고덕풍경채 하차) 후 도보 5분 거리에 위치해 있습니다.',
+                tags: ['주소', '위치', '연락처', '02-2045-7835~7', '교통안내', '아리수로78길']
             },
             {
-                id: 'Q16',
+                id: 'Q18',
                 category: 'field',
                 question: '축구장 이용 시 주차장 무료 이용이나 주차 요금 할인이 가능한가요?',
                 criteria: '동명근린공원 공영주차장 유료 이용 가능. 축구장 이용객 관련 주차 요금 할인 및 감면 혜택 없음.',
@@ -1245,7 +1548,7 @@
                 tags: ['주차장', '공영주차장', '유료주차', '주차할인없음', '감면없음']
             },
             {
-                id: 'Q17',
+                id: 'Q19',
                 category: 'field',
                 question: '쇠뽕 축구화(SG 스터드)를 신고 뛰어도 되나요?',
                 criteria: 'SG (금속/긴 뽕) 스터드 착용 절대 금지. TF(풋살화) 및 AG/HG 권장.',
@@ -1253,7 +1556,7 @@
                 tags: ['축구화', 'SG', '쇠뽕', '착용금지', 'TF', '풋살화', '페널티']
             },
             {
-                id: 'Q18',
+                id: 'Q20',
                 category: 'field',
                 question: '구장 내에서 컵라면이나 음주, 흡연이 가능한가요?',
                 criteria: '구장 내부 및 보조 공간 전체 금연, 금주, 음식물 섭취 금지 (물/음료만 가능). 적발 시 이용 제한.',
@@ -1261,31 +1564,31 @@
                 tags: ['흡연', '음주', '음식물', '금연', '금주', '페널티', '이용금지']
             },
             {
-                id: 'Q19',
-                category: 'teams',
-                question: '팀 등록 신청 시기와 심사 및 승인 일정은 어떻게 되나요?',
-                criteria: '팀 등록 신청은 수시 신청 가능 / 관내팀: 매월 5일~10일 사이 심사 및 승인 처리 (관내 직장팀 서류는 매월 10일까지 제출된 건에 한함) / 관외팀: 수시 심사 후 순차 승인 처리.',
-                script: '동명근린공원 축구장 팀 등록 신청은 상시 [수시 신청]이 가능합니다. 관내팀은 [매월 5일~10일 사이]에 심사 및 승인이 진행되며(직장팀 심사 서류는 매월 10일까지 제출 건에 한함), 관외팀은 [수시 심사 후 순차 승인] 처리됩니다.',
-                tags: ['팀등록', '수시신청', '심사일정', '승인일정', '매월5일~10일', '매월10일까지', '순차승인']
-            },
-            {
-                id: 'Q20',
-                category: 'teams',
-                question: '관내팀과 관외팀의 팀 등록 조건과 제출 구비서류는 무엇인가요?',
-                criteria: '중복 회원 등록 불가 / 관내팀(1순위: 추첨 및 잔여석 선착순 가능): 총원 15명 이상 & 강동구 거주 10명 이상(3개월 내 등본) 또는 강동구 사업장 재직 10명 이상(사업자등록증 및 3개월 내 재직증명서 제출) / 관외팀(2순위: 잔여석 선착순 가능): 관내팀 이외 15명 이상.',
-                script: '팀 등록은 [중복 회원 등록이 불가]하며 총원 15명 이상이어야 합니다. [관내 거주팀]은 강동구 주소 회원 10명 이상(주민등록등본), [관내 직장팀]은 강동구 사업장 재직 회원 10명 이상(사업자등록증 및 3개월 이내 발급된 재직증명서 제출) 요건을 갖추면 1순위(추첨 및 잔여석 접수) 권한을 얻습니다. 관외팀은 15명 이상 시 2순위(잔여석 접수)로 등록됩니다.',
-                tags: ['팀등록조건', '관내팀조건', '관외팀조건', '제출서류', '주민등록등본', '사업자등록증', '재직증명서']
-            },
-            {
                 id: 'Q21',
                 category: 'teams',
-                question: '한 사람이 여러 팀에 중복으로 회원 등록할 수 있나요?',
-                criteria: '동일 인물의 다수 팀 중복 등록 절대 불가.',
-                script: '강동구 체육시설 규정상 1인 1팀 등록이 원칙이며 중복 회원 등록은 불가능합니다. 중복 적발 시 해당 회원의 등록이 취소될 수 있습니다.',
-                tags: ['중복등록', '1인1팀', '회원등록', '등록불가']
+                question: '팀 등록 신청 시기와 심사 및 승인 일정은 어떻게 되나요?',
+                criteria: '팀 등록 신청은 수시 신청 가능 / 매월 5일~10일 사이 심사 및 승인 처리 (관내 직장팀 심사 서류는 매월 10일까지 제출된 건에 한해서만 진행).',
+                script: '동명근린공원 축구장 팀 등록 신청은 상시 [수시 신청]이 가능합니다. 심사 및 승인은 [매월 5일~10일 사이]에 진행되며, 관내 직장팀 심사 서류는 [매월 10일까지] 제출된 건에 한해서만 진행됩니다.',
+                tags: ['팀등록', '수시신청', '심사일정', '승인일정', '매월5일~10일', '매월10일까지', '직장팀서류']
             },
             {
                 id: 'Q22',
+                category: 'teams',
+                question: '관내팀과 관외팀의 팀 등록 조건과 제출 구비서류는 무엇인가요?',
+                criteria: '관내팀(1순위: 추첨 및 잔여석 선착순 가능): 총원 15명 이상 & 강동구 거주 10명 이상(회원가입 시 행정망으로 자동 확인, 별도 서류 없음) 또는 강동구 사업장 재직 10명 이상(사업자등록증 및 3개월 내 재직증명서 제출) / 관외팀(2순위: 관내팀 선착순 접수 후 잔여석 선착순 접수 가능): 관내팀 이외 15명 이상.',
+                script: '팀 등록은 총원 15명 이상이어야 합니다. [관내 거주팀]은 강동구 주소 회원 10명 이상(거주 여부는 회원가입 시 자동 확인되어 별도 서류가 필요 없습니다), [관내 직장팀]은 강동구 사업장 재직 회원 10명 이상(사업자등록증 및 3개월 이내 발급된 재직증명서 제출) 요건을 갖추면 1순위(추첨 및 잔여석 접수) 권한을 얻습니다. 관외팀은 15명 이상 시 2순위로 등록되며, 관내팀 선착순 접수 후 잔여석 선착순 접수가 가능합니다.',
+                tags: ['팀등록조건', '관내팀조건', '관외팀조건', '제출서류', '거주확인', '사업자등록증', '재직증명서']
+            },
+            {
+                id: 'Q23',
+                category: 'teams',
+                question: '한 사람이 여러 팀에 중복으로 회원 등록할 수 있나요?',
+                criteria: '1인 1팀 원칙: 동일 인물의 여러 팀 중복 회원 등록 불가.',
+                script: '저희 시설 규정상 1인 1팀 등록이 원칙이며 중복 회원 등록은 불가능합니다. 중복 적발 시 해당 회원의 등록이 취소될 수 있습니다.',
+                tags: ['중복등록', '1인1팀', '1인1팀원칙', '회원등록', '등록불가']
+            },
+            {
+                id: 'Q24',
                 category: 'teams',
                 question: '관내 자격 갱신은 언제 진행되나요?',
                 criteria: '거주자 자격 갱신: 매년 1월 1일 / 7월 1일 (연 2회). 관내팀 승인 유지: 매년 8월 1일.',
@@ -1293,7 +1596,7 @@
                 tags: ['자격갱신', '거주자갱신', '8월1일', '1월1일', '7월1일']
             },
             {
-                id: 'Q23',
+                id: 'Q25',
                 category: 'safety',
                 question: '예약된 타임을 다른 팀에게 양도해도 되나요?',
                 criteria: '대관 무단 양도 적발 시 즉시 퇴장 및 축구장 6개월 이용 금지.',
@@ -1301,7 +1604,7 @@
                 tags: ['양도', '무단양도', '6개월', '이용금지', '페널티']
             },
             {
-                id: 'Q24',
+                id: 'Q26',
                 category: 'safety',
                 question: '경기 중 다른 팀과 시비가 붙어 싸움이 났을 때 대응은?',
                 criteria: '즉시 경기 중단, 양 팀 퇴장 조치 및 1개월 이용 금지. 필요시 112 경찰 신고.',
@@ -1309,7 +1612,7 @@
                 tags: ['폭행', '싸움', '분쟁', '112신고', '퇴장', '1개월정지']
             },
             {
-                id: 'Q25',
+                id: 'Q27',
                 category: 'safety',
                 question: '시설물(골대, 펜스 등)을 고의로 파손한 경우 조치는?',
                 criteria: '1회 적발 즉시 퇴장 및 원상복구(배상) 청구.',
@@ -1317,7 +1620,7 @@
                 tags: ['시설파손', '원상복구', '배상청구', '퇴장', '페널티']
             },
             {
-                id: 'Q26',
+                id: 'Q28',
                 category: 'refund',
                 question: '천재지변이나 국가적 행사로 취소되면 어떻게 되나요?',
                 criteria: '공단 사정, 재해, 국가적 행사로 취소 시 100% 전액 환불.',
@@ -1357,7 +1660,7 @@
 
             filtered.forEach(item => {
                 let catText = '';
-                if(item.category === 'temp') catText = '9월 임시운영';
+                if(item.category === 'youth') catText = '중고등학생 무료개방';
                 else if(item.category === 'draw') catText = '정규 추첨·결제';
                 else if(item.category === 'refund') catText = '환불·취소 규정';
                 else if(item.category === 'weather') catText = '기상·천재지변';
@@ -1371,7 +1674,7 @@
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-bold text-slate-400 font-mono">${item.id}</span>
                                 <span class="text-xs font-semibold px-2 py-0.5 rounded ${
-                                    item.category === 'temp' ? 'bg-emerald-100 text-emerald-800' :
+                                    item.category === 'youth' ? 'bg-emerald-100 text-emerald-800' :
                                     item.category === 'draw' ? 'bg-sky-100 text-sky-800' :
                                     item.category === 'refund' ? 'bg-rose-100 text-rose-800' :
                                     'bg-slate-100 text-slate-600'
@@ -1424,6 +1727,811 @@
             renderQACards(input ? input.value : '');
         }
 
+        // ===== 안내 문자 템플릿 =====
+        const SMS_FEE = { weekday: 88000, weekend: 114400 };
+        const SMS_SLOTS = ['08:00~10:00', '10:00~12:00', '12:00~14:00', '14:00~16:00', '16:00~18:00', '18:00~20:00'];
+        const SMS_CATEGORY_STYLE = {
+            '추첨·결제': 'bg-sky-100 text-sky-800',
+            '예약': 'bg-emerald-100 text-emerald-800',
+            '팀 등록': 'bg-amber-100 text-amber-800'
+        };
+
+        // 기본값: lastDay(접수 마감 20일 / 발표 21일 / 결제 마감 22일)까지는 다음 달, 그 이후는 다다음 달 ("2026-11" 형식)
+        function smsDefaultDrawMonth(lastDay = 20) {
+            const now = new Date();
+            const offset = now.getDate() <= lastDay ? 1 : 2;
+            const d = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        function smsParseYearMonth(value) {
+            const [year, month] = String(value).split('-').map(Number);
+            return { year, month };
+        }
+
+        function smsTodayISO() {
+            const now = new Date();
+            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        }
+
+        // 추첨 대상 월 기준으로 전월 16~24일 날짜를 "9월 16일(수)" 형식으로 계산
+        function smsDrawDate(targetYear, targetMonth, day) {
+            const d = new Date(targetYear, targetMonth - 2, day);
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            return `${d.getMonth() + 1}월 ${d.getDate()}일(${days[d.getDay()]})`;
+        }
+
+        // 각 문자의 build(v, h): v = 입력값, h = 입력값 강조 표시용 함수
+        const smsTemplates = [
+            {
+                id: 'draw-open',
+                title: '추첨 접수 시작 안내',
+                category: '추첨·결제',
+                fields: [{ key: 'month', label: '대관 월', type: 'yearMonth', default: () => smsDefaultDrawMonth(20) }],
+                build: (v, h) => {
+                    const { year: y, month: m } = smsParseYearMonth(v.month);
+                    return `안녕하세요. 동명근린공원 축구장입니다.
+${h(m + '월')} 축구장 대관 추첨 접수 일정을 안내드립니다.
+
+  • 접수 기간: ${h(smsDrawDate(y, m, 16))} ~ ${h(smsDrawDate(y, m, 20))}
+  • 신청 제한: 팀당 최대 3회
+  • 당첨 발표: ${h(smsDrawDate(y, m, 21))}
+  • 결제 기한: ${h(smsDrawDate(y, m, 22))} 23:59까지
+
+※ 추첨 후 잔여 회차 선착순 오픈
+  • 관내팀: ${h(smsDrawDate(y, m, 23))} 11:00
+  • 관외팀: ${h(smsDrawDate(y, m, 24))} 11:00
+
+접수 기간 내에 대관예약시스템에서 신청해 주시기 바랍니다.
+
+문의: 02-2045-7835~7`;
+                }
+            },
+            {
+                id: 'draw-result',
+                title: '추첨 발표 안내',
+                category: '추첨·결제',
+                fields: [{ key: 'month', label: '대관 월', type: 'yearMonth', default: () => smsDefaultDrawMonth(21) }],
+                build: (v, h) => {
+                    const { year: y, month: m } = smsParseYearMonth(v.month);
+                    return `안녕하세요. 동명근린공원 축구장입니다.
+${h(m + '월')} 축구장 대관 추첨 결과가 발표되었습니다.
+
+  • 결과 확인: 대관예약시스템 > 마이페이지
+  • 결제 기한: ${h(smsDrawDate(y, m, 22))} 23:59까지
+
+※ 기한 내 결제하지 않으시면 당첨이 자동 취소됩니다.
+
+※ 추첨 후 잔여 회차 선착순 오픈
+  • 관내팀: ${h(smsDrawDate(y, m, 23))} 11:00
+  • 관외팀: ${h(smsDrawDate(y, m, 24))} 11:00
+
+문의: 02-2045-7835~7`;
+                }
+            },
+            {
+                id: 'payment-deadline',
+                title: '결제 기한 안내',
+                category: '추첨·결제',
+                fields: [{ key: 'month', label: '대관 월', type: 'yearMonth', default: () => smsDefaultDrawMonth(22) }],
+                build: (v, h) => {
+                    const { year: y, month: m } = smsParseYearMonth(v.month);
+                    return `안녕하세요. 동명근린공원 축구장입니다.
+${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
+
+  • 결제 기한: ${h(smsDrawDate(y, m, 22))} 23:59까지
+
+※ 기한 내 결제하지 않으시면 당첨이 자동 취소됩니다.
+
+이용을 원하시는 팀은 기한 내 결제를 완료해 주시기 바랍니다.
+
+문의: 02-2045-7835~7`;
+                }
+            },
+            {
+                id: 'bank-transfer',
+                title: '공단 계좌 입금 안내',
+                category: '추첨·결제',
+                fields: [
+                    { key: 'weekday', label: '평일 횟수', type: 'count', default: 0 },
+                    { key: 'weekend', label: '주말·공휴일 횟수', type: 'count', default: 0 },
+                    { key: 'payer', label: '입금자명', type: 'text', default: '', placeholder: '예: 축구협회' }
+                ],
+                build: (v, h) => {
+                    const weekday = Math.max(0, Number(v.weekday) || 0);
+                    const weekend = Math.max(0, Number(v.weekend) || 0);
+                    const amount = weekday * SMS_FEE.weekday + weekend * SMS_FEE.weekend;
+                    const payer = v.payer.trim() || '[입금자명]';
+                    return `안녕하세요. 동명근린공원 축구장입니다.
+축구장 대관 이용료 입금 안내드립니다.
+
+  • 입금 금액: ${h(amount.toLocaleString('ko-KR') + '원')} (총 ${h(weekday + weekend + '회')})
+  • 입금 계좌: 우리은행 1005-600-908017
+  • 예금주: 서울특별시강동구도시관리공단(동명근린공원 축구장)
+  • 입금자명: ${h(payer)}
+
+※ 입금자명을 위와 같이 입력해 주시기 바랍니다.
+
+문의: 02-2045-7835~7`;
+                }
+            },
+            {
+                id: 'documents',
+                title: '증빙 서류 제출 안내',
+                category: '팀 등록',
+                fields: [],
+                build: () => `안녕하세요. 동명근린공원 축구장입니다.
+팀 등록 신청 건의 강동구민 인원이 10명 미만으로 확인되었습니다.
+관내 직장팀으로 등록을 원하시면 아래 서류를 제출해 주시기 바랍니다.
+
+  • 제출 서류: 사업자등록증, 재직증명서(3개월 이내 발급본)
+  • 제출처: dmfootball@igd.or.kr
+
+※ 서류 미제출 시 등록 신청이 반려됩니다.
+
+문의: 02-2045-7835~7`
+            },
+            {
+                id: 'callback',
+                title: '팀 등록 결격 안내',
+                category: '팀 등록',
+                fields: [],
+                build: () => `안녕하세요. 동명근린공원 축구장입니다.
+팀 등록 관련 안내 사항이 있어 전화드렸으나 연결되지 않았습니다.
+
+확인하시는 대로 회신 부탁드립니다. 감사합니다.
+
+문의: 02-2045-7835~7`
+            },
+            {
+                id: 'first-come-done',
+                title: '예약 완료 안내',
+                category: '예약',
+                autoSend: true,
+                fields: [],
+                build: (v, h) => `안녕하세요. 동명근린공원 축구장입니다.
+예약이 완료되었습니다.
+
+이용일: ${h('[이용일]')}
+이용시간: ${h('[이용시간]')}
+
+문의: 02-2045-7835~7`
+            },
+            {
+                id: 'cancel-done',
+                title: '예약 취소 안내',
+                category: '예약',
+                autoSend: true,
+                fields: [],
+                build: (v, h) => `예약이 취소되었습니다.
+이용일: ${h('[이용일]')}
+이용시간: ${h('[이용시간]')}
+취소가 정상 처리되었습니다.`
+            }
+        ];
+
+        const smsValues = {};
+        smsTemplates.forEach(t => {
+            smsValues[t.id] = {};
+            t.fields.forEach(f => {
+                smsValues[t.id][f.key] = typeof f.default === 'function' ? f.default() : f.default;
+            });
+        });
+
+        function smsEscape(text) {
+            return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function smsPlainText(t) {
+            return t.build(smsValues[t.id], x => x);
+        }
+
+        function smsPreviewHTML(t) {
+            const raw = t.build(smsValues[t.id], x => `\u0001${x}\u0002`);
+            return smsEscape(raw)
+                .replace(/\u0001/g, '<mark class="bg-amber-100 text-slate-900 rounded px-0.5">')
+                .replace(/\u0002/g, '</mark>');
+        }
+
+        // 문자 발송 기준(EUC-KR): 한글 2byte, 영문·숫자 1byte / 90byte 초과 시 LMS
+        function smsByteInfo(text) {
+            let bytes = 0;
+            for (const ch of text) bytes += ch.charCodeAt(0) > 127 ? 2 : 1;
+            return `${bytes > 90 ? 'LMS' : 'SMS'} · ${bytes.toLocaleString('ko-KR')} byte`;
+        }
+
+        const SMS_ICON_PREV = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
+        const SMS_ICON_NEXT = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
+        const SMS_ICON_MINUS = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/></svg>`;
+        const SMS_ICON_PLUS = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`;
+
+        function smsStepperHTML(t, f, valueHTML, prevIcon, nextIcon) {
+            return `<div class="sms-stepper">
+                <button type="button" aria-label="${f.label} 줄이기" onclick="stepSmsField('${t.id}', '${f.key}', -1)">${prevIcon}</button>
+                <span class="sms-stepper-divider"></span>
+                ${valueHTML}
+                <span class="sms-stepper-divider"></span>
+                <button type="button" aria-label="${f.label} 늘리기" onclick="stepSmsField('${t.id}', '${f.key}', 1)">${nextIcon}</button>
+            </div>`;
+        }
+
+        function smsFieldHTML(t, f) {
+            const value = smsValues[t.id][f.key];
+            const elId = `sms-${t.id}-${f.key}`;
+            const handlers = `oninput="updateSmsField('${t.id}', '${f.key}', this.value)" onchange="updateSmsField('${t.id}', '${f.key}', this.value)"`;
+            let control;
+            let grow = true;
+            if (f.type === 'yearMonth') {
+                grow = false;
+                const { year, month } = smsParseYearMonth(value);
+                control = `<div class="sms-picker">
+                    <button type="button" id="${elId}" class="sms-control sms-picker-trigger" onclick="toggleSmsMonthPicker(event, '${t.id}', '${f.key}')">
+                        <span id="${elId}-label">${year}년 ${month}월</span>
+                        <svg class="picker-caret-svg" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"></polyline></svg>
+                    </button>
+                    <div class="month-picker-popover" id="${elId}-popover" onclick="event.stopPropagation()">
+                        <div class="popover-header">
+                            <span class="popover-year-title" id="${elId}-year"></span>
+                            <div class="popover-year-nav">
+                                <button type="button" onclick="changeSmsPickerYear('${t.id}', '${f.key}', -1)" title="이전 연도">${SMS_ICON_PREV}</button>
+                                <button type="button" onclick="changeSmsPickerYear('${t.id}', '${f.key}', 1)" title="다음 연도">${SMS_ICON_NEXT}</button>
+                            </div>
+                        </div>
+                        <div class="month-grid-picker" id="${elId}-grid"></div>
+                    </div>
+                </div>`;
+            } else if (f.type === 'count') {
+                grow = false;
+                control = smsStepperHTML(t, f, `<input id="${elId}" type="number" min="0" inputmode="numeric" value="${value}" class="sms-stepper-value" ${handlers}>`, SMS_ICON_MINUS, SMS_ICON_PLUS);
+            } else if (f.type === 'slot') {
+                control = `<select id="${elId}" class="sms-control" ${handlers}>${SMS_SLOTS.map((s, i) => `<option value="${s}" ${value === s ? 'selected' : ''}>${i + 1}회차 · ${s}</option>`).join('')}</select>`;
+            } else if (f.type === 'date') {
+                control = `<div class="sms-picker" style="display:flex;">
+                    <button type="button" id="${elId}" class="sms-control sms-picker-trigger" style="width:100%;" onclick="toggleSmsDatePicker(event, '${t.id}', '${f.key}')">
+                        <span id="${elId}-label">${smsDateLabel(value)}</span>
+                        <svg class="picker-caret-svg" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"></polyline></svg>
+                    </button>
+                    <div class="month-picker-popover sms-date-popover" id="${elId}-popover" onclick="event.stopPropagation()">
+                        <div class="popover-header">
+                            <span class="popover-year-title" id="${elId}-title"></span>
+                            <div class="popover-year-nav">
+                                <button type="button" onclick="changeSmsDateMonth('${t.id}', '${f.key}', -1)" title="이전 달">${SMS_ICON_PREV}</button>
+                                <button type="button" onclick="changeSmsDateMonth('${t.id}', '${f.key}', 1)" title="다음 달">${SMS_ICON_NEXT}</button>
+                            </div>
+                        </div>
+                        <div class="sms-date-weekdays"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+                        <div class="sms-date-grid" id="${elId}-grid"></div>
+                        <div class="sms-date-footer"><button type="button" onclick="selectSmsDate('${t.id}', '${f.key}', smsTodayISO())">오늘</button></div>
+                    </div>
+                </div>`;
+            } else {
+                control = `<input id="${elId}" type="text" value="${smsEscape(value)}" placeholder="${f.placeholder || ''}" class="sms-control" ${handlers}>`;
+            }
+            return `<div class="sms-field ${grow ? 'sms-field-grow' : ''}"><label class="sms-label" for="${elId}">${f.label}</label>${control}</div>`;
+        }
+
+        // 횟수는 0 이상
+        function stepSmsField(id, key, delta) {
+            const next = Math.max(0, (Number(smsValues[id][key]) || 0) + delta);
+            const el = document.getElementById(`sms-${id}-${key}`);
+            if (el) el.value = next;
+            updateSmsField(id, key, next);
+        }
+
+        // 연·월 선택 팝업 (우선 대관 캘린더의 월 선택과 같은 방식)
+        let smsPickerYear = null;
+
+        function toggleSmsMonthPicker(e, id, key) {
+            e.stopPropagation();
+            const popover = document.getElementById(`sms-${id}-${key}-popover`);
+            const isOpen = popover.style.display === 'block';
+            closeSmsMonthPickers();
+            if (isOpen) return;
+            smsPickerYear = smsParseYearMonth(smsValues[id][key]).year;
+            renderSmsPicker(id, key);
+            popover.style.display = 'block';
+            document.getElementById(`sms-${id}-${key}`).classList.add('active');
+        }
+
+        function closeSmsMonthPickers() {
+            document.querySelectorAll('.sms-picker .month-picker-popover').forEach(p => { p.style.display = 'none'; });
+            document.querySelectorAll('.sms-picker-trigger').forEach(b => b.classList.remove('active'));
+        }
+
+        function changeSmsPickerYear(id, key, delta) {
+            smsPickerYear += delta;
+            renderSmsPicker(id, key);
+        }
+
+        function renderSmsPicker(id, key) {
+            const selected = smsParseYearMonth(smsValues[id][key]);
+            document.getElementById(`sms-${id}-${key}-year`).innerText = `${smsPickerYear}년`;
+            let html = '';
+            for (let m = 1; m <= 12; m++) {
+                const isCurrent = smsPickerYear === selected.year && m === selected.month;
+                html += `<button type="button" class="btn-month-chip${isCurrent ? ' current' : ''}" onclick="selectSmsMonth('${id}', '${key}', ${smsPickerYear}, ${m})">${m}월</button>`;
+            }
+            document.getElementById(`sms-${id}-${key}-grid`).innerHTML = html;
+        }
+
+        function selectSmsMonth(id, key, year, month) {
+            document.getElementById(`sms-${id}-${key}-label`).innerText = `${year}년 ${month}월`;
+            closeSmsMonthPickers();
+            updateSmsField(id, key, `${year}-${String(month).padStart(2, '0')}`);
+        }
+
+        // 날짜 선택 팝업: 트리거에는 "2026년 9월 30일 (수)", 문자에는 "2026-09-30"
+        const SMS_WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
+        let smsDateView = null;
+
+        function smsDateLabel(iso) {
+            if (!iso) return '날짜 선택';
+            const [y, m, d] = iso.split('-').map(Number);
+            return `${y}년 ${m}월 ${d}일 (${SMS_WEEKDAYS[new Date(y, m - 1, d).getDay()]})`;
+        }
+
+        function smsToISO(d) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function toggleSmsDatePicker(e, id, key) {
+            e.stopPropagation();
+            const popover = document.getElementById(`sms-${id}-${key}-popover`);
+            const isOpen = popover.style.display === 'block';
+            closeSmsMonthPickers();
+            if (isOpen) return;
+            const [y, m] = (smsValues[id][key] || smsTodayISO()).split('-').map(Number);
+            smsDateView = { year: y, month: m };
+            renderSmsDatePicker(id, key);
+            popover.style.display = 'block';
+            document.getElementById(`sms-${id}-${key}`).classList.add('active');
+        }
+
+        function changeSmsDateMonth(id, key, delta) {
+            const d = new Date(smsDateView.year, smsDateView.month - 1 + delta, 1);
+            smsDateView = { year: d.getFullYear(), month: d.getMonth() + 1 };
+            renderSmsDatePicker(id, key);
+        }
+
+        function renderSmsDatePicker(id, key) {
+            const { year, month } = smsDateView;
+            document.getElementById(`sms-${id}-${key}-title`).innerText = `${year}년 ${month}월`;
+            const selected = smsValues[id][key];
+            const today = smsTodayISO();
+            const start = new Date(year, month - 1, 1 - new Date(year, month - 1, 1).getDay());
+            let html = '';
+            for (let i = 0; i < 42; i++) {
+                const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+                const iso = smsToISO(d);
+                const classes = ['sms-date-cell'];
+                if (d.getMonth() !== month - 1) classes.push('other');
+                else if (d.getDay() === 0) classes.push('sun');
+                else if (d.getDay() === 6) classes.push('sat');
+                if (iso === today) classes.push('today');
+                if (iso === selected) classes.push('selected');
+                html += `<button type="button" class="${classes.join(' ')}" onclick="selectSmsDate('${id}', '${key}', '${iso}')">${d.getDate()}</button>`;
+            }
+            document.getElementById(`sms-${id}-${key}-grid`).innerHTML = html;
+        }
+
+        function selectSmsDate(id, key, iso) {
+            document.getElementById(`sms-${id}-${key}-label`).innerText = smsDateLabel(iso);
+            closeSmsMonthPickers();
+            updateSmsField(id, key, iso);
+        }
+
+        document.addEventListener('click', () => closeSmsMonthPickers());
+
+        // ===== 근무표 =====
+        // 기본 근무: offDays(0=일 ~ 6=토)는 고정 휴무, 나머지 요일은 shift 근무. shift가 null이면 기본 근무 없음(대직 전용).
+        const WORK_STAFF = [
+            { id: 'eunji', name: '손은지', shift: 'open', offDays: [0, 1] },
+            { id: 'b', name: 'B', shift: 'close', offDays: [3, 4] },
+            { id: 'c', name: 'C', shift: 'open', offDays: [5, 6] },
+            { id: 'wonchang', name: '장원창', shift: null, offDays: [], note: '대직' }
+        ];
+        const WORK_SHIFTS = {
+            open: { label: '개시', time: '07:30~' },
+            close: { label: '마감', time: '09:30~' },
+            leave: { label: '연차', time: '' },
+            off: { label: '휴무', time: '' }
+        };
+        const WORK_API = '/api/work';
+        const WORK_CACHE_KEY = 'dm-work-overrides-cache';
+        const WORK_PASSWORD_KEY = 'dm-work-password';
+
+        let workView = 'month';
+        let workCursor = new Date();
+        let workModalState = null;
+
+        // 변경 일정은 Vercel 서버(/api/work)에 저장되고, 모든 직원이 같은 내용을 봅니다.
+        // 브라우저에는 마지막으로 받은 사본만 보관해서 서버에 연결되지 않을 때 보여줍니다.
+        // 형식: { 'YYYY-MM-DD': { staffId: { shift, memo, hourly? } } }
+        function workStorageGet(key) {
+            try { return localStorage.getItem(key); } catch (e) { return null; }
+        }
+
+        function workStorageSet(key, value) {
+            try {
+                if (value === null) localStorage.removeItem(key);
+                else localStorage.setItem(key, value);
+            } catch (e) { /* 저장소를 쓸 수 없는 환경에서는 무시 */ }
+        }
+
+        let workOverrides = (() => {
+            try { return JSON.parse(workStorageGet(WORK_CACHE_KEY)) || {}; } catch (e) { return {}; }
+        })();
+
+        function setWorkSyncStatus(text, isError) {
+            const el = document.getElementById('work-sync-status');
+            if (!el) return;
+            el.innerText = text;
+            el.style.color = isError ? 'var(--cal-sun)' : '';
+        }
+
+        async function fetchWorkOverrides() {
+            setWorkSyncStatus('근무표를 불러오는 중...');
+            try {
+                const res = await fetch(WORK_API, { cache: 'no-store' });
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                workOverrides = data.overrides || {};
+                workStorageSet(WORK_CACHE_KEY, JSON.stringify(workOverrides));
+                const now = new Date();
+                setWorkSyncStatus(`최신 상태 · ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} 기준`);
+            } catch (e) {
+                setWorkSyncStatus('서버에 연결할 수 없어 마지막으로 받은 근무표를 보여주고 있습니다.', true);
+            }
+            renderWorkSchedule();
+        }
+
+        // entry가 null이면 기본 근무로 되돌림
+        async function postWorkEntry(date, staffId, entry) {
+            const typed = document.getElementById('work-modal-password').value;
+            const password = typed || workStorageGet(WORK_PASSWORD_KEY);
+            const errorEl = document.getElementById('work-modal-password-error');
+            errorEl.innerText = '';
+            if (!password) {
+                document.getElementById('work-modal-password-group').style.display = '';
+                errorEl.innerText = '수정 비밀번호를 입력해 주세요.';
+                return false;
+            }
+            const saveBtn = document.getElementById('work-modal-save');
+            saveBtn.disabled = true;
+            saveBtn.innerText = '저장 중...';
+            try {
+                const res = await fetch(WORK_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password, date, staffId, entry })
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.status === 401) {
+                    workStorageSet(WORK_PASSWORD_KEY, null);
+                    document.getElementById('work-modal-password-group').style.display = '';
+                    document.getElementById('work-modal-password').value = '';
+                    errorEl.innerText = '비밀번호가 올바르지 않습니다.';
+                    return false;
+                }
+                if (!res.ok) throw new Error(data.error || '저장 실패');
+                workStorageSet(WORK_PASSWORD_KEY, password);
+                if (Object.keys(data.day).length) workOverrides[date] = data.day;
+                else delete workOverrides[date];
+                workStorageSet(WORK_CACHE_KEY, JSON.stringify(workOverrides));
+                return true;
+            } catch (e) {
+                alert('서버에 저장하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.');
+                return false;
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerText = '저장';
+            }
+        }
+
+        function workDefaultShift(staff, date) {
+            if (!staff.shift) return null;
+            return staff.offDays.includes(date.getDay()) ? 'off' : staff.shift;
+        }
+
+        function workShiftFor(staff, date) {
+            const override = workOverrides[smsToISO(date)]?.[staff.id];
+            if (override) return { shift: override.shift, memo: override.memo || '', hourly: override.hourly || null, changed: true };
+            return { shift: workDefaultShift(staff, date), memo: '', hourly: null, changed: false };
+        }
+
+        // 시간 연차: 30분 단위, "09:00" 형식
+        const WORK_HOURLY_TIMES = Array.from({ length: 31 }, (_, i) => {
+            const minutes = 7 * 60 + i * 30;
+            return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${minutes % 60 ? '30' : '00'}`;
+        });
+
+        function workHourlyHours(hourly) {
+            const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+            return (toMin(hourly.to) - toMin(hourly.from)) / 60;
+        }
+
+        function workShiftChip(staff, date, entry, compact) {
+            const s = WORK_SHIFTS[entry.shift];
+            const hourlyText = entry.hourly ? `시간연차 ${entry.hourly.from}~${entry.hourly.to} (${workHourlyHours(entry.hourly)}시간)` : '';
+            const title = [`${staff.name} · ${s.label}${s.time ? ' ' + s.time : ''}`, hourlyText, entry.memo].filter(Boolean).join(' · ');
+            const onclick = `event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')`;
+            if (compact) {
+                const badge = entry.hourly ? `<span class="work-hourly-badge">연차 ${workHourlyHours(entry.hourly)}h</span>` : '';
+                return `<div class="work-shift ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(title)}" onclick="${onclick}">
+                    <span class="work-shift-kind">${s.label}</span><span>${staff.name}</span>${badge}</div>`;
+            }
+            const badge = entry.hourly ? `<span class="work-hourly-badge">연차 ${entry.hourly.from}~${entry.hourly.to}</span>` : '';
+            return `<div class="work-shift ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(title)}" onclick="${onclick}">
+                <span>${s.label}</span>${s.time ? `<small>${s.time}</small>` : ''}${badge}${entry.memo ? `<small>${smsEscape(entry.memo)}</small>` : ''}</div>`;
+        }
+
+        function workWeekStart(date) {
+            return new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
+        }
+
+        function renderWorkSchedule() {
+            const board = document.getElementById('work-board');
+            if (!board) return;
+            const today = smsTodayISO();
+            const title = document.getElementById('work-title');
+            document.getElementById('work-nav-prev').innerText = workView === 'month' ? '이전 달' : '이전 주';
+            document.getElementById('work-nav-next').innerText = workView === 'month' ? '다음 달' : '다음 주';
+
+            document.getElementById('work-legend').innerHTML = `
+                <span><i class="work-dot" style="background: var(--cal-sat)"></i>개시 07:30~</span>
+                <span><i class="work-dot" style="background: var(--cal-cat-a)"></i>마감 09:30~</span>
+                <span><i class="work-dot" style="background: var(--cal-sun)"></i>연차</span>
+                <span><span class="work-hourly-badge" style="margin: 0;">연차 2h</span>시간 연차</span>
+                <span><i class="work-dot" style="background: #f59e0b"></i>변경된 일정</span>`;
+
+            if (workView === 'month') {
+                const y = workCursor.getFullYear(), m = workCursor.getMonth();
+                title.innerText = `${y}년 ${m + 1}월 근무표`;
+                const start = workWeekStart(new Date(y, m, 1));
+                const weeks = Math.ceil((new Date(y, m, 1).getDay() + new Date(y, m + 1, 0).getDate()) / 7);
+                let cells = '';
+                for (let i = 0; i < weeks * 7; i++) {
+                    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+                    const iso = smsToISO(d);
+                    const classes = ['work-day'];
+                    if (d.getMonth() !== m) classes.push('other');
+                    if (d.getDay() === 0) classes.push('sun');
+                    if (d.getDay() === 6) classes.push('sat');
+                    if (iso === today) classes.push('today');
+                    // 월간에서는 근무자와 연차만 표시하고 고정 휴무는 생략
+                    const chips = WORK_STAFF.map(staff => ({ staff, entry: workShiftFor(staff, d) }))
+                        .filter(x => x.entry.shift && x.entry.shift !== 'off')
+                        .sort((a, b) => ['open', 'close', 'leave'].indexOf(a.entry.shift) - ['open', 'close', 'leave'].indexOf(b.entry.shift))
+                        .map(x => workShiftChip(x.staff, d, x.entry, true)).join('');
+                    cells += `<div class="${classes.join(' ')}" onclick="openWorkModal('${iso}')">
+                        <div><span class="work-day-num">${d.getDate()}</span></div>${chips}</div>`;
+                }
+                board.innerHTML = `<div class="work-month-head">${SMS_WEEKDAYS.map(w => `<div>${w}</div>`).join('')}</div>
+                    <div class="work-month-grid">${cells}</div>`;
+            } else {
+                const start = workWeekStart(workCursor);
+                const days = Array.from({ length: 7 }, (_, i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
+                const end = days[6];
+                title.innerText = `${start.getMonth() + 1}월 ${start.getDate()}일 ~ ${end.getMonth() + 1}월 ${end.getDate()}일 근무표`;
+                const head = days.map(d => {
+                    const cls = [d.getDay() === 0 ? 'sun' : d.getDay() === 6 ? 'sat' : '', smsToISO(d) === today ? 'today' : ''].join(' ');
+                    return `<th class="${cls}">${SMS_WEEKDAYS[d.getDay()]}<span class="work-week-date">${d.getMonth() + 1}/${d.getDate()}</span></th>`;
+                }).join('');
+                const rows = WORK_STAFF.map(staff => {
+                    const sub = staff.shift ? `${WORK_SHIFTS[staff.shift].label} · ${staff.offDays.map(i => SMS_WEEKDAYS[i]).join('·')} 휴무` : (staff.note || '');
+                    const cells = days.map(d => {
+                        const entry = workShiftFor(staff, d);
+                        const iso = smsToISO(d);
+                        const inner = entry.shift
+                            ? workShiftChip(staff, d, entry, false)
+                            : `<span class="work-empty" onclick="openWorkModal('${iso}', '${staff.id}')">+</span>`;
+                        return `<td class="${iso === today ? 'today' : ''}">${inner}</td>`;
+                    }).join('');
+                    return `<tr><td class="work-week-name">${staff.name}<small>${sub}</small></td>${cells}</tr>`;
+                }).join('');
+                board.innerHTML = `<div style="overflow-x: auto;"><table class="work-week-table" style="min-width: 720px;">
+                    <thead><tr><th class="work-week-name" style="background: var(--cal-surface);"></th>${head}</tr></thead>
+                    <tbody>${rows}</tbody></table></div>`;
+            }
+        }
+
+        function setWorkView(view) {
+            workView = view;
+            document.getElementById('work-view-month').classList.toggle('active', view === 'month');
+            document.getElementById('work-view-week').classList.toggle('active', view === 'week');
+            renderWorkSchedule();
+        }
+
+        function navigateWork(delta) {
+            workCursor = workView === 'month'
+                ? new Date(workCursor.getFullYear(), workCursor.getMonth() + delta, 1)
+                : new Date(workCursor.getFullYear(), workCursor.getMonth(), workCursor.getDate() + delta * 7);
+            renderWorkSchedule();
+        }
+
+        function goWorkToday() {
+            workCursor = new Date();
+            renderWorkSchedule();
+        }
+
+        // 등록 모달
+        function openWorkModal(iso, staffId) {
+            const date = iso || smsTodayISO();
+            const staff = staffId || WORK_STAFF[0].id;
+            workModalState = { date, staff, shift: null, memo: '' };
+            loadWorkModalEntry();
+            // 비밀번호를 기억하고 있으면 입력칸을 숨김
+            document.getElementById('work-modal-password').value = '';
+            document.getElementById('work-modal-password-error').innerText = '';
+            document.getElementById('work-modal-password-group').style.display = workStorageGet(WORK_PASSWORD_KEY) ? 'none' : '';
+            document.getElementById('work-modal').style.display = 'flex';
+        }
+
+        function loadWorkModalEntry() {
+            const [y, m, d] = workModalState.date.split('-').map(Number);
+            const staff = WORK_STAFF.find(s => s.id === workModalState.staff);
+            const entry = workShiftFor(staff, new Date(y, m - 1, d));
+            workModalState.shift = entry.shift || 'open';
+            workModalState.memo = entry.memo;
+            workModalState.hourly = entry.hourly ? { ...entry.hourly } : null;
+            workModalState.changed = entry.changed;
+            document.getElementById('work-modal-memo').value = entry.memo;
+            renderWorkModal();
+        }
+
+        function renderWorkModal() {
+            const [y, m, d] = workModalState.date.split('-').map(Number);
+            const staff = WORK_STAFF.find(s => s.id === workModalState.staff);
+            document.getElementById('work-modal-date').innerText = smsDateLabel(workModalState.date);
+            document.getElementById('work-modal-staff').innerHTML = WORK_STAFF.map(s =>
+                `<button type="button" class="${s.id === workModalState.staff ? 'active' : ''}" onclick="selectWorkModalStaff('${s.id}')">${s.name}</button>`).join('');
+            document.getElementById('work-modal-shift').innerHTML = Object.entries(WORK_SHIFTS).map(([key, s]) =>
+                `<button type="button" class="${key === workModalState.shift ? 'active' : ''}" onclick="selectWorkModalShift('${key}')">${s.label}${s.time ? ' ' + s.time : ''}</button>`).join('');
+            const def = workDefaultShift(staff, new Date(y, m - 1, d));
+            document.getElementById('work-modal-default').innerText = `기본 근무: ${def ? WORK_SHIFTS[def].label : '없음'}`;
+            document.getElementById('work-modal-reset').style.visibility = workModalState.changed ? 'visible' : 'hidden';
+
+            // 시간 연차는 개시·마감 근무일 때만 사용
+            const canHourly = ['open', 'close'].includes(workModalState.shift);
+            if (!canHourly) workModalState.hourly = null;
+            document.getElementById('work-modal-hourly-group').style.display = canHourly ? '' : 'none';
+            const on = !!workModalState.hourly;
+            document.getElementById('work-modal-hourly-toggle').innerHTML = `
+                <button type="button" class="${on ? '' : 'active'}" onclick="toggleWorkHourly(false)">사용 안 함</button>
+                <button type="button" class="${on ? 'active' : ''}" onclick="toggleWorkHourly(true)">사용</button>`;
+            document.getElementById('work-modal-hourly-range').style.display = on ? 'flex' : 'none';
+            if (on) {
+                const opts = selected => WORK_HOURLY_TIMES.map(t => `<option value="${t}" ${t === selected ? 'selected' : ''}>${t}</option>`).join('');
+                document.getElementById('work-modal-hourly-from').innerHTML = opts(workModalState.hourly.from);
+                document.getElementById('work-modal-hourly-to').innerHTML = opts(workModalState.hourly.to);
+                const hours = workHourlyHours(workModalState.hourly);
+                document.getElementById('work-modal-hourly-hours').innerText = hours > 0 ? `${hours}시간` : '시간을 확인하세요';
+            }
+        }
+
+        function toggleWorkHourly(on) {
+            const start = workModalState.shift === 'close' ? '09:30' : '07:30';
+            const [h, m] = start.split(':').map(Number);
+            workModalState.hourly = on ? { from: start, to: `${String(h + 2).padStart(2, '0')}:${String(m).padStart(2, '0')}` } : null;
+            renderWorkModal();
+        }
+
+        function updateWorkHourly() {
+            workModalState.hourly = {
+                from: document.getElementById('work-modal-hourly-from').value,
+                to: document.getElementById('work-modal-hourly-to').value
+            };
+            renderWorkModal();
+        }
+
+        function selectWorkModalStaff(id) {
+            workModalState.staff = id;
+            loadWorkModalEntry();
+        }
+
+        function selectWorkModalShift(key) {
+            workModalState.shift = key;
+            renderWorkModal();
+        }
+
+        function stepWorkModalDate(delta) {
+            const [y, m, d] = workModalState.date.split('-').map(Number);
+            workModalState.date = smsToISO(new Date(y, m - 1, d + delta));
+            loadWorkModalEntry();
+        }
+
+        async function saveWorkOverride() {
+            const { date, staff, shift, hourly } = workModalState;
+            if (hourly && workHourlyHours(hourly) <= 0) {
+                alert('시간 연차의 끝나는 시간이 시작 시간보다 늦어야 합니다.');
+                return;
+            }
+            const memo = document.getElementById('work-modal-memo').value.trim();
+            const [y, m, d] = date.split('-').map(Number);
+            const def = workDefaultShift(WORK_STAFF.find(s => s.id === staff), new Date(y, m - 1, d));
+            // 기본 근무와 같고 메모·시간 연차도 없으면 변경 일정으로 남기지 않음
+            const entry = (shift === def && !memo && !hourly) ? null : (hourly ? { shift, memo, hourly } : { shift, memo });
+            if (await postWorkEntry(date, staff, entry)) {
+                closeWorkModal();
+                renderWorkSchedule();
+            }
+        }
+
+        async function resetWorkOverride() {
+            const { date, staff } = workModalState;
+            if (!confirm('등록한 변경 일정을 지우고 기본 근무로 되돌릴까요?')) return;
+            if (await postWorkEntry(date, staff, null)) {
+                closeWorkModal();
+                renderWorkSchedule();
+            }
+        }
+
+        function closeWorkModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('work-modal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const btns = document.querySelectorAll('#work-modal .sms-stepper button');
+            if (btns.length === 2) { btns[0].innerHTML = SMS_ICON_PREV; btns[1].innerHTML = SMS_ICON_NEXT; }
+        });
+
+        function renderSmsCards() {
+            const container = document.getElementById('sms-container');
+            if (!container) return;
+            const query = (document.getElementById('sms-search-input')?.value || '').toLowerCase().trim();
+            const filtered = smsTemplates.filter(t => !query ||
+                t.title.toLowerCase().includes(query) ||
+                t.category.toLowerCase().includes(query) ||
+                smsPlainText(t).toLowerCase().includes(query));
+
+            const badge = document.getElementById('sms-count-badge');
+            if (badge) badge.textContent = `총 ${filtered.length}개 문자`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full bg-white p-6 rounded-lg border border-slate-200 text-center text-slate-500 text-xs">검색 조건에 해당되는 문자가 없습니다.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(t => `
+                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm hover:border-slate-300 transition-colors space-y-3 flex flex-col">
+                    <div class="flex items-center justify-between gap-2">
+                        <h3 class="font-bold text-slate-900 text-[18px] leading-snug">${t.title}</h3>
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded whitespace-nowrap ${SMS_CATEGORY_STYLE[t.category] || 'bg-slate-100 text-slate-600'}">${t.category}</span>
+                    </div>
+                    ${t.fields.length ? `<div class="sms-fields">${t.fields.map(f => smsFieldHTML(t, f)).join('')}</div>` : ''}
+                    ${t.autoSend ? `<p class="text-xs text-slate-500">대관예약시스템에서 자동으로 발송되는 문자입니다. 참고용으로만 확인하세요.</p>` : ''}
+                    <div class="bg-slate-100 text-slate-700 p-3 rounded text-xs leading-relaxed space-y-2 flex-grow">
+                        <div class="flex items-center justify-between">
+                            <span id="sms-bytes-${t.id}" class="text-[11px] font-mono text-slate-500">${smsByteInfo(smsPlainText(t))}</span>
+                            ${t.autoSend
+                                ? `<span class="text-[11px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">자동 발송</span>`
+                                : `<button onclick="copySmsText('${t.id}', this)" class="flex items-center gap-1 text-[11px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
+                                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                <span>복사</span>
+                            </button>`}
+                        </div>
+                        <p id="sms-preview-${t.id}" class="whitespace-pre-wrap font-serif-kr text-slate-700 text-[15px] leading-relaxed tracking-wide">${smsPreviewHTML(t)}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 입력 중 포커스를 유지하기 위해 해당 카드의 미리보기만 갱신
+        function updateSmsField(id, key, value) {
+            smsValues[id][key] = value;
+            const t = smsTemplates.find(x => x.id === id);
+            const preview = document.getElementById(`sms-preview-${id}`);
+            const bytes = document.getElementById(`sms-bytes-${id}`);
+            if (preview) preview.innerHTML = smsPreviewHTML(t);
+            if (bytes) bytes.textContent = smsByteInfo(smsPlainText(t));
+        }
+
+        function copySmsText(id, btn) {
+            const t = smsTemplates.find(x => x.id === id);
+            copyToClipboard(smsPlainText(t), btn);
+        }
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1443,6 +2551,9 @@
             if (tabId === 'calendar') {
                 checkAuthGate();
             }
+            if (tabId === 'work') {
+                fetchWorkOverrides();
+            }
         }
 
         function updateLiveClock() {
@@ -1460,6 +2571,28 @@
             if (clockEl) {
                 clockEl.textContent = `${year}.${month}.${date} (${dayName}) ${hours}:${minutes}:${seconds}`;
             }
+
+            const statusEl = document.getElementById('realtime-status-badge');
+            if (statusEl) {
+                statusEl.textContent = `현재 접수 상태: ${getRentalStatusText(now)}`;
+            }
+        }
+
+        // 매월 대관 일정에 따라 접수 상태 문구를 반환
+        function getRentalStatusText(now) {
+            const day = now.getDate();
+            const monthOffset = (offset) => ((now.getMonth() + offset) % 12) + 1;
+
+            if (day >= 16 && day <= 20) return `${monthOffset(1)}월 추첨 접수 중`;
+            if (day === 21) return '오전 11시 추첨일';
+            if (day === 22) return '오후 11시 59분 결제 마감';
+            if (day === 23) return '오전 11시 관내 선착순 오픈';
+            if (day === 24) return '오전 11시 관외 포함 선착순 오픈';
+
+            // 1~15일: 이번 달 16일 접수 / 25일~말일: 다음 달 16일 접수
+            const receiptMonth = day <= 15 ? monthOffset(0) : monthOffset(1);
+            const drawMonth = (receiptMonth % 12) + 1;
+            return `${drawMonth}월 추첨 접수 예정 (${receiptMonth}.16~${receiptMonth}.20)`;
         }
 
         const SYSTEM_PROMPT = `
@@ -1470,51 +2603,56 @@
 - Q: "직장팀 서류" / "직장팀 조건" ➔ A: 총원 15명 이상 중 강동구 사업장 재직 10명 이상 필요. 필수 제출 서류는 **'사업자등록증' 및 '3개월 이내 발급된 재직증명서'**(매월 10일까지 제출).
 - Q: "자격 갱신" / "갱신일" ➔ A: 거주자 자격 갱신은 **매년 1월 1일, 7월 1일 (연 2회)** 진행. 관내팀 전체 승인 유지는 **매년 8월 1일** 기준 심사.
 - Q: "추첨 횟수" / "어디서 신청" / "일정" ➔ A: 매월 16일~20일 대관사이트에서 접수하며, **월 3회** 가능. **21일 11시** 추첨, 결제는 **22일 23:59** 마감.
-- Q: "잔여타임" / "선착순" ➔ A: 관내팀은 **23일 오전 10시**, 관외팀은 **24일 오전 10시**에 잔여회차 선착순 접수가 오픈됩니다.
-- Q: "샤워실" / "탈의실" ➔ A: **지하 1층**에 구비. 단, **9월 임시운영 기간(9.15~9.22)에는 전면 사용 불가**.
+- Q: "잔여타임" / "선착순" ➔ A: 관내팀은 **23일 오전 11시**, 관외팀은 **24일 오전 11시**에 잔여회차 선착순 접수가 오픈됩니다.
+- Q: "샤워실" / "탈의실" ➔ A: **지하 1층**에 구비. 단, **중고등학생 무료 개방(Team Friends) 이용 시에는 제공되지 않음**.
+- Q: "거래명세표" / "명세표 발급" ➔ A: 공단 홈페이지 로그인 후 **마이페이지 > 대관결제내역 > 상세보기**에서 결제 정보의 접수번호 옆 **[거래명세표]** 버튼을 누르면 발급 가능.
+- Q: "학생" / "중고등학생" / "무료 개방" / "Team Friends" ➔ A: **Team Friends** 프로그램으로 **10월 1일(목)부터 평일 5회차(16:00~18:00)** 관내 중고등학생 무료 개방(주말·공휴일 제외, **초등학생 제외**). 관내 증빙 서류 지참, 입장 명부 작성 후 자유 이용, 축구화·축구공 개별 지참, 샤워실·탈의실 이용 불가.
 
 [동명근린공원 축구장 공식 팩트 기준]
 1. 정규 운영시간 및 회차:
-   - 동절기(10월~3월): 06:00~21:50 / 하절기(4월~9월): 08:00~20:00
+   - 동절기(10월~3월): 08:00~18:00 / 하절기(4월~9월): 08:00~20:00
    - 휴관일: 신정, 설 연휴, 추석 연휴, 노동절 등
    - 회차별 시간(2시간 단위): 1회차(08~10시), 2회차(10~12시), 3회차(12~14시), 4회차(14~16시), 5회차(16~18시), 6회차(18~20시, 하절기 한시)
-2. 9월 임시운영 특별 지침:
-   - 기간: 2026년 9월 15일 ~ 9월 22일 (대관료: 전액 무료)
-   - 운영: 1~4회차(08~16시) 4개 타임만 한정 운영
-   - 예약: 9월 8일 오전 10시 선착순 접수 오픈
-3. 팀 등록 및 자격 갱신 (중복 회원 등록 불가):
+2. 팀 등록 및 자격 갱신 (중복 회원 등록 불가):
    - 신청: 수시 신청 가능 (온라인)
-   - 관내팀 심사: 매월 5일~10일 사이 심사 및 승인 (직장팀 서류는 매월 10일까지 제출 건만 진행)
-   - 관내 거주팀(1순위): 15명 이상 중 강동구 주소 10명 이상 (3개월 내 주민등록등본)
+   - 심사: 매월 5일~10일 사이 심사 및 승인 (관내 직장팀 서류는 매월 10일까지 제출 건만 진행)
+   - 관내 거주팀(1순위): 15명 이상 중 강동구 주소 10명 이상 (거주 여부는 회원가입 시 행정망으로 자동 확인, 별도 서류 없음)
    - 관내 직장팀(1순위): 15명 이상 중 강동구 사업장 10명 이상 (사업자등록증 및 3개월 내 재직증명서)
-   - 관외팀(2순위): 관내팀 이외 15명 이상 (별도 서류 없음)
-4. 정규 대관 요금 및 일정:
+   - 관외팀(2순위): 관내팀 이외 15명 이상 (별도 서류 없음, 관내팀 선착순 접수 후 잔여석 선착순 접수 가능)
+3. 정규 대관 요금 및 일정:
    - 정규 요금(2시간): 평일 88,000원 / 주말·공휴일 114,400원
-   - 정규 일정: 매월 16~20일 접수 ➔ 21일 11시 추첨 ➔ 당첨자 22일 23:59 결제마감 ➔ 잔여타임 오픈: 23일 10시(관내팀), 24일 10시(관외팀 확대)
-5. 환불 규정 (정규 대관):
+   - 정규 일정: 매월 16~20일 접수 ➔ 21일 11시 추첨 ➔ 당첨자 22일 23:59 결제마감 ➔ 잔여타임 오픈: 23일 11시(관내팀), 24일 11시(관외팀 확대)
+4. 환불 규정 (정규 대관):
    - 5일 전 100% / 4~1일 전 90% (위약금 10%) / 당일 취소 불가 / 천재지변 100%
+5. 중고등학생 무료 개방 (프로그램명: Team Friends):
+   - 대상: 관내 서류 증빙 가능한 중고등학생 (초등학생 제외)
+   - 일시: 10월 1일(목)부터 평일 5회차(16:00~18:00, 2시간), 주말 및 공휴일 제외
+   - 이용 방법: 입장 명부 작성 후 자유 이용 / 축구화 및 축구공 개별 지참 / 샤워실 및 탈의실 이용 불가
 6. 기타 수칙:
-   - SG 스터드 착용 절대 불가, 주차 감면 혜택 없음, 연락처: 02-2045-7835
+   - SG 스터드 착용 절대 불가, 주차 감면 혜택 없음, 연락처: 02-2045-7835~7
 `;
 
         function generateOfflineResponse(userText) {
             const query = userText.toLowerCase().trim();
+            if (query.includes('학생') || query.includes('무료') || query.includes('team friends') || query.includes('팀프렌즈') || query.includes('팀 프렌즈')) {
+                return "- **Team Friends (중고등학생 무료 개방):** **10월 1일(목)부터 평일 5회차(16:00~18:00, 2시간)**\n- **대상:** 관내 서류 증빙 가능한 중고등학생 (**초등학생 제외**)\n- **이용 방법:** 입장 명부 작성 후 자유 이용 (주말 및 공휴일 제외)\n- **준비물:** 축구화 및 축구공 개별 지참\n- **샤워실·탈의실:** 이용 불가";
+            }
             if (query.includes('운영시간') || query.includes('회차') || query.includes('휴관일') || query.includes('동절기') || query.includes('하절기')) {
-                return "- **운영시간:** **동절기(10~3월)** 06:00~21:50 / **하절기(4~9월)** 08:00~20:00\n- **휴관일:** **신정, 설 연휴, 추석 연휴, 노동절 등**\n- **회차별 이용시간:** 1회차(08~10), 2회차(10~12), 3회차(12~14), 4회차(14~16), 5회차(16~18), 6회차(18~20, 하절기 한시)\n*(※ 9.15~9.22 임시운영은 08~16시 4타임만 무료 운영)*";
+                return "- **운영시간:** **동절기(10~3월)** 08:00~18:00 / **하절기(4~9월)** 08:00~20:00\n- **휴관일:** **신정, 설 연휴, 추석 연휴, 노동절 등**\n- **회차별 이용시간:** 1회차(08~10), 2회차(10~12), 3회차(12~14), 4회차(14~16), 5회차(16~18), 6회차(18~20, 하절기 한시)";
             }
             if (query.includes('조건') || query.includes('서류') || query.includes('직장팀') || query.includes('거주팀') || query.includes('사업자')) {
-                return "- **팀 등록 공통:** 총원 **15명 이상** (중복 회원 등록 불가)\n- **관내 거주팀 (1순위):** 강동구 주소 회원 10명 이상 (**주민등록등본** 제출)\n- **관내 직장팀 (1순위):** 강동구 사업장 재직 회원 10명 이상 (**사업자등록증** 및 3개월 이내 **재직증명서** 제출)\n- **관외팀 (2순위):** 관내팀 이외 15명 이상 (별도 서류 없음)";
+                return "- **팀 등록 공통:** 총원 **15명 이상** (중복 회원 등록 불가)\n- **관내 거주팀 (1순위):** 강동구 주소 회원 10명 이상 (회원가입 시 **자동 확인**, 별도 서류 없음)\n- **관내 직장팀 (1순위):** 강동구 사업장 재직 회원 10명 이상 (**사업자등록증** 및 3개월 이내 **재직증명서** 제출)\n- **관외팀 (2순위):** 관내팀 이외 15명 이상 (별도 서류 없음, 관내팀 선착순 접수 후 잔여석 선착순 접수 가능)";
             }
             if (query.includes('추첨') || query.includes('접수') || query.includes('16일') || query.includes('21일') || query.includes('3회')) {
-                return "- **정규 추첨 접수:** 전 달 16일~20일 대관사이트(gdgd.igangdong.or.kr) 접수\n- **신청 제한:** **등록팀별 월 3회 가능**\n- **추첨 일시:** 매월 **21일 오전 11시** (온라인)\n- **결제 마감:** 당첨 후 22일 밤 11시 59분(23:59)까지\n- **잔여 선착순:** 23일 10시(관내팀), 24일 10시(관외팀 확대)";
+                return "- **정규 추첨 접수:** 전 달 16일~20일 대관사이트(gdgd.igangdong.or.kr) 접수\n- **신청 제한:** **등록팀별 월 3회 가능**\n- **추첨 일시:** 매월 **21일 오전 11시** (온라인)\n- **결제 마감:** 당첨 후 22일 밤 11시 59분(23:59)까지\n- **잔여 선착순:** 23일 11시(관내팀), 24일 11시(관외팀 확대)";
             }
-            if (query.includes('임시') || query.includes('9월 8일') || query.includes('9월 15일') || query.includes('무료')) {
-                return "- **임시운영 기간:** **9월 15일 ~ 9월 22일** (대관료 **전액 무료**)\n- **운영 시간 (4개 타임):** **08~10시, 10~12시, 12~14시, 14~16시**\n- **임시운영 선착순 접수:** **9월 8일 아침 10시** 오픈\n- **★ 주의:** 임시운영 기간 동안 **샤워실·탈의실(지하 1층) 사용 불가**";
+            if (query.includes('거래명세') || query.includes('명세표')) {
+                return "- **거래명세표 발급:** 공단 홈페이지 로그인 → **마이페이지 > 대관결제내역 > 상세보기**\n- 결제 정보의 **접수번호 옆 [거래명세표]** 버튼 클릭";
             }
             if (query.includes('전화') || query.includes('연락처') || query.includes('문의')) {
-                return "- **동명근린공원 축구장 대표 문의:** **02-2045-7835**\n- **주소:** 서울특별시 강동구 아리수로78길 23";
+                return "- **동명근린공원 축구장 대표 문의:** **02-2045-7835~7**\n- **주소:** 서울특별시 강동구 아리수로78길 23";
             }
-            return "- **추첨 일정:** 매월 16~20일 접수 ➔ 21일 11시 추첨 ➔ 22일 결제 마감 ➔ 23/24일 잔여 접수\n- **팀 등록:** 수시 신청 (관내팀은 매월 5~10일 심사 / 직장팀 서류는 10일까지)\n- **임시운영:** 9.15~9.22 (무료 4타임, 9.8 10시 접수, 샤워실 불가)\n- **문의처:** 02-2045-7835";
+            return "- **추첨 일정:** 매월 16~20일 접수 ➔ 21일 11시 추첨 ➔ 22일 결제 마감 ➔ 23/24일 잔여 접수\n- **팀 등록:** 수시 신청 (매월 5~10일 심사 / 관내 직장팀 서류는 10일까지)\n- **문의처:** 02-2045-7835~7";
         }
 
         function toggleChatbot() {
@@ -2313,6 +3451,8 @@
 
         window.onload = function() {
             renderQACards();
+            renderSmsCards();
+            renderWorkSchedule();
             updateLiveClock();
             setInterval(updateLiveClock, 1000);
         };
