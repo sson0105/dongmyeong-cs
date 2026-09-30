@@ -699,8 +699,9 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .work-shift .work-shift-kind { font-weight: 800; }
-        .work-shift.open { background: #fef3c7; color: #92400e; }
-        .work-shift.close { background: #312e81; color: #ffffff; }
+        /* 개시 = 따뜻한 톤, 마감 = 차가운 톤. 연한 배경 + 왼쪽 색 띠로 부드럽게 구분 */
+        .work-shift.open { background: #fffaeb; color: #92600a; box-shadow: inset 3px 0 0 #f5b942; }
+        .work-shift.close { background: #f0f1fb; color: #3d3a8c; box-shadow: inset 3px 0 0 #8b87d9; }
         .work-shift-icon { flex-shrink: 0; display: block; }
         .work-shift.off { background: var(--cal-line-2); color: var(--cal-ink-4); font-weight: 600; }
         .work-shift.leave { background: var(--cal-sun-soft); color: var(--cal-sun); }
