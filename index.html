@@ -2145,12 +2145,13 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         document.addEventListener('click', () => closeSmsMonthPickers());
 
         // ===== 근무표 =====
-        // 기본 근무: offDays(0=일 ~ 6=토)는 고정 휴무, 나머지 요일은 shift 근무. shift가 null이면 기본 근무 없음(대직 전용).
+        // 기본 근무: offDays(0=일 ~ 6=토)는 고정 휴무, 나머지 요일은 shift 근무.
+        // workDays가 있으면 그 요일에만 shift 근무하고 나머지 요일은 기본 근무 없음(대직 가능).
         const WORK_STAFF = [
             { id: 'eunji', name: '손은지', shift: 'open', offDays: [0, 1] },
             { id: 'b', name: '최일영', shift: 'close', offDays: [3, 4] },
             { id: 'c', name: '윤보혁', shift: 'open', offDays: [5, 6] },
-            { id: 'wonchang', name: '장원창', shift: null, offDays: [], note: '대직' }
+            { id: 'wonchang', name: '장원창', shift: 'close', workDays: [3, 4], offDays: [] }
         ];
         const WORK_SHIFTS = {
             open: { label: '개시', time: '07:30~', start: '07:30' },
@@ -2269,6 +2270,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
         function workDefaultShift(staff, date) {
             if (!staff.shift) return null;
+            if (staff.workDays) return staff.workDays.includes(date.getDay()) ? staff.shift : null;
             return staff.offDays.includes(date.getDay()) ? 'off' : staff.shift;
         }
 
