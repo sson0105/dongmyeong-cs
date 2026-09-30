@@ -760,6 +760,7 @@
         .work-name-list { display: flex; flex-direction: column; gap: 4px; }
         .work-week-table td .work-name-chip { flex-direction: column; align-items: center; gap: 1px; padding: 6px 4px; white-space: normal; }
         .work-name-chip-name { font-size: 12.5px; font-weight: 800; }
+        .work-name-chip-time { font-size: 11.5px; font-weight: 800; }
         .work-week-kind { display: inline-flex; align-items: center; gap: 5px; }
         .work-week-kind.open { color: #92600a; }
         .work-week-kind.close { color: #3d3a8c; }
@@ -1155,7 +1156,7 @@
                 <span id="work-modal-default" class="text-[11px] text-slate-400"></span>
             </div>
             <div class="cal-form-group" id="work-modal-hourly-group">
-                <label>시간 연차</label>
+                <label>시차 (시간 단위 연차)</label>
                 <div class="work-seg" id="work-modal-hourly-toggle"></div>
                 <div id="work-modal-hourly-range" class="work-hourly-range">
                     <select id="work-modal-hourly-from" class="sms-control" onchange="updateWorkHourly()"></select>
@@ -2141,8 +2142,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             { id: 'wonchang', name: '장원창', shift: null, offDays: [], note: '대직' }
         ];
         const WORK_SHIFTS = {
-            open: { label: '개시', time: '07:30~' },
-            close: { label: '마감', time: '09:30~' },
+            open: { label: '개시', time: '07:30~', start: '07:30' },
+            close: { label: '마감', time: '09:30~', start: '09:30' },
             leave: { label: '연차', time: '' },
             off: { label: '휴무', time: '' }
         };
@@ -2266,30 +2267,48 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             close: `<svg class="work-shift-icon" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>`
         };
 
-        function workShiftChip(staff, date, entry, compact) {
+        // 시차를 반영한 실제 근무 시간.
+        // 근무 시작부터 쓴 시차는 시작 시간을 뒤로 미룸 (마감 09:30~ + 3시간 → 12:30~),
+        // 중간·끝에 쓴 시차는 시작 시간은 그대로 두고 시차 시간대를 따로 표시
+        function workTimeInfo(entry) {
             const s = WORK_SHIFTS[entry.shift];
-            const hourlyText = entry.hourly ? `시간연차 ${entry.hourly.from}~${entry.hourly.to} (${workHourlyHours(entry.hourly)}시간)` : '';
-            const title = [`${staff.name} · ${s.label}${s.time ? ' ' + s.time : ''}`, hourlyText, entry.memo].filter(Boolean).join(' · ');
-            const onclick = `event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')`;
-            if (compact) {
-                const badge = entry.hourly ? `<span class="work-hourly-badge">연차 ${workHourlyHours(entry.hourly)}h</span>` : '';
-                return `<div class="work-shift ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(title)}" onclick="${onclick}">
-                    ${WORK_ICONS[entry.shift] || ''}<span class="work-shift-kind">${s.label}</span><span>${staff.name}</span>${badge}</div>`;
-            }
-            const badge = entry.hourly ? `<span class="work-hourly-badge">연차 ${entry.hourly.from}~${entry.hourly.to}</span>` : '';
-            return `<div class="work-shift ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(title)}" onclick="${onclick}">
-                <span style="display: inline-flex; align-items: center; gap: 4px;">${WORK_ICONS[entry.shift] || ''}${s.label}</span>${s.time ? `<small>${s.time}</small>` : ''}${badge}${entry.memo ? `<small>${smsEscape(entry.memo)}</small>` : ''}</div>`;
+            if (!s.start) return { time: '', hourly: '', delayed: false };
+            if (!entry.hourly) return { time: `${s.start}~`, hourly: '', delayed: false };
+            const hours = workHourlyHours(entry.hourly);
+            const delayed = entry.hourly.from <= s.start && entry.hourly.to > s.start;
+            return {
+                time: `${delayed ? entry.hourly.to : s.start}~`,
+                hourly: delayed ? `시차 ${hours}h` : `시차 ${entry.hourly.from}~${entry.hourly.to}`,
+                delayed
+            };
+        }
+
+        function workChipTitle(staff, entry) {
+            const s = WORK_SHIFTS[entry.shift];
+            const info = workTimeInfo(entry);
+            const hourlyText = entry.hourly ? `시차 ${entry.hourly.from}~${entry.hourly.to} (${workHourlyHours(entry.hourly)}시간)` : '';
+            return [`${staff.name} · ${s.label}${info.time ? ' ' + info.time : ''}`, hourlyText, entry.memo].filter(Boolean).join(' · ');
+        }
+
+        // 월간 보기용: "개시 손은지" + 시차가 있으면 실제 출근 시간
+        function workShiftChip(staff, date, entry) {
+            const s = WORK_SHIFTS[entry.shift];
+            const info = workTimeInfo(entry);
+            const badge = entry.hourly ? `<span class="work-hourly-badge">${info.delayed ? info.time : '시차'}</span>` : '';
+            return `<div class="work-shift ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(workChipTitle(staff, entry))}"
+                onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
+                ${WORK_ICONS[entry.shift] || ''}<span class="work-shift-kind">${s.label}</span><span>${staff.name}</span>${badge}</div>`;
         }
 
         // 주간 보기용: 직원 이름 칩 (근무 종류는 행에서 표시)
         function workNameChip(staff, date, entry) {
-            const s = WORK_SHIFTS[entry.shift];
-            const hourlyText = entry.hourly ? `시간연차 ${entry.hourly.from}~${entry.hourly.to} (${workHourlyHours(entry.hourly)}시간)` : '';
-            const title = [`${staff.name} · ${s.label}${s.time ? ' ' + s.time : ''}`, hourlyText, entry.memo].filter(Boolean).join(' · ');
-            const badge = entry.hourly ? `<span class="work-hourly-badge">연차 ${entry.hourly.from}~${entry.hourly.to}</span>` : '';
-            return `<div class="work-shift work-name-chip ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(title)}"
+            const info = workTimeInfo(entry);
+            const timeLine = entry.hourly
+                ? `<span class="work-name-chip-time">${info.time}</span><span class="work-hourly-badge">${info.hourly}</span>`
+                : '';
+            return `<div class="work-shift work-name-chip ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(workChipTitle(staff, entry))}"
                 onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
-                <span class="work-name-chip-name">${staff.name}</span>${badge}${entry.memo ? `<small>${smsEscape(entry.memo)}</small>` : ''}</div>`;
+                <span class="work-name-chip-name">${staff.name}</span>${timeLine}${entry.memo ? `<small>${smsEscape(entry.memo)}</small>` : ''}</div>`;
         }
 
         function workWeekStart(date) {
@@ -2308,7 +2327,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 <span><span class="work-shift open" style="cursor: default; padding: 1px 6px;">${WORK_ICONS.open}개시</span>07:30~</span>
                 <span><span class="work-shift close" style="cursor: default; padding: 1px 6px;">${WORK_ICONS.close}마감</span>09:30~</span>
                 <span><i class="work-dot" style="background: var(--cal-sun)"></i>연차</span>
-                <span><span class="work-hourly-badge" style="margin: 0;">연차 2h</span>시간 연차</span>
+                <span><span class="work-hourly-badge" style="margin: 0;">12:30~</span>시차 반영 출근 시간</span>
                 <span><i class="work-dot" style="outline: 1.5px dashed #475569; outline-offset: 1px; background: transparent;"></i>변경된 일정</span>`;
 
             if (workView === 'month') {
@@ -2329,7 +2348,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     const chips = WORK_STAFF.map(staff => ({ staff, entry: workShiftFor(staff, d) }))
                         .filter(x => x.entry.shift && x.entry.shift !== 'off')
                         .sort((a, b) => ['open', 'close', 'leave'].indexOf(a.entry.shift) - ['open', 'close', 'leave'].indexOf(b.entry.shift))
-                        .map(x => workShiftChip(x.staff, d, x.entry, true)).join('');
+                        .map(x => workShiftChip(x.staff, d, x.entry)).join('');
                     cells += `<div class="${classes.join(' ')}" onclick="openWorkModal('${iso}')">
                         <div><span class="work-day-num">${d.getDate()}</span></div>${chips}</div>`;
                 }
@@ -2471,7 +2490,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         async function saveWorkOverride() {
             const { date, staff, shift, hourly } = workModalState;
             if (hourly && workHourlyHours(hourly) <= 0) {
-                alert('시간 연차의 끝나는 시간이 시작 시간보다 늦어야 합니다.');
+                alert('시차의 끝나는 시간이 시작 시간보다 늦어야 합니다.');
                 return;
             }
             const memo = document.getElementById('work-modal-memo').value.trim();
