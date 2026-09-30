@@ -693,19 +693,28 @@
         .work-dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
         .work-board { border: 1px solid var(--cal-line); border-radius: 8px; overflow: hidden; background: var(--cal-paper); }
 
+        /* 이름 칩은 회색조로 통일하고, 근무 종류 색은 작은 태그(월간)·행 제목(주간)에만 사용 */
         .work-shift {
-            display: flex; align-items: center; gap: 4px; border-radius: 4px; padding: 2px 6px;
-            font-size: 11px; font-weight: 700; line-height: 1.5; cursor: pointer; border: 1px solid transparent;
+            position: relative; display: flex; align-items: center; gap: 5px; border-radius: 4px; padding: 2px 6px;
+            font-size: 11px; font-weight: 700; line-height: 1.5; cursor: pointer;
+            background: #f3f4f6; color: var(--cal-ink-2);
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .work-shift .work-shift-kind { font-weight: 800; }
-        /* 개시 = 따뜻한 톤, 마감 = 차가운 톤. 연한 배경 + 왼쪽 색 띠로 부드럽게 구분 */
-        .work-shift.open { background: #fffaeb; color: #92600a; box-shadow: inset 3px 0 0 #f5b942; }
-        .work-shift.close { background: #f0f1fb; color: #3d3a8c; box-shadow: inset 3px 0 0 #8b87d9; }
+        .work-shift.off { color: var(--cal-ink-4); font-weight: 600; }
         .work-shift-icon { flex-shrink: 0; display: block; }
-        .work-shift.off { background: var(--cal-line-2); color: var(--cal-ink-4); font-weight: 600; }
-        .work-shift.leave { background: var(--cal-sun-soft); color: var(--cal-sun); }
-        .work-shift.changed { outline: 1.5px dashed #475569; outline-offset: 1px; }
+        /* 개시 = 따뜻한 톤, 마감 = 차가운 톤 */
+        .work-kind-tag {
+            display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0;
+            font-size: 10.5px; font-weight: 800; border-radius: 3px; padding: 0 4px;
+        }
+        .work-kind-tag.open { background: #fff3d6; color: #92600a; }
+        .work-kind-tag.close { background: #e9e8fb; color: #3d3a8c; }
+        .work-kind-tag.leave { background: var(--cal-sun-soft); color: var(--cal-sun); }
+        /* 변경된 일정: 오른쪽 위 작은 점 */
+        .work-shift.changed::after {
+            content: ''; position: absolute; top: 3px; right: 3px; width: 5px; height: 5px;
+            border-radius: 50%; background: var(--cal-ink-4);
+        }
         .work-hourly-badge {
             margin-left: auto; flex-shrink: 0; font-size: 10px; font-weight: 800; color: var(--cal-sun);
             background: #fff; border: 1px solid #fecaca; border-radius: 3px; padding: 0 4px; line-height: 1.5;
@@ -2297,7 +2306,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const badge = entry.hourly ? `<span class="work-hourly-badge">${info.delayed ? info.time : '시차'}</span>` : '';
             return `<div class="work-shift ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(workChipTitle(staff, entry))}"
                 onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
-                ${WORK_ICONS[entry.shift] || ''}<span class="work-shift-kind">${s.label}</span><span>${staff.name}</span>${badge}</div>`;
+                <span class="work-kind-tag ${entry.shift}">${WORK_ICONS[entry.shift] || ''}${s.label}</span><span>${staff.name}</span>${badge}</div>`;
         }
 
         // 주간 보기용: 직원 이름 칩 (근무 종류는 행에서 표시)
@@ -2324,11 +2333,11 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             document.getElementById('work-nav-next').innerText = workView === 'month' ? '다음 달' : '다음 주';
 
             document.getElementById('work-legend').innerHTML = `
-                <span><span class="work-shift open" style="cursor: default; padding: 1px 6px;">${WORK_ICONS.open}개시</span>07:30~</span>
-                <span><span class="work-shift close" style="cursor: default; padding: 1px 6px;">${WORK_ICONS.close}마감</span>09:30~</span>
-                <span><i class="work-dot" style="background: var(--cal-sun)"></i>연차</span>
+                <span><span class="work-kind-tag open">${WORK_ICONS.open}개시</span>07:30~</span>
+                <span><span class="work-kind-tag close">${WORK_ICONS.close}마감</span>09:30~</span>
+                <span><span class="work-kind-tag leave">연차</span>종일</span>
                 <span><span class="work-hourly-badge" style="margin: 0;">12:30~</span>시차 반영 출근 시간</span>
-                <span><i class="work-dot" style="outline: 1.5px dashed #475569; outline-offset: 1px; background: transparent;"></i>변경된 일정</span>`;
+                <span><i class="work-dot" style="width: 5px; height: 5px; border-radius: 50%; background: var(--cal-ink-4);"></i>변경된 일정</span>`;
 
             if (workView === 'month') {
                 const y = workCursor.getFullYear(), m = workCursor.getMonth();
