@@ -710,8 +710,15 @@
         .work-kind-tag.open { background: #fff3d6; color: #92600a; }
         .work-kind-tag.close { background: #e9e8fb; color: #3d3a8c; }
         .work-kind-tag.leave { background: var(--cal-sun-soft); color: var(--cal-sun); }
-        /* 변경된 일정: 이름 옆 연필 아이콘 */
-        .work-edited-icon { flex-shrink: 0; display: inline-block; color: #64748b; vertical-align: -1px; }
+        /* 변경된 일정: 기본 일정(회색 채움)과 달리 흰 바탕 + 얇은 테두리 */
+        .work-shift.changed { background: #ffffff; box-shadow: inset 0 0 0 1px #cbd5e1; }
+        .work-changed-sample {
+            display: inline-block; width: 22px; height: 12px; border-radius: 3px;
+            background: #ffffff; box-shadow: inset 0 0 0 1px #cbd5e1;
+        }
+        .work-default-sample {
+            display: inline-block; width: 22px; height: 12px; border-radius: 3px; background: #f3f4f6;
+        }
         .work-hourly-badge {
             margin-left: auto; flex-shrink: 0; font-size: 10px; font-weight: 800; color: var(--cal-sun);
             background: #fff; border: 1px solid #fecaca; border-radius: 3px; padding: 0 4px; line-height: 1.5;
@@ -2297,15 +2304,13 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         // 월간 보기용: "개시 손은지" + 시차가 있으면 실제 출근 시간
-        const WORK_EDITED_ICON = `<svg class="work-edited-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-label="변경된 일정"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`;
-
         function workShiftChip(staff, date, entry) {
             const s = WORK_SHIFTS[entry.shift];
             const info = workTimeInfo(entry);
             const badge = entry.hourly ? `<span class="work-hourly-badge">${info.delayed ? info.time : '시차'}</span>` : '';
             return `<div class="work-shift ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(workChipTitle(staff, entry))}"
                 onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
-                <span class="work-kind-tag ${entry.shift}">${WORK_ICONS[entry.shift] || ''}${s.label}</span><span>${staff.name}</span>${entry.changed ? WORK_EDITED_ICON : ''}${badge}</div>`;
+                <span class="work-kind-tag ${entry.shift}">${WORK_ICONS[entry.shift] || ''}${s.label}</span><span>${staff.name}</span>${badge}</div>`;
         }
 
         // 주간 보기용: 직원 이름 칩 (근무 종류는 행에서 표시)
@@ -2316,7 +2321,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 : '';
             return `<div class="work-shift work-name-chip ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(workChipTitle(staff, entry))}"
                 onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
-                <span class="work-name-chip-name">${staff.name}${entry.changed ? ' ' + WORK_EDITED_ICON : ''}</span>${timeLine}${entry.memo ? `<small>${smsEscape(entry.memo)}</small>` : ''}</div>`;
+                <span class="work-name-chip-name">${staff.name}</span>${timeLine}${entry.memo ? `<small>${smsEscape(entry.memo)}</small>` : ''}</div>`;
         }
 
         function workWeekStart(date) {
@@ -2336,7 +2341,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 <span><span class="work-kind-tag close">${WORK_ICONS.close}마감</span>09:30~</span>
                 <span><span class="work-kind-tag leave">연차</span>종일</span>
                 <span><span class="work-hourly-badge" style="margin: 0;">12:30~</span>시차 반영 출근 시간</span>
-                <span>${WORK_EDITED_ICON}변경된 일정</span>`;
+                <span><i class="work-default-sample"></i>기본</span>
+                <span><i class="work-changed-sample"></i>변경된 일정</span>`;
 
             if (workView === 'month') {
                 const y = workCursor.getFullYear(), m = workCursor.getMonth();
