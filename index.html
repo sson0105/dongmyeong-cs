@@ -757,6 +757,14 @@
         .work-week-name small { display: block; font-size: 10.5px; font-weight: 600; color: var(--cal-ink-4); margin-top: 1px; }
         .work-week-table td .work-shift { justify-content: center; padding: 6px 4px; flex-direction: column; gap: 0; }
         .work-week-table td .work-shift small { font-size: 10.5px; font-weight: 600; opacity: 0.85; }
+        .work-name-list { display: flex; flex-direction: column; gap: 4px; }
+        .work-week-table td .work-name-chip { flex-direction: column; align-items: center; gap: 1px; padding: 6px 4px; white-space: normal; }
+        .work-name-chip-name { font-size: 12.5px; font-weight: 800; }
+        .work-week-kind { display: inline-flex; align-items: center; gap: 5px; }
+        .work-week-kind.open { color: #92600a; }
+        .work-week-kind.close { color: #3d3a8c; }
+        .work-week-kind.leave { color: var(--cal-sun); }
+        .work-week-kind.off { color: var(--cal-ink-3); }
         .work-empty { display: block; text-align: center; color: var(--cal-ink-4); font-size: 11px; cursor: pointer; padding: 6px 0; border-radius: 4px; }
         .work-empty:hover { background: var(--cal-line-2); color: var(--cal-ink-2); }
 
@@ -2273,6 +2281,17 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 <span style="display: inline-flex; align-items: center; gap: 4px;">${WORK_ICONS[entry.shift] || ''}${s.label}</span>${s.time ? `<small>${s.time}</small>` : ''}${badge}${entry.memo ? `<small>${smsEscape(entry.memo)}</small>` : ''}</div>`;
         }
 
+        // 주간 보기용: 직원 이름 칩 (근무 종류는 행에서 표시)
+        function workNameChip(staff, date, entry) {
+            const s = WORK_SHIFTS[entry.shift];
+            const hourlyText = entry.hourly ? `시간연차 ${entry.hourly.from}~${entry.hourly.to} (${workHourlyHours(entry.hourly)}시간)` : '';
+            const title = [`${staff.name} · ${s.label}${s.time ? ' ' + s.time : ''}`, hourlyText, entry.memo].filter(Boolean).join(' · ');
+            const badge = entry.hourly ? `<span class="work-hourly-badge">연차 ${entry.hourly.from}~${entry.hourly.to}</span>` : '';
+            return `<div class="work-shift work-name-chip ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(title)}"
+                onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
+                <span class="work-name-chip-name">${staff.name}</span>${badge}${entry.memo ? `<small>${smsEscape(entry.memo)}</small>` : ''}</div>`;
+        }
+
         function workWeekStart(date) {
             return new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
         }
@@ -2325,17 +2344,18 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     const cls = [d.getDay() === 0 ? 'sun' : d.getDay() === 6 ? 'sat' : '', smsToISO(d) === today ? 'today' : ''].join(' ');
                     return `<th class="${cls}">${SMS_WEEKDAYS[d.getDay()]}<span class="work-week-date">${d.getMonth() + 1}/${d.getDate()}</span></th>`;
                 }).join('');
-                const rows = WORK_STAFF.map(staff => {
-                    const sub = staff.shift ? `${WORK_SHIFTS[staff.shift].label} · ${staff.offDays.map(i => SMS_WEEKDAYS[i]).join('·')} 휴무` : (staff.note || '');
+                // 행 = 근무 종류, 칸 = 그날 해당 근무를 하는 직원 이름
+                const rows = Object.entries(WORK_SHIFTS).map(([key, s]) => {
                     const cells = days.map(d => {
-                        const entry = workShiftFor(staff, d);
                         const iso = smsToISO(d);
-                        const inner = entry.shift
-                            ? workShiftChip(staff, d, entry, false)
-                            : `<span class="work-empty" onclick="openWorkModal('${iso}', '${staff.id}')">+</span>`;
-                        return `<td class="${iso === today ? 'today' : ''}">${inner}</td>`;
+                        const names = WORK_STAFF
+                            .map(staff => ({ staff, entry: workShiftFor(staff, d) }))
+                            .filter(x => x.entry.shift === key)
+                            .map(x => workNameChip(x.staff, d, x.entry)).join('');
+                        const inner = names || `<span class="work-empty" onclick="openWorkModal('${iso}')">${['open', 'close'].includes(key) ? '비어 있음' : '–'}</span>`;
+                        return `<td class="${iso === today ? 'today' : ''}"><div class="work-name-list">${inner}</div></td>`;
                     }).join('');
-                    return `<tr><td class="work-week-name">${staff.name}<small>${sub}</small></td>${cells}</tr>`;
+                    return `<tr><td class="work-week-name"><span class="work-week-kind ${key}">${WORK_ICONS[key] || ''}${s.label}</span><small>${s.time || ''}</small></td>${cells}</tr>`;
                 }).join('');
                 board.innerHTML = `<div style="overflow-x: auto;"><table class="work-week-table" style="min-width: 720px;">
                     <thead><tr><th class="work-week-name" style="background: var(--cal-surface);"></th>${head}</tr></thead>
