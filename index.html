@@ -698,6 +698,7 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .work-shift.off { color: var(--cal-ink-4); font-weight: 600; }
+        .work-shift.leave { background: #fdeeee; color: #b42318; }
         .work-shift-icon { flex-shrink: 0; display: block; }
         /* 개시 = 따뜻한 톤, 마감 = 차가운 톤 */
         .work-kind-tag {
@@ -738,6 +739,8 @@
         .work-day-num { font-size: 12px; font-weight: 700; color: var(--cal-ink-2); margin-bottom: 2px; }
         .work-day.sun .work-day-num { color: var(--cal-sun); }
         .work-day.sat .work-day-num { color: var(--cal-sat); }
+        .work-day.holiday .work-day-num { color: var(--cal-sun); }
+        .work-holiday-name { font-size: 10.5px; font-weight: 700; color: var(--cal-sun); margin-left: 4px; }
         .work-day.today .work-day-num {
             color: #fff; background: var(--cal-today-accent); border-radius: 999px; width: 22px; height: 22px;
             display: inline-flex; align-items: center; justify-content: center;
@@ -753,8 +756,15 @@
         .work-week-table thead th .work-week-date { display: block; font-size: 13px; color: var(--cal-ink); font-weight: 800; margin-top: 1px; }
         .work-week-table thead th.sun, .work-week-table thead th.sun .work-week-date { color: var(--cal-sun); }
         .work-week-table thead th.sat, .work-week-table thead th.sat .work-week-date { color: var(--cal-sat); }
+        .work-week-table thead th.holiday, .work-week-table thead th.holiday .work-week-date { color: var(--cal-sun); }
+        .work-week-table thead th .work-week-holiday { display: block; font-size: 10.5px; font-weight: 700; color: var(--cal-sun); margin-top: 1px; }
         .work-week-table thead th.today { background: var(--cal-today-bg); box-shadow: inset 0 -2px 0 var(--cal-today-accent); }
-        .work-week-table td.today { background: var(--cal-today-bg); }
+        .work-week-table td.today { background-image: linear-gradient(var(--cal-today-bg), var(--cal-today-bg)); }
+        /* 주간 보기: 근무 종류별로 행 전체에 옅은 색을 깔아 멀리 있는 칸도 같은 줄로 읽히게 */
+        .work-week-table tr.row-open td { background-color: #fffcf4; }
+        .work-week-table tr.row-close td { background-color: #f8f8fe; }
+        .work-week-table tr.row-open .work-name-chip { background: #faefd6; color: #6b4a08; }
+        .work-week-table tr.row-close .work-name-chip { background: #e9e8f8; color: #2f2c73; }
         .work-week-name { width: 96px; text-align: left !important; font-size: 12.5px; font-weight: 800; color: var(--cal-ink); background: #fff; }
         .work-week-name small { display: block; font-size: 10.5px; font-weight: 600; color: var(--cal-ink-4); margin-top: 1px; }
         .work-week-table td .work-shift { justify-content: center; padding: 6px 4px; flex-direction: column; gap: 0; }
@@ -2152,6 +2162,23 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         const WORK_CACHE_KEY = 'dm-work-overrides-cache';
         const WORK_PASSWORD_KEY = 'dm-work-password';
 
+        // 한국 공휴일 (대체공휴일·임시공휴일 포함). 매년 말 다음 해 목록을 추가해 주세요.
+        const KR_HOLIDAYS = {
+            '2026-01-01': '신정', '2026-02-16': '설날 연휴', '2026-02-17': '설날', '2026-02-18': '설날 연휴',
+            '2026-03-01': '삼일절', '2026-03-02': '대체공휴일', '2026-05-01': '노동절', '2026-05-05': '어린이날',
+            '2026-05-24': '부처님오신날', '2026-05-25': '대체공휴일', '2026-06-03': '지방선거', '2026-06-06': '현충일',
+            '2026-07-17': '제헌절', '2026-08-15': '광복절', '2026-08-17': '대체공휴일',
+            '2026-09-24': '추석 연휴', '2026-09-25': '추석', '2026-09-26': '추석 연휴',
+            '2026-10-03': '개천절', '2026-10-05': '대체공휴일', '2026-10-09': '한글날', '2026-12-25': '성탄절',
+            '2027-01-01': '신정', '2027-02-06': '설날 연휴', '2027-02-07': '설날', '2027-02-08': '설날 연휴', '2027-02-09': '대체공휴일',
+            '2027-03-01': '삼일절', '2027-05-01': '노동절', '2027-05-03': '대체공휴일', '2027-05-05': '어린이날',
+            '2027-05-13': '부처님오신날', '2027-06-06': '현충일', '2027-07-17': '제헌절', '2027-07-19': '대체공휴일',
+            '2027-08-15': '광복절', '2027-08-16': '대체공휴일',
+            '2027-09-14': '추석 연휴', '2027-09-15': '추석', '2027-09-16': '추석 연휴',
+            '2027-10-03': '개천절', '2027-10-04': '대체공휴일', '2027-10-09': '한글날', '2027-10-11': '대체공휴일',
+            '2027-12-25': '성탄절', '2027-12-27': '대체공휴일'
+        };
+
         let workView = 'month';
         let workCursor = new Date();
         let workModalState = null;
@@ -2345,6 +2372,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     if (d.getMonth() !== m) classes.push('other');
                     if (d.getDay() === 0) classes.push('sun');
                     if (d.getDay() === 6) classes.push('sat');
+                    if (KR_HOLIDAYS[iso]) classes.push('holiday');
                     if (iso === today) classes.push('today');
                     // 월간에서는 근무자와 연차만 표시하고 고정 휴무는 생략
                     const chips = WORK_STAFF.map(staff => ({ staff, entry: workShiftFor(staff, d) }))
@@ -2352,7 +2380,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                         .sort((a, b) => ['open', 'close', 'leave'].indexOf(a.entry.shift) - ['open', 'close', 'leave'].indexOf(b.entry.shift))
                         .map(x => workShiftChip(x.staff, d, x.entry)).join('');
                     cells += `<div class="${classes.join(' ')}" onclick="openWorkModal('${iso}')">
-                        <div><span class="work-day-num">${d.getDate()}</span></div>${chips}</div>`;
+                        <div><span class="work-day-num">${d.getDate()}</span>${KR_HOLIDAYS[iso] ? `<span class="work-holiday-name">${KR_HOLIDAYS[iso]}</span>` : ''}</div>${chips}</div>`;
                 }
                 board.innerHTML = `<div class="work-month-head">${SMS_WEEKDAYS.map(w => `<div>${w}</div>`).join('')}</div>
                     <div class="work-month-grid">${cells}</div>`;
@@ -2362,8 +2390,10 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 const end = days[6];
                 title.innerText = `${start.getMonth() + 1}월 ${start.getDate()}일 ~ ${end.getMonth() + 1}월 ${end.getDate()}일 근무표`;
                 const head = days.map(d => {
-                    const cls = [d.getDay() === 0 ? 'sun' : d.getDay() === 6 ? 'sat' : '', smsToISO(d) === today ? 'today' : ''].join(' ');
-                    return `<th class="${cls}">${SMS_WEEKDAYS[d.getDay()]}<span class="work-week-date">${d.getMonth() + 1}/${d.getDate()}</span></th>`;
+                    const iso = smsToISO(d);
+                    const cls = [d.getDay() === 0 ? 'sun' : d.getDay() === 6 ? 'sat' : '', KR_HOLIDAYS[iso] ? 'holiday' : '', iso === today ? 'today' : ''].join(' ');
+                    const holiday = KR_HOLIDAYS[iso] ? `<span class="work-week-holiday">${KR_HOLIDAYS[iso]}</span>` : '';
+                    return `<th class="${cls}">${SMS_WEEKDAYS[d.getDay()]}<span class="work-week-date">${d.getMonth() + 1}/${d.getDate()}</span>${holiday}</th>`;
                 }).join('');
                 // 행 = 근무 종류, 칸 = 그날 해당 근무를 하는 직원 이름
                 const rows = Object.entries(WORK_SHIFTS).map(([key, s]) => {
@@ -2376,7 +2406,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                         const inner = names || `<span class="work-empty" onclick="openWorkModal('${iso}')">${['open', 'close'].includes(key) ? '비어 있음' : '–'}</span>`;
                         return `<td class="${iso === today ? 'today' : ''}"><div class="work-name-list">${inner}</div></td>`;
                     }).join('');
-                    return `<tr><td class="work-week-name"><span class="work-week-kind ${key}">${WORK_ICONS[key] || ''}${s.label}</span><small>${s.time || ''}</small></td>${cells}</tr>`;
+                    return `<tr class="row-${key}"><td class="work-week-name"><span class="work-week-kind ${key}">${WORK_ICONS[key] || ''}${s.label}</span><small>${s.time || ''}</small></td>${cells}</tr>`;
                 }).join('');
                 board.innerHTML = `<div style="overflow-x: auto;"><table class="work-week-table" style="min-width: 720px;">
                     <thead><tr><th class="work-week-name" style="background: var(--cal-surface);"></th>${head}</tr></thead>
