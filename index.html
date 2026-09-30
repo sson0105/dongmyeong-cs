@@ -891,7 +891,7 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-2.5 text-xs text-slate-600">
-                <span class="bg-amber-100 text-amber-900 font-semibold px-2.5 py-1 rounded border border-amber-200 hidden lg:inline-block">요금: 평일 8.8만/주말 및 공휴일 11.44만</span>
+                <button type="button" id="today-workers" onclick="switchTab('work')" title="근무표 보기" class="bg-white text-slate-700 font-semibold px-2.5 py-1 rounded border border-slate-200 hover:bg-slate-50 hidden lg:inline-flex items-center gap-2"></button>
                 
                 <!-- 관리자 매뉴얼 다운로드 버튼 -->
                 <a href="/admin_manual.pdf" download="동명근린공원_관리자_매뉴얼.pdf" class="inline-flex items-center gap-1.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold px-3 py-1.5 rounded border border-slate-300 transition-colors shadow-2xs">
@@ -2351,7 +2351,25 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             return new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
         }
 
+        // 상단 헤더: 오늘 근무자 (개시·마감별, 시차로 늦게 나오면 출근 시간 함께)
+        function renderTodayWorkers() {
+            const el = document.getElementById('today-workers');
+            if (!el) return;
+            const now = new Date();
+            const group = key => WORK_STAFF
+                .map(staff => ({ staff, entry: workShiftFor(staff, now) }))
+                .filter(x => x.entry.shift === key)
+                .map(x => {
+                    const info = workTimeInfo(x.entry);
+                    return info.delayed ? `${x.staff.name}(${info.time})` : x.staff.name;
+                }).join(', ') || '없음';
+            el.innerHTML = `<span class="text-slate-400">오늘 근무</span>
+                <span class="work-kind-tag open">${WORK_ICONS.open}개시</span><span>${group('open')}</span>
+                <span class="work-kind-tag close">${WORK_ICONS.close}마감</span><span>${group('close')}</span>`;
+        }
+
         function renderWorkSchedule() {
+            renderTodayWorkers();
             const board = document.getElementById('work-board');
             if (!board) return;
             const today = smsTodayISO();
@@ -3532,6 +3550,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             renderQACards();
             renderSmsCards();
             renderWorkSchedule();
+            fetchWorkOverrides();
             updateLiveClock();
             setInterval(updateLiveClock, 1000);
         };
