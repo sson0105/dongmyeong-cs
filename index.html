@@ -688,9 +688,6 @@
             font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
         }
         .work-btn-primary:hover { background: #1e293b; }
-        .work-legend { display: flex; flex-wrap: wrap; gap: 10px 14px; font-size: 11.5px; font-weight: 600; color: var(--cal-ink-2); }
-        .work-legend span { display: inline-flex; align-items: center; gap: 5px; }
-        .work-dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
         .work-board { border: 1px solid var(--cal-line); border-radius: 8px; overflow: hidden; background: var(--cal-paper); }
 
         /* 이름 칩은 회색조로 통일하고, 근무 종류 색은 작은 태그(월간)·행 제목(주간)에만 사용 */
@@ -712,13 +709,6 @@
         .work-kind-tag.leave { background: var(--cal-sun-soft); color: var(--cal-sun); }
         /* 변경된 일정: 기본 일정(회색 채움)과 달리 흰 바탕 + 얇은 테두리 */
         .work-shift.changed { background: #ffffff; box-shadow: inset 0 0 0 1px #cbd5e1; }
-        .work-changed-sample {
-            display: inline-block; width: 22px; height: 12px; border-radius: 3px;
-            background: #ffffff; box-shadow: inset 0 0 0 1px #cbd5e1;
-        }
-        .work-default-sample {
-            display: inline-block; width: 22px; height: 12px; border-radius: 3px; background: #f3f4f6;
-        }
         .work-hourly-badge {
             margin-left: auto; flex-shrink: 0; font-size: 10px; font-weight: 800; color: var(--cal-sun);
             background: #fff; border: 1px solid #fecaca; border-radius: 3px; padding: 0 4px; line-height: 1.5;
@@ -1139,7 +1129,6 @@
                 </div>
             </div>
 
-            <div class="work-legend" id="work-legend"></div>
             <div class="work-board" id="work-board"></div>
         </section>
 
@@ -2335,14 +2324,6 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const title = document.getElementById('work-title');
             document.getElementById('work-nav-prev').innerText = workView === 'month' ? '이전 달' : '이전 주';
             document.getElementById('work-nav-next').innerText = workView === 'month' ? '다음 달' : '다음 주';
-
-            document.getElementById('work-legend').innerHTML = `
-                <span><span class="work-kind-tag open">${WORK_ICONS.open}개시</span>07:30~</span>
-                <span><span class="work-kind-tag close">${WORK_ICONS.close}마감</span>09:30~</span>
-                <span><span class="work-kind-tag leave">연차</span>종일</span>
-                <span><span class="work-hourly-badge" style="margin: 0;">12:30~</span>시차 반영 출근 시간</span>
-                <span><i class="work-default-sample"></i>기본</span>
-                <span><i class="work-changed-sample"></i>변경된 일정</span>`;
 
             if (workView === 'month') {
                 const y = workCursor.getFullYear(), m = workCursor.getMonth();
