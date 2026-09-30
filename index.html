@@ -711,7 +711,7 @@
         /* 시차·대직 표시: 테두리 없이 글씨만 */
         .work-hourly-badge { margin-left: auto; flex-shrink: 0; font-size: 10.5px; font-weight: 800; color: var(--cal-sun); }
         .work-time-note { flex-shrink: 0; margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); }
-        .work-cover-badge + .work-time-note { margin-left: 4px; }
+        .work-cover-badge + .work-time-note, .work-time-note + .work-time-note, .work-time-note + .work-hourly-badge { margin-left: 4px; }
         .work-week-table td .work-time-note { margin: 1px 0 0; }
         .work-cover-badge { flex-shrink: 0; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); }
         .work-shift .work-cover-badge { margin-left: auto; }
@@ -2151,8 +2151,9 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         // 기본 근무: offDays(0=일 ~ 6=토)는 고정 휴무, 나머지 요일은 shift 근무.
         // workDays가 있으면 그 요일에만 shift 근무하고 나머지 요일은 기본 근무 없음(대직 가능).
         // start가 있으면 기본 근무일의 출근 시간이 근무 종류의 기본 시간 대신 이 시간이 됨.
+        // dayLabels는 요일별로 이름 옆에 붙는 별도 표기 (예: 화요일 손은지 '온조').
         const WORK_STAFF = [
-            { id: 'eunji', name: '손은지', shift: 'open', offDays: [0, 1] },
+            { id: 'eunji', name: '손은지', shift: 'open', offDays: [0, 1], dayLabels: { 2: '온조' } },
             { id: 'b', name: '최일영', shift: 'close', offDays: [3, 4] },
             { id: 'c', name: '윤보혁', shift: 'open', offDays: [5, 6] },
             { id: 'wonchang', name: '장원창', shift: 'close', workDays: [3, 4], offDays: [], start: '16:30' }
@@ -2290,6 +2291,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 ? { shift: override.shift, memo: override.memo || '', hourly: override.hourly || null, changed: true }
                 : { shift: workDefaultShift(staff, date), memo: '', hourly: null, changed: false };
             entry.start = entry.shift ? workStartFor(staff, date, entry.shift) : '';
+            // 요일별 표기는 기본 근무대로 일할 때만
+            entry.label = entry.shift && entry.shift === workDefaultShift(staff, date) ? (staff.dayLabels?.[date.getDay()] || '') : '';
             return entry;
         }
 
@@ -2338,7 +2341,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const s = WORK_SHIFTS[entry.shift];
             const info = workTimeInfo(entry);
             const hourlyText = entry.hourly ? `시차 ${entry.hourly.from}~${entry.hourly.to} (${workHourlyHours(entry.hourly)}시간)` : '';
-            return [`${staff.name} · ${s.label}${info.time ? ' ' + info.time : ''}`, hourlyText, entry.memo].filter(Boolean).join(' · ');
+            return [`${staff.name} · ${s.label}${info.time ? ' ' + info.time : ''}`, entry.label, hourlyText, entry.memo].filter(Boolean).join(' · ');
         }
 
         // 월간 보기용: "개시 손은지" + 시차가 있으면 실제 출근 시간
@@ -2349,7 +2352,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const time = entry.hourly
                 ? `<span class="work-hourly-badge">${info.delayed ? info.time : '시차'}</span>`
                 : (info.custom ? `<span class="work-time-note">${info.time}</span>` : '');
-            const badge = cover + time;
+            const label = entry.label ? `<span class="work-time-note">${entry.label}</span>` : '';
+            const badge = cover + label + time;
             return `<div class="work-shift ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(workChipTitle(staff, entry))}"
                 onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
                 <span class="work-kind-tag ${entry.shift}">${WORK_ICONS[entry.shift] || ''}${s.label}</span><span>${staff.name}</span>${badge}</div>`;
@@ -2358,7 +2362,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         // 주간 보기용: 직원 이름 칩 (근무 종류는 행에서 표시)
         function workNameChip(staff, date, entry) {
             const info = workTimeInfo(entry);
-            const cover = workIsCover(staff, date, entry) ? `<span class="work-cover-badge">대직</span>` : '';
+            const cover = (workIsCover(staff, date, entry) ? `<span class="work-cover-badge">대직</span>` : '')
+                + (entry.label ? `<span class="work-time-note">${entry.label}</span>` : '');
             const timeLine = cover + (entry.hourly
                 ? `<span class="work-name-chip-time">${info.time}</span><span class="work-hourly-badge">${info.hourly}</span>`
                 : (info.custom ? `<span class="work-time-note">${info.time}</span>` : ''));
@@ -2381,7 +2386,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 .filter(x => x.entry.shift === key)
                 .map(x => {
                     const info = workTimeInfo(x.entry);
-                    return info.delayed || info.custom ? `${x.staff.name}(${info.time})` : x.staff.name;
+                    const notes = [x.entry.label, info.delayed || info.custom ? info.time : ''].filter(Boolean).join(' ');
+                    return notes ? `${x.staff.name}(${notes})` : x.staff.name;
                 }).join(', ') || '없음';
             el.innerHTML = `<span class="text-slate-400">오늘 근무</span>
                 <span class="work-kind-tag open">${WORK_ICONS.open}개시</span><span>${group('open')}</span>
