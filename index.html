@@ -679,7 +679,21 @@
         input.sms-stepper-value::-webkit-outer-spin-button,
         input.sms-stepper-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-        /* 운영 일지 */
+        /* 운영 일지 (근무표 안) */
+        .work-day-top { display: flex; align-items: center; flex-wrap: wrap; }
+        .work-log-count {
+            margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3);
+            background: #f3f4f6; border-radius: 3px; padding: 0 5px; line-height: 1.6; cursor: pointer;
+        }
+        .work-log-count:hover { background: var(--cal-line); color: var(--cal-ink); }
+        .work-week-table tr.row-log td { vertical-align: top; }
+        .work-log-item { text-align: left; background: #f8fafc; border-radius: 4px; padding: 5px 6px; cursor: pointer; }
+        .work-log-item:hover { background: #f1f5f9; }
+        .work-log-item-meta { display: flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); margin-bottom: 2px; }
+        .work-log-item-text {
+            font-size: 11.5px; line-height: 1.45; color: var(--cal-ink-2);
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-all;
+        }
         .log-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
         .log-search { width: 220px; }
         .log-list { display: flex; flex-direction: column; gap: 14px; }
@@ -964,9 +978,6 @@
                 <button onclick="switchTab('work')" id="tab-btn-work" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     근무표
                 </button>
-                <button onclick="switchTab('log')" id="tab-btn-log" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
-                    운영 일지
-                </button>
             </div>
         </nav>
     </header>
@@ -1152,7 +1163,7 @@
             <div class="work-header">
                 <div>
                     <div class="work-title" id="work-title"></div>
-                    <p class="text-xs text-slate-500 mt-1">기본 근무는 자동으로 표시됩니다. 연차·대직 등 바뀌는 날만 등록하세요.</p>
+                    <p class="text-xs text-slate-500 mt-1">기본 근무는 자동으로 표시됩니다. 연차·대직 등 바뀌는 날만 등록하고, 그날의 운영 이슈는 일지로 기록하세요.</p>
                     <p class="text-[11px] mt-1 flex items-center gap-2">
                         <span id="work-sync-status" class="text-slate-400"></span>
                         <button type="button" onclick="fetchWorkOverrides()" class="text-slate-500 hover:text-slate-900 underline underline-offset-2">새로고침</button>
@@ -1169,7 +1180,11 @@
                     <div class="view-segment">
                         <button class="btn-view-toggle active" id="work-view-month" onclick="setWorkView('month')">월간</button>
                         <button class="btn-view-toggle" id="work-view-week" onclick="setWorkView('week')">주간</button>
+                        <button class="btn-view-toggle" id="work-view-log" onclick="setWorkView('log')">일지</button>
                     </div>
+                    <button class="work-btn-ghost" style="height: 32px; padding: 0 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700;" onclick="openLogModal()">
+                        + 일지 기록
+                    </button>
                     <button class="work-btn-primary" onclick="openWorkModal()">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
                         일정 등록
@@ -1178,40 +1193,15 @@
             </div>
 
             <div class="work-board" id="work-board"></div>
-        </section>
 
-        <!-- TAB 6: OPERATIONS LOG -->
-        <section id="tab-log" class="tab-content hidden space-y-4">
-            <div class="work-header">
-                <div>
-                    <div class="work-title" id="log-title"></div>
-                    <p class="text-xs text-slate-500 mt-1">시설 고장, 민원, 부상 등 그날 있었던 운영 이슈를 기록합니다.</p>
-                    <p class="text-[11px] mt-1 flex items-center gap-2">
-                        <span id="log-sync-status" class="text-slate-400"></span>
-                        <button type="button" onclick="fetchLogEntries()" class="text-slate-500 hover:text-slate-900 underline underline-offset-2">새로고침</button>
-                    </p>
+            <!-- 일지 보기: 한 달 기록을 모아 보고 검색 -->
+            <div id="log-view" class="space-y-4" style="display: none;">
+                <div class="log-toolbar">
+                    <div class="work-seg" id="log-filter"></div>
+                    <input type="text" id="log-search" oninput="renderLog()" placeholder="내용·작성자 검색" class="sms-control log-search">
                 </div>
-                <div class="work-controls">
-                    <div class="nav-capsule">
-                        <button class="nav-btn" onclick="navigateLog(-1)">이전 달</button>
-                        <div class="nav-divider"></div>
-                        <button class="nav-btn btn-today" onclick="goLogToday()">이번 달</button>
-                        <div class="nav-divider"></div>
-                        <button class="nav-btn" onclick="navigateLog(1)">다음 달</button>
-                    </div>
-                    <button class="work-btn-primary" onclick="openLogModal()">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                        기록하기
-                    </button>
-                </div>
+                <div id="log-list" class="log-list"></div>
             </div>
-
-            <div class="log-toolbar">
-                <div class="work-seg" id="log-filter"></div>
-                <input type="text" id="log-search" oninput="renderLog()" placeholder="내용·작성자 검색" class="sms-control log-search">
-            </div>
-
-            <div id="log-list" class="log-list"></div>
         </section>
 
     </main>
@@ -2331,14 +2321,20 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             el.style.color = isError ? 'var(--cal-sun)' : '';
         }
 
+        // 근무표와 운영 일지를 함께 불러옴
         async function fetchWorkOverrides() {
             setWorkSyncStatus('근무표를 불러오는 중...');
             try {
-                const res = await fetch(WORK_API, { cache: 'no-store' });
-                if (!res.ok) throw new Error();
+                const [res, logRes] = await Promise.all([
+                    fetch(WORK_API, { cache: 'no-store' }),
+                    fetch(LOG_API, { cache: 'no-store' })
+                ]);
+                if (!res.ok || !logRes.ok) throw new Error();
                 const data = await res.json();
                 workOverrides = data.overrides || {};
                 workStorageSet(WORK_CACHE_KEY, JSON.stringify(workOverrides));
+                logEntries = (await logRes.json()).entries || [];
+                workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
                 const now = new Date();
                 setWorkSyncStatus(`최신 상태 · ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} 기준`);
             } catch (e) {
@@ -2517,10 +2513,15 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             if (!board) return;
             const today = smsTodayISO();
             const title = document.getElementById('work-title');
-            document.getElementById('work-nav-prev').innerText = workView === 'month' ? '이전 달' : '이전 주';
-            document.getElementById('work-nav-next').innerText = workView === 'month' ? '다음 달' : '다음 주';
+            const byMonth = workView !== 'week';
+            document.getElementById('work-nav-prev').innerText = byMonth ? '이전 달' : '이전 주';
+            document.getElementById('work-nav-next').innerText = byMonth ? '다음 달' : '다음 주';
+            board.style.display = workView === 'log' ? 'none' : '';
+            document.getElementById('log-view').style.display = workView === 'log' ? '' : 'none';
 
-            if (workView === 'month') {
+            if (workView === 'log') {
+                renderLog();
+            } else if (workView === 'month') {
                 const y = workCursor.getFullYear(), m = workCursor.getMonth();
                 title.innerText = `${y}년 ${m + 1}월 근무표`;
                 const start = workWeekStart(new Date(y, m, 1));
@@ -2541,7 +2542,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                         .sort((a, b) => ['open', 'close', 'leave'].indexOf(a.entry.shift) - ['open', 'close', 'leave'].indexOf(b.entry.shift))
                         .map(x => workShiftChip(x.staff, d, x.entry)).join('');
                     cells += `<div class="${classes.join(' ')}" onclick="openWorkModal('${iso}')">
-                        <div><span class="work-day-num">${d.getDate()}</span>${KR_HOLIDAYS[iso] ? `<span class="work-holiday-name">${KR_HOLIDAYS[iso]}</span>` : ''}</div>${chips}</div>`;
+                        <div class="work-day-top"><span class="work-day-num">${d.getDate()}</span>${KR_HOLIDAYS[iso] ? `<span class="work-holiday-name">${KR_HOLIDAYS[iso]}</span>` : ''}${logCountBadge(iso)}</div>${chips}</div>`;
                 }
                 board.innerHTML = `<div class="work-month-head">${SMS_WEEKDAYS.map(w => `<div>${w}</div>`).join('')}</div>
                     <div class="work-month-grid">${cells}</div>`;
@@ -2568,7 +2569,15 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                         return `<td class="${iso === today ? 'today' : ''}"><div class="work-name-list">${inner}</div></td>`;
                     }).join('');
                     return `<tr class="row-${key}"><td class="work-week-name"><span class="work-week-kind ${key}">${WORK_ICONS[key] || ''}${s.label}</span><small>${s.time || ''}</small></td>${cells}</tr>`;
-                }).join('');
+                }).join('') + `<tr class="row-log"><td class="work-week-name"><span class="work-week-kind">운영 일지</span></td>${days.map(d => {
+                    const iso = smsToISO(d);
+                    const entries = logEntries.filter(e => e.date === iso).sort((a, b) => a.time.localeCompare(b.time));
+                    const inner = entries.map(e => `<div class="work-log-item" onclick="openLogModal('${e.id}')" title="${smsEscape(e.content)}">
+                            <div class="work-log-item-meta"><span>${e.time}</span><span class="log-cat ${e.category}">${LOG_CATEGORIES[e.category]}</span></div>
+                            <div class="work-log-item-text">${smsEscape(e.content)}</div></div>`).join('')
+                        || `<span class="work-empty" onclick="openLogModal(null, '${iso}')">+</span>`;
+                    return `<td class="${iso === today ? 'today' : ''}"><div class="work-name-list">${inner}</div></td>`;
+                }).join('')}</tr>`;
                 board.innerHTML = `<div style="overflow-x: auto;"><table class="work-week-table" style="min-width: 720px;">
                     <thead><tr><th class="work-week-name" style="background: var(--cal-surface);"></th>${head}</tr></thead>
                     <tbody>${rows}</tbody></table></div>`;
@@ -2579,11 +2588,12 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             workView = view;
             document.getElementById('work-view-month').classList.toggle('active', view === 'month');
             document.getElementById('work-view-week').classList.toggle('active', view === 'week');
+            document.getElementById('work-view-log').classList.toggle('active', view === 'log');
             renderWorkSchedule();
         }
 
         function navigateWork(delta) {
-            workCursor = workView === 'month'
+            workCursor = workView !== 'week'
                 ? new Date(workCursor.getFullYear(), workCursor.getMonth() + delta, 1)
                 : new Date(workCursor.getFullYear(), workCursor.getMonth(), workCursor.getDate() + delta * 7);
             renderWorkSchedule();
@@ -2592,6 +2602,18 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         function goWorkToday() {
             workCursor = new Date();
             renderWorkSchedule();
+        }
+
+        // 월간 날짜 칸의 "일지 N" → 그 주의 주간 보기로 이동
+        function logCountBadge(iso) {
+            const count = logEntries.filter(e => e.date === iso).length;
+            return count ? `<span class="work-log-count" title="운영 일지 ${count}건 보기" onclick="event.stopPropagation(); showWeekOf('${iso}')">일지 ${count}</span>` : '';
+        }
+
+        function showWeekOf(iso) {
+            const [y, m, d] = iso.split('-').map(Number);
+            workCursor = new Date(y, m - 1, d);
+            setWorkView('week');
         }
 
         // 등록 모달
@@ -2732,49 +2754,15 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             etc: '기타'
         };
 
-        let logCursor = new Date();
         let logFilter = 'all';
         let logModalState = null;
         let logEntries = (() => {
             try { return JSON.parse(workStorageGet(LOG_CACHE_KEY)) || []; } catch (e) { return []; }
         })();
 
-        function setLogSyncStatus(text, isError) {
-            const el = document.getElementById('log-sync-status');
-            if (!el) return;
-            el.innerText = text;
-            el.style.color = isError ? 'var(--cal-sun)' : '';
-        }
-
-        async function fetchLogEntries() {
-            setLogSyncStatus('운영 일지를 불러오는 중...');
-            try {
-                const res = await fetch(LOG_API, { cache: 'no-store' });
-                if (!res.ok) throw new Error();
-                const data = await res.json();
-                logEntries = data.entries || [];
-                workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
-                const now = new Date();
-                setLogSyncStatus(`최신 상태 · ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} 기준`);
-            } catch (e) {
-                setLogSyncStatus('서버에 연결할 수 없어 마지막으로 받은 일지를 보여주고 있습니다.', true);
-            }
-            renderLog();
-        }
-
-        function navigateLog(delta) {
-            logCursor = new Date(logCursor.getFullYear(), logCursor.getMonth() + delta, 1);
-            renderLog();
-        }
-
-        function goLogToday() {
-            logCursor = new Date();
-            renderLog();
-        }
-
         function setLogFilter(key) {
             logFilter = key;
-            renderLog();
+            renderWorkSchedule();
         }
 
         // 그날 근무자 (근무표 기준)
@@ -2788,12 +2776,12 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         function renderLog() {
             const list = document.getElementById('log-list');
             if (!list) return;
-            const y = logCursor.getFullYear(), m = logCursor.getMonth();
+            const y = workCursor.getFullYear(), m = workCursor.getMonth();
             const monthKey = `${y}-${String(m + 1).padStart(2, '0')}`;
             const query = (document.getElementById('log-search')?.value || '').trim().toLowerCase();
 
             const inMonth = logEntries.filter(e => e.date.startsWith(monthKey));
-            document.getElementById('log-title').innerText = `${y}년 ${m + 1}월 운영 일지`;
+            document.getElementById('work-title').innerText = `${y}년 ${m + 1}월 운영 일지`;
 
             const counts = { all: inMonth.length };
             Object.keys(LOG_CATEGORIES).forEach(k => { counts[k] = inMonth.filter(e => e.category === k).length; });
@@ -2838,13 +2826,13 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         // 기록 모달 (id가 있으면 수정, 없으면 새 기록)
-        function openLogModal(id) {
+        function openLogModal(id, dateIso) {
             const existing = id ? logEntries.find(e => e.id === id) : null;
             const now = new Date();
             const onDuty = WORK_STAFF.find(s => ['open', 'close'].includes(workShiftFor(s, now).shift));
             logModalState = existing ? { ...existing } : {
                 id: null,
-                date: smsTodayISO(),
+                date: dateIso || smsTodayISO(),
                 time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
                 category: 'facility',
                 author: (onDuty || WORK_STAFF[0]).name,
@@ -2929,11 +2917,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             if (!data) return;
             logEntries = logEntries.filter(e => e.id !== data.entry.id).concat(data.entry);
             workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
-            // 기록한 날짜의 달로 이동해서 바로 보이게
-            const [y, m] = data.entry.date.split('-').map(Number);
-            logCursor = new Date(y, m - 1, 1);
             closeLogModal();
-            renderLog();
+            renderWorkSchedule();
         }
 
         async function deleteLogEntry() {
@@ -2943,7 +2928,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             logEntries = logEntries.filter(e => e.id !== logModalState.id);
             workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
             closeLogModal();
-            renderLog();
+            renderWorkSchedule();
         }
 
         function closeLogModal(e) {
@@ -3028,9 +3013,6 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             }
             if (tabId === 'work') {
                 fetchWorkOverrides();
-            }
-            if (tabId === 'log') {
-                fetchLogEntries();
             }
         }
 
