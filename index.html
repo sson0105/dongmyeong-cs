@@ -580,7 +580,7 @@
         #tooltip .tt-row b { color: #f8fafc; font-weight: 700; }
         #tooltip .tt-memo { color: #ff9c6e; font-weight: 600; }
 
-        #modal, #holiday-modal, #create-modal, #work-modal, #log-modal {
+        #modal, #holiday-modal, #create-modal, #work-modal, #log-modal, #day-modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
             justify-content: center; align-items: center; z-index: 99999;
             backdrop-filter: blur(4px);
@@ -678,6 +678,30 @@
         input.sms-stepper-value { width: 48px; -moz-appearance: textfield; }
         input.sms-stepper-value::-webkit-outer-spin-button,
         input.sms-stepper-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* 날짜 요약 창 위에 근무·일지 수정 창이 뜨도록 */
+        #work-modal, #log-modal { z-index: 100001; }
+
+        /* 날짜 요약 창 */
+        .work-week-table thead th.work-week-day { cursor: pointer; }
+        .work-week-table thead th.work-week-day:hover { background: #eef2f6; }
+        .day-sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+        .day-sheet-head h4 small { font-size: 12px; font-weight: 700; color: var(--cal-sun); margin-left: 6px; }
+        .day-sheet-close { border: none; background: transparent; color: var(--cal-ink-3); font-size: 14px; cursor: pointer; width: 28px; height: 28px; border-radius: 6px; }
+        .day-sheet-close:hover { background: #f1f5f9; color: var(--cal-ink); }
+        .day-sheet-section { padding: 12px 0; border-top: 1px solid var(--cal-line-2); }
+        .day-sheet-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 12px; font-weight: 800; color: var(--cal-ink-2); }
+        .day-sheet-action {
+            height: 28px; padding: 0 10px; border-radius: 6px; border: 1px solid var(--cal-line); background: #fff;
+            font-size: 11.5px; font-weight: 700; color: var(--cal-ink-2); cursor: pointer;
+        }
+        .day-sheet-action:hover { background: #f1f5f9; }
+        .day-sheet-action.primary { background: var(--cal-ink); border-color: var(--cal-ink); color: #fff; }
+        .day-sheet-action.primary:hover { background: #1e293b; }
+        .day-sheet-work { display: flex; flex-direction: column; gap: 4px; }
+        .day-sheet-log { display: flex; flex-direction: column; gap: 6px; }
+        .day-sheet-log .work-log-item-text { -webkit-line-clamp: unset; display: block; font-size: 12.5px; }
+        .day-sheet-empty { font-size: 12px; color: var(--cal-ink-4); padding: 4px 0; }
 
         /* 운영 일지 (근무표 안) */
         .work-day-top { display: flex; align-items: center; flex-wrap: wrap; }
@@ -1182,9 +1206,6 @@
                         <button class="btn-view-toggle" id="work-view-week" onclick="setWorkView('week')">주간</button>
                         <button class="btn-view-toggle" id="work-view-log" onclick="setWorkView('log')">일지</button>
                     </div>
-                    <button class="work-btn-ghost" style="height: 32px; padding: 0 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700;" onclick="openLogModal()">
-                        + 일지 기록
-                    </button>
                     <button class="work-btn-primary" onclick="openWorkModal()">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
                         일정 등록
@@ -1205,6 +1226,30 @@
         </section>
 
     </main>
+
+    <!-- 날짜 요약 창: 그날 근무 + 운영 일지 -->
+    <div id="day-modal" onclick="closeDaySheet(event)">
+        <div class="modal-box" style="width: 460px;" onclick="event.stopPropagation()">
+            <div class="day-sheet-head">
+                <h4 id="day-sheet-title" style="margin: 0;"></h4>
+                <button type="button" class="day-sheet-close" aria-label="닫기" onclick="closeDaySheet()">✕</button>
+            </div>
+            <div class="day-sheet-section">
+                <div class="day-sheet-label">
+                    <span>근무</span>
+                    <button type="button" class="day-sheet-action" onclick="dayToWork()">근무 변경</button>
+                </div>
+                <div id="day-sheet-work" class="day-sheet-work"></div>
+            </div>
+            <div class="day-sheet-section">
+                <div class="day-sheet-label">
+                    <span>운영 일지</span>
+                    <button type="button" class="day-sheet-action primary" onclick="dayToLog()">+ 일지 추가</button>
+                </div>
+                <div id="day-sheet-log" class="day-sheet-log"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- 운영 일지 기록 모달 -->
     <div id="log-modal" onclick="closeLogModal(event)">
@@ -2509,6 +2554,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
         function renderWorkSchedule() {
             renderTodayWorkers();
+            if (daySheetIso) renderDaySheet();
             const board = document.getElementById('work-board');
             if (!board) return;
             const today = smsTodayISO();
@@ -2541,7 +2587,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                         .filter(x => x.entry.shift && x.entry.shift !== 'off')
                         .sort((a, b) => ['open', 'close', 'leave'].indexOf(a.entry.shift) - ['open', 'close', 'leave'].indexOf(b.entry.shift))
                         .map(x => workShiftChip(x.staff, d, x.entry)).join('');
-                    cells += `<div class="${classes.join(' ')}" onclick="openWorkModal('${iso}')">
+                    cells += `<div class="${classes.join(' ')}" onclick="openDaySheet('${iso}')">
                         <div class="work-day-top"><span class="work-day-num">${d.getDate()}</span>${KR_HOLIDAYS[iso] ? `<span class="work-holiday-name">${KR_HOLIDAYS[iso]}</span>` : ''}${logCountBadge(iso)}</div>${chips}</div>`;
                 }
                 board.innerHTML = `<div class="work-month-head">${SMS_WEEKDAYS.map(w => `<div>${w}</div>`).join('')}</div>
@@ -2555,7 +2601,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     const iso = smsToISO(d);
                     const cls = [d.getDay() === 0 ? 'sun' : d.getDay() === 6 ? 'sat' : '', KR_HOLIDAYS[iso] ? 'holiday' : '', iso === today ? 'today' : ''].join(' ');
                     const holiday = KR_HOLIDAYS[iso] ? `<span class="work-week-holiday">${KR_HOLIDAYS[iso]}</span>` : '';
-                    return `<th class="${cls}">${SMS_WEEKDAYS[d.getDay()]}<span class="work-week-date">${d.getMonth() + 1}/${d.getDate()}</span>${holiday}</th>`;
+                    return `<th class="${cls} work-week-day" onclick="openDaySheet('${iso}')" title="이 날짜 보기">${SMS_WEEKDAYS[d.getDay()]}<span class="work-week-date">${d.getMonth() + 1}/${d.getDate()}</span>${holiday}</th>`;
                 }).join('');
                 // 행 = 근무 종류, 칸 = 그날 해당 근무를 하는 직원 이름
                 const rows = Object.entries(WORK_SHIFTS).map(([key, s]) => {
@@ -2602,6 +2648,50 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         function goWorkToday() {
             workCursor = new Date();
             renderWorkSchedule();
+        }
+
+        // 날짜 요약 창: 그날 근무자와 운영 일지를 보고, 근무 변경·일지 추가로 이어짐
+        let daySheetIso = null;
+
+        function openDaySheet(iso) {
+            daySheetIso = iso;
+            renderDaySheet();
+            document.getElementById('day-modal').style.display = 'flex';
+        }
+
+        function renderDaySheet() {
+            if (!daySheetIso) return;
+            const iso = daySheetIso;
+            const [y, m, d] = iso.split('-').map(Number);
+            const date = new Date(y, m - 1, d);
+            document.getElementById('day-sheet-title').innerHTML =
+                `${m}월 ${d}일 (${SMS_WEEKDAYS[date.getDay()]})${KR_HOLIDAYS[iso] ? `<small>${KR_HOLIDAYS[iso]}</small>` : ''}`;
+            const order = ['open', 'close', 'leave'];
+            const chips = WORK_STAFF.map(staff => ({ staff, entry: workShiftFor(staff, date) }))
+                .filter(x => order.includes(x.entry.shift))
+                .sort((a, b) => order.indexOf(a.entry.shift) - order.indexOf(b.entry.shift))
+                .map(x => workShiftChip(x.staff, date, x.entry)).join('');
+            document.getElementById('day-sheet-work').innerHTML = chips || '<div class="day-sheet-empty">근무자가 없습니다.</div>';
+            const logs = logEntries.filter(e => e.date === iso).sort((a, b) => a.time.localeCompare(b.time));
+            document.getElementById('day-sheet-log').innerHTML = logs.map(e => `
+                <div class="work-log-item" onclick="openLogModal('${e.id}')">
+                    <div class="work-log-item-meta"><span>${e.time}</span><span class="log-cat ${e.category}">${LOG_CATEGORIES[e.category]}</span><span>${smsEscape(e.author)}</span></div>
+                    <div class="work-log-item-text">${smsEscape(e.content)}</div>
+                </div>`).join('') || '<div class="day-sheet-empty">기록된 운영 이슈가 없습니다.</div>';
+        }
+
+        function dayToWork() {
+            openWorkModal(daySheetIso);
+        }
+
+        function dayToLog() {
+            openLogModal(null, daySheetIso);
+        }
+
+        function closeDaySheet(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('day-modal').style.display = 'none';
+            daySheetIso = null;
         }
 
         // 월간 날짜 칸의 "일지 N" → 그 주의 주간 보기로 이동
