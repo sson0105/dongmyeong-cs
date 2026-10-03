@@ -694,32 +694,51 @@
             font-size: 11.5px; line-height: 1.45; color: var(--cal-ink-2);
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-all;
         }
-        .log-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
-        .log-search { width: 220px; }
-        .log-list { display: flex; flex-direction: column; gap: 14px; }
-        .log-day { border: 1px solid var(--cal-line); border-radius: 8px; background: var(--cal-paper); overflow: hidden; }
-        .log-day-head {
-            display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 14px;
-            background: var(--cal-surface); border-bottom: 1px solid var(--cal-line);
-        }
-        .log-day-date { font-size: 14px; font-weight: 800; color: var(--cal-ink); }
-        .log-day-date.sun, .log-day-date.holiday { color: var(--cal-sun); }
-        .log-day-date.sat { color: var(--cal-sat); }
-        .log-day-holiday { font-size: 11px; font-weight: 700; color: var(--cal-sun); }
-        .log-day-staff { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: var(--cal-ink-2); margin-left: auto; }
-        .log-entry { display: grid; grid-template-columns: 52px 1fr; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--cal-line-2); cursor: pointer; }
-        .log-entry:last-child { border-bottom: none; }
-        .log-entry:hover { background: #fafbfc; }
-        .log-entry-time { font-size: 12px; font-weight: 700; color: var(--cal-ink-3); font-variant-numeric: tabular-nums; padding-top: 1px; }
-        .log-entry-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 4px; }
-        .log-entry-content { font-size: 13px; line-height: 1.6; color: var(--cal-ink); white-space: pre-wrap; word-break: break-word; }
-        .log-entry-author { font-size: 11.5px; font-weight: 600; color: var(--cal-ink-3); }
         .log-cat { font-size: 10.5px; font-weight: 800; border-radius: 3px; padding: 0 5px; line-height: 1.6; background: #f1f5f9; color: var(--cal-ink-2); }
         .log-cat.safety { background: #fdeeee; color: #b42318; }
         .log-cat.complaint { background: #fff3d6; color: #92600a; }
         .log-cat.facility { background: #e9e8fb; color: #3d3a8c; }
         .log-cat.booking { background: #e6f4ee; color: #17663e; }
-        .log-empty { text-align: center; color: var(--cal-ink-4); font-size: 12.5px; padding: 40px 0; border: 1px dashed var(--cal-line); border-radius: 8px; }
+        /* 일지 팝업 */
+        .modal-box.log-popup { width: 480px; max-width: calc(100vw - 32px); max-height: min(86vh, 760px); padding: 0; display: flex; flex-direction: column; overflow: hidden; }
+        .log-popup-head { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid var(--cal-line); }
+        .log-popup-body { flex: 1; overflow-y: auto; padding: 14px 16px 18px; }
+        .lp-nav { display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }
+        .lp-nav h4 { font-size: 16px; font-weight: 800; color: var(--cal-ink); margin: 0 4px; white-space: nowrap; }
+        .lp-nav h4 small { font-size: 12px; font-weight: 700; color: var(--cal-sun); margin-left: 6px; }
+        .lp-icon {
+            width: 28px; height: 28px; border: none; background: transparent; border-radius: 6px; cursor: pointer;
+            color: var(--cal-ink-3); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;
+        }
+        .lp-icon:hover { background: #f1f5f9; color: var(--cal-ink); }
+        .lp-status { font-size: 11px; font-weight: 700; color: #17663e; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
+        .lp-status.show { opacity: 1; }
+        .lp-auth {
+            margin-bottom: 14px; background: var(--cal-surface); border: 1px solid var(--cal-line); border-radius: 8px;
+            padding: 10px 12px; font-size: 12px; color: var(--cal-ink-2);
+        }
+        .lp-auth-row { display: flex; gap: 6px; margin-top: 8px; }
+        .lp-auth-row .sms-control { flex: 1; min-width: 0; }
+        .lp-auth-row .lp-btn { height: 32px; padding: 0 16px; }
+        .lp-auth-error { color: var(--cal-sun); font-size: 11px; margin-top: 4px; }
+        .lp-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        .lp-list .work-log-item-text { -webkit-line-clamp: unset; display: block; font-size: 12.5px; white-space: pre-wrap; }
+        .lp-empty { font-size: 12px; color: var(--cal-ink-4); padding: 4px 0; }
+        .lp-label { font-size: 12px; font-weight: 800; color: var(--cal-ink-2); margin-bottom: 6px; }
+        .lp-form { display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--cal-line); border-radius: 8px; padding: 10px; background: #fff; }
+        .lp-form-row { display: flex; gap: 6px; }
+        .lp-form-row .sms-control { width: auto; flex: 1; min-width: 0; }
+        .lp-form-row input[type="time"] { flex: 0 0 108px; }
+        .lp-actions { display: flex; justify-content: flex-end; gap: 6px; }
+        .lp-btn {
+            height: 30px; padding: 0 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;
+            border: 1px solid var(--cal-line); background: #fff; color: var(--cal-ink-2); white-space: nowrap; flex-shrink: 0;
+        }
+        .lp-btn:hover { background: #f1f5f9; }
+        .lp-btn.primary { background: var(--cal-ink); border-color: var(--cal-ink); color: #fff; }
+        .lp-btn.primary:hover { background: #1e293b; }
+        .lp-btn.danger { color: var(--cal-sun); border-color: #fecaca; margin-right: auto; }
+        .lp-btn.danger:hover { background: var(--cal-sun-soft); }
         .log-textarea {
             width: 100%; padding: 8px 10px; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 13px;
             line-height: 1.6; outline: none; resize: vertical; font-family: inherit;
@@ -1180,7 +1199,6 @@
                     <div class="view-segment">
                         <button class="btn-view-toggle active" id="work-view-month" onclick="setWorkView('month')">월간</button>
                         <button class="btn-view-toggle" id="work-view-week" onclick="setWorkView('week')">주간</button>
-                        <button class="btn-view-toggle" id="work-view-log" onclick="setWorkView('log')">일지</button>
                     </div>
                     <button class="work-btn-ghost" style="height: 32px; padding: 0 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700;" onclick="openLogModal()">
                         + 일지 기록
@@ -1193,62 +1211,17 @@
             </div>
 
             <div class="work-board" id="work-board"></div>
-
-            <!-- 일지 보기: 한 달 기록을 모아 보고 검색 -->
-            <div id="log-view" class="space-y-4" style="display: none;">
-                <div class="log-toolbar">
-                    <div class="work-seg" id="log-filter"></div>
-                    <input type="text" id="log-search" oninput="renderLog()" placeholder="내용·작성자 검색" class="sms-control log-search">
-                </div>
-                <div id="log-list" class="log-list"></div>
-            </div>
         </section>
 
     </main>
 
-    <!-- 운영 일지 기록 모달 -->
+    <!-- 운영 일지 팝업: 그날 일지 목록 + 바로 추가·수정·삭제 (내용은 renderLogPopup이 채움) -->
     <div id="log-modal" onclick="closeLogModal(event)">
-        <div class="modal-box" style="width: 480px;" onclick="event.stopPropagation()">
-            <h4 style="margin-bottom: 14px;" id="log-modal-title">운영 이슈 기록</h4>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <div class="cal-form-group">
-                    <label>날짜</label>
-                    <div class="sms-stepper" style="width: fit-content;">
-                        <button type="button" aria-label="전날" onclick="stepLogModalDate(-1)"></button>
-                        <span class="sms-stepper-divider"></span>
-                        <span id="log-modal-date" class="sms-stepper-value" style="min-width: 150px;"></span>
-                        <span class="sms-stepper-divider"></span>
-                        <button type="button" aria-label="다음날" onclick="stepLogModalDate(1)"></button>
-                    </div>
-                </div>
-                <div class="cal-form-group">
-                    <label for="log-modal-time">시간</label>
-                    <input type="time" id="log-modal-time" class="sms-control" style="width: 120px;">
-                </div>
-            </div>
-            <div class="cal-form-group">
-                <label>분류</label>
-                <div class="work-seg" id="log-modal-category"></div>
-            </div>
-            <div class="cal-form-group">
-                <label>작성자</label>
-                <div class="work-seg" id="log-modal-author"></div>
-            </div>
-            <div class="cal-form-group">
-                <label for="log-modal-content">내용</label>
-                <textarea id="log-modal-content" rows="5" class="log-textarea" placeholder="예: 북측 골대 그물 하단 찢어짐. 시설팀에 수리 요청함."></textarea>
-            </div>
-            <div class="cal-form-group" id="log-modal-password-group">
-                <label for="log-modal-password">수정 비밀번호</label>
-                <input type="password" id="log-modal-password" placeholder="근무표와 같은 비밀번호" autocomplete="off">
-                <span id="log-modal-password-error" class="text-[11px]" style="color: var(--cal-sun);"></span>
-            </div>
-            <div class="work-modal-actions">
-                <button type="button" id="log-modal-delete" class="work-btn-danger" onclick="deleteLogEntry()">삭제</button>
-                <div style="display: flex; gap: 8px; margin-left: auto;">
-                    <button type="button" class="work-btn-ghost" onclick="closeLogModal()">취소</button>
-                    <button type="button" id="log-modal-save" class="work-btn-primary" style="height: 34px;" onclick="saveLogEntry()">저장</button>
-                </div>
+        <div class="modal-box log-popup" role="dialog" aria-label="운영 일지" onclick="event.stopPropagation()">
+            <div class="log-popup-head" id="log-popup-head"></div>
+            <div class="log-popup-body">
+                <div id="log-popup-auth"></div>
+                <div id="log-popup-list"></div>
             </div>
         </div>
     </div>
@@ -2513,15 +2486,10 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             if (!board) return;
             const today = smsTodayISO();
             const title = document.getElementById('work-title');
-            const byMonth = workView !== 'week';
-            document.getElementById('work-nav-prev').innerText = byMonth ? '이전 달' : '이전 주';
-            document.getElementById('work-nav-next').innerText = byMonth ? '다음 달' : '다음 주';
-            board.style.display = workView === 'log' ? 'none' : '';
-            document.getElementById('log-view').style.display = workView === 'log' ? '' : 'none';
+            document.getElementById('work-nav-prev').innerText = workView === 'month' ? '이전 달' : '이전 주';
+            document.getElementById('work-nav-next').innerText = workView === 'month' ? '다음 달' : '다음 주';
 
-            if (workView === 'log') {
-                renderLog();
-            } else if (workView === 'month') {
+            if (workView === 'month') {
                 const y = workCursor.getFullYear(), m = workCursor.getMonth();
                 title.innerText = `${y}년 ${m + 1}월 근무표`;
                 const start = workWeekStart(new Date(y, m, 1));
@@ -2588,12 +2556,11 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             workView = view;
             document.getElementById('work-view-month').classList.toggle('active', view === 'month');
             document.getElementById('work-view-week').classList.toggle('active', view === 'week');
-            document.getElementById('work-view-log').classList.toggle('active', view === 'log');
             renderWorkSchedule();
         }
 
         function navigateWork(delta) {
-            workCursor = workView !== 'week'
+            workCursor = workView === 'month'
                 ? new Date(workCursor.getFullYear(), workCursor.getMonth() + delta, 1)
                 : new Date(workCursor.getFullYear(), workCursor.getMonth(), workCursor.getDate() + delta * 7);
             renderWorkSchedule();
@@ -2604,16 +2571,10 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             renderWorkSchedule();
         }
 
-        // 월간 날짜 칸의 "일지 N" → 그 주의 주간 보기로 이동
+        // 월간 날짜 칸의 "일지 N" → 그날 일지 팝업
         function logCountBadge(iso) {
             const count = logEntries.filter(e => e.date === iso).length;
-            return count ? `<span class="work-log-count" title="운영 일지 ${count}건 보기" onclick="event.stopPropagation(); showWeekOf('${iso}')">일지 ${count}</span>` : '';
-        }
-
-        function showWeekOf(iso) {
-            const [y, m, d] = iso.split('-').map(Number);
-            workCursor = new Date(y, m - 1, d);
-            setWorkView('week');
+            return count ? `<span class="work-log-count" title="운영 일지 ${count}건 보기" onclick="event.stopPropagation(); openLogModal(null, '${iso}')">일지 ${count}</span>` : '';
         }
 
         // 등록 모달
@@ -2736,7 +2697,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            ['#work-modal', '#log-modal'].forEach(modal => {
+            ['#work-modal'].forEach(modal => {
                 const btns = document.querySelectorAll(`${modal} .sms-stepper button`);
                 if (btns.length === 2) { btns[0].innerHTML = SMS_ICON_PREV; btns[1].innerHTML = SMS_ICON_NEXT; }
             });
@@ -2754,133 +2715,155 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             etc: '기타'
         };
 
-        let logFilter = 'all';
-        let logModalState = null;
         let logEntries = (() => {
             try { return JSON.parse(workStorageGet(LOG_CACHE_KEY)) || []; } catch (e) { return []; }
         })();
 
-        function setLogFilter(key) {
-            logFilter = key;
-            renderWorkSchedule();
+        // 일지 팝업: 그날 일지 목록(누르면 그 자리에서 수정) + 아래 새 일지 입력칸. 팝업은 하나만 뜸.
+        let logPopupIso = null;
+        let logEditId = null;       // 수정 중인 일지 id
+        let logEditDraft = null;    // 수정 중인 일지 입력값
+        let logNewDraft = null;     // 새 일지 입력값
+        let logAuthError = '';
+        let logFlashTimer = null;
+
+        function logIsoToDate(iso) {
+            const [y, m, d] = iso.split('-').map(Number);
+            return new Date(y, m - 1, d);
         }
 
-        // 그날 근무자 (근무표 기준)
-        function logDayStaff(date) {
-            return ['open', 'close'].map(key => {
-                const names = WORK_STAFF.filter(staff => workShiftFor(staff, date).shift === key).map(s => s.name).join(', ');
-                return names ? `<span class="work-kind-tag ${key}">${WORK_ICONS[key]}${WORK_SHIFTS[key].label}</span><span>${names}</span>` : '';
-            }).join('');
-        }
-
-        function renderLog() {
-            const list = document.getElementById('log-list');
-            if (!list) return;
-            const y = workCursor.getFullYear(), m = workCursor.getMonth();
-            const monthKey = `${y}-${String(m + 1).padStart(2, '0')}`;
-            const query = (document.getElementById('log-search')?.value || '').trim().toLowerCase();
-
-            const inMonth = logEntries.filter(e => e.date.startsWith(monthKey));
-            document.getElementById('work-title').innerText = `${y}년 ${m + 1}월 운영 일지`;
-
-            const counts = { all: inMonth.length };
-            Object.keys(LOG_CATEGORIES).forEach(k => { counts[k] = inMonth.filter(e => e.category === k).length; });
-            const filters = [['all', '전체'], ...Object.entries(LOG_CATEGORIES)];
-            document.getElementById('log-filter').innerHTML = filters.map(([key, label]) =>
-                `<button type="button" class="${logFilter === key ? 'active' : ''}" onclick="setLogFilter('${key}')">${label} ${counts[key]}</button>`).join('');
-
-            const shown = inMonth
-                .filter(e => logFilter === 'all' || e.category === logFilter)
-                .filter(e => !query || e.content.toLowerCase().includes(query) || e.author.toLowerCase().includes(query))
-                .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
-
-            if (!shown.length) {
-                list.innerHTML = `<div class="log-empty">${inMonth.length ? '조건에 맞는 기록이 없습니다.' : '이 달에 기록된 운영 이슈가 없습니다.'}</div>`;
-                return;
-            }
-
-            const byDate = {};
-            shown.forEach(e => { (byDate[e.date] = byDate[e.date] || []).push(e); });
-            list.innerHTML = Object.entries(byDate).map(([iso, entries]) => {
-                const [yy, mm, dd] = iso.split('-').map(Number);
-                const date = new Date(yy, mm - 1, dd);
-                const dayCls = KR_HOLIDAYS[iso] ? 'holiday' : date.getDay() === 0 ? 'sun' : date.getDay() === 6 ? 'sat' : '';
-                const rows = entries.map(e => `
-                    <div class="log-entry" onclick="openLogModal('${e.id}')">
-                        <div class="log-entry-time">${e.time}</div>
-                        <div>
-                            <div class="log-entry-meta">
-                                <span class="log-cat ${e.category}">${LOG_CATEGORIES[e.category]}</span>
-                                <span class="log-entry-author">${smsEscape(e.author)}</span>
-                            </div>
-                            <div class="log-entry-content">${smsEscape(e.content)}</div>
-                        </div>
-                    </div>`).join('');
-                return `<div class="log-day">
-                    <div class="log-day-head">
-                        <span class="log-day-date ${dayCls}">${mm}월 ${dd}일 (${SMS_WEEKDAYS[date.getDay()]})</span>
-                        ${KR_HOLIDAYS[iso] ? `<span class="log-day-holiday">${KR_HOLIDAYS[iso]}</span>` : ''}
-                        <span class="log-day-staff">${logDayStaff(date)}</span>
-                    </div>${rows}</div>`;
-            }).join('');
-        }
-
-        // 기록 모달 (id가 있으면 수정, 없으면 새 기록)
-        function openLogModal(id, dateIso) {
-            const existing = id ? logEntries.find(e => e.id === id) : null;
+        function freshLogDraft(iso) {
             const now = new Date();
-            const onDuty = WORK_STAFF.find(s => ['open', 'close'].includes(workShiftFor(s, now).shift));
-            logModalState = existing ? { ...existing } : {
-                id: null,
-                date: dateIso || smsTodayISO(),
+            const date = logIsoToDate(iso);
+            const onDuty = WORK_STAFF.find(s => ['open', 'close'].includes(workShiftFor(s, date).shift));
+            return {
                 time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
                 category: 'facility',
                 author: (onDuty || WORK_STAFF[0]).name,
                 content: ''
             };
-            document.getElementById('log-modal-title').innerText = existing ? '운영 이슈 수정' : '운영 이슈 기록';
-            document.getElementById('log-modal-time').value = logModalState.time;
-            document.getElementById('log-modal-content').value = logModalState.content;
-            document.getElementById('log-modal-delete').style.visibility = existing ? 'visible' : 'hidden';
-            document.getElementById('log-modal-password').value = '';
-            document.getElementById('log-modal-password-error').innerText = '';
-            document.getElementById('log-modal-password-group').style.display = workStorageGet(WORK_PASSWORD_KEY) ? 'none' : '';
-            renderLogModal();
+        }
+
+        // openLogModal() = 오늘, openLogModal(id) = 그 일지를 수정 상태로, openLogModal(null, iso) = 그날
+        function openLogModal(id, dateIso) {
+            const existing = id ? logEntries.find(e => e.id === id) : null;
+            const iso = existing ? existing.date : (dateIso || smsTodayISO());
+            if (logPopupIso !== iso || !logNewDraft) logNewDraft = freshLogDraft(iso);
+            logPopupIso = iso;
+            logAuthError = '';
+            logEditId = null;
+            logEditDraft = null;
+            if (existing) startLogEdit(existing.id, false);
+            renderLogPopup();
             document.getElementById('log-modal').style.display = 'flex';
+            if (!existing && !logEntries.some(e => e.date === iso)) document.getElementById('log-new-content')?.focus();
         }
 
-        function renderLogModal() {
-            const st = logModalState;
-            document.getElementById('log-modal-date').innerText = smsDateLabel(st.date);
-            const seg = (field, items) => items.map(([key, label]) =>
-                `<button type="button" class="${key === st[field] ? 'active' : ''}" onclick="setLogModalField('${field}', '${key}')">${label}</button>`).join('');
-            document.getElementById('log-modal-category').innerHTML = seg('category', Object.entries(LOG_CATEGORIES));
-            document.getElementById('log-modal-author').innerHTML = seg('author', WORK_STAFF.map(s => [s.name, s.name]));
+        function stepLogPopup(delta) {
+            const d = logIsoToDate(logPopupIso);
+            openLogModal(null, smsToISO(new Date(d.getFullYear(), d.getMonth(), d.getDate() + delta)));
         }
 
-        function setLogModalField(field, value) {
-            logModalState[field] = value;
-            renderLogModal();
+        function closeLogModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('log-modal').style.display = 'none';
+            logPopupIso = null;
         }
 
-        function stepLogModalDate(delta) {
-            const [y, m, d] = logModalState.date.split('-').map(Number);
-            logModalState.date = smsToISO(new Date(y, m - 1, d + delta));
-            renderLogModal();
+        function flashLogPopup(text) {
+            const el = document.getElementById('log-popup-status');
+            if (!el) return;
+            el.innerText = text;
+            el.classList.add('show');
+            clearTimeout(logFlashTimer);
+            logFlashTimer = setTimeout(() => el.classList.remove('show'), 1600);
         }
 
+        function logForm(draftName, d, actions, contentId) {
+            const cats = Object.entries(LOG_CATEGORIES).map(([k, v]) => `<option value="${k}" ${k === d.category ? 'selected' : ''}>${v}</option>`).join('');
+            const authors = WORK_STAFF.map(s => `<option value="${s.name}" ${s.name === d.author ? 'selected' : ''}>${s.name}</option>`).join('');
+            return `<div class="lp-form">
+                <div class="lp-form-row">
+                    <input type="time" class="sms-control" value="${d.time}" oninput="${draftName}.time = this.value" aria-label="시간">
+                    <select class="sms-control" onchange="${draftName}.category = this.value" aria-label="분류">${cats}</select>
+                    <select class="sms-control" onchange="${draftName}.author = this.value" aria-label="작성자">${authors}</select>
+                </div>
+                <textarea ${contentId ? `id="${contentId}"` : ''} class="log-textarea" rows="3" placeholder="예: 북측 골대 그물 하단 찢어짐. 시설팀에 수리 요청함."
+                    oninput="${draftName}.content = this.value">${smsEscape(d.content)}</textarea>
+                <div class="lp-actions">${actions}</div>
+            </div>`;
+        }
+
+        function renderLogPopup() {
+            if (!logPopupIso) return;
+            const iso = logPopupIso;
+            const date = logIsoToDate(iso);
+            document.getElementById('log-popup-head').innerHTML = `
+                <div class="lp-nav">
+                    <button type="button" class="lp-icon" aria-label="전날" onclick="stepLogPopup(-1)">${SMS_ICON_PREV}</button>
+                    <h4>${date.getMonth() + 1}월 ${date.getDate()}일 (${SMS_WEEKDAYS[date.getDay()]}) 운영 일지${KR_HOLIDAYS[iso] ? `<small>${KR_HOLIDAYS[iso]}</small>` : ''}</h4>
+                    <button type="button" class="lp-icon" aria-label="다음날" onclick="stepLogPopup(1)">${SMS_ICON_NEXT}</button>
+                </div>
+                <span id="log-popup-status" class="lp-status"></span>
+                <button type="button" class="lp-icon" aria-label="닫기" onclick="closeLogModal()">✕</button>`;
+
+            // 비밀번호를 기억하고 있지 않으면 위에 입력칸
+            document.getElementById('log-popup-auth').innerHTML = workStorageGet(WORK_PASSWORD_KEY) ? '' : `
+                <div class="lp-auth">
+                    수정하려면 비밀번호를 입력하세요. 한 번 입력하면 이 브라우저에서 기억해요.
+                    <div class="lp-auth-row">
+                        <input type="password" id="log-password" class="sms-control" placeholder="수정 비밀번호" autocomplete="off"
+                            onkeydown="if (event.key === 'Enter') verifyLogPassword()">
+                        <button type="button" class="lp-btn primary" onclick="verifyLogPassword()">확인</button>
+                    </div>
+                    ${logAuthError ? `<div class="lp-auth-error">${logAuthError}</div>` : ''}
+                </div>`;
+
+            const logs = logEntries.filter(e => e.date === iso).sort((a, b) => a.time.localeCompare(b.time));
+            const list = logs.map(e => e.id === logEditId && logEditDraft
+                ? logForm('logEditDraft', logEditDraft, `
+                    <button type="button" class="lp-btn danger" onclick="deleteLogEntry('${e.id}')">삭제</button>
+                    <button type="button" class="lp-btn" onclick="cancelLogEdit()">취소</button>
+                    <button type="button" class="lp-btn primary" onclick="saveLogEdit('${e.id}')">저장</button>`)
+                : `<div class="work-log-item" onclick="startLogEdit('${e.id}')" title="눌러서 수정">
+                    <div class="work-log-item-meta"><span>${e.time}</span><span class="log-cat ${e.category}">${LOG_CATEGORIES[e.category]}</span><span>${smsEscape(e.author)}</span></div>
+                    <div class="work-log-item-text">${smsEscape(e.content)}</div>
+                </div>`).join('');
+            document.getElementById('log-popup-list').innerHTML = `
+                <div class="lp-list">${list || '<div class="lp-empty">기록된 운영 이슈가 없습니다.</div>'}</div>
+                <div class="lp-label">새 일지</div>
+                ${logForm('logNewDraft', logNewDraft, `<button type="button" class="lp-btn primary" onclick="addLogEntry()">일지 추가</button>`, 'log-new-content')}`;
+        }
+
+        async function verifyLogPassword() {
+            const password = document.getElementById('log-password').value;
+            if (!password) return;
+            try {
+                const res = await fetch(WORK_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password, action: 'verify' })
+                });
+                if (res.status === 401) { logAuthError = '비밀번호가 맞지 않아요.'; return renderLogPopup(); }
+                if (!res.ok) throw new Error();
+                workStorageSet(WORK_PASSWORD_KEY, password);
+                logAuthError = '';
+                renderLogPopup();
+            } catch (e) {
+                logAuthError = '서버에 연결할 수 없어요. 잠시 후 다시 시도해 주세요.';
+                renderLogPopup();
+            }
+        }
+
+        // 수정 비밀번호가 필요한 일지 저장 요청. 실패하면 null
         async function postLog(body) {
-            const typed = document.getElementById('log-modal-password').value;
-            const password = typed || workStorageGet(WORK_PASSWORD_KEY);
-            const errorEl = document.getElementById('log-modal-password-error');
-            errorEl.innerText = '';
+            const password = workStorageGet(WORK_PASSWORD_KEY);
             if (!password) {
-                document.getElementById('log-modal-password-group').style.display = '';
-                errorEl.innerText = '수정 비밀번호를 입력해 주세요.';
+                logAuthError = '수정하려면 비밀번호를 먼저 입력해 주세요.';
+                renderLogPopup();
+                document.getElementById('log-password')?.focus();
                 return null;
             }
-            const saveBtn = document.getElementById('log-modal-save');
-            saveBtn.disabled = true;
             try {
                 const res = await fetch(LOG_API, {
                     method: 'POST',
@@ -2890,51 +2873,77 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 const data = await res.json().catch(() => ({}));
                 if (res.status === 401) {
                     workStorageSet(WORK_PASSWORD_KEY, null);
-                    document.getElementById('log-modal-password-group').style.display = '';
-                    document.getElementById('log-modal-password').value = '';
-                    errorEl.innerText = '비밀번호가 올바르지 않습니다.';
+                    logAuthError = '비밀번호가 맞지 않아요. 다시 입력해 주세요.';
+                    renderLogPopup();
                     return null;
                 }
                 if (!res.ok) throw new Error(data.error || '저장 실패');
-                workStorageSet(WORK_PASSWORD_KEY, password);
                 return data;
             } catch (e) {
                 alert('서버에 저장하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.');
                 return null;
-            } finally {
-                saveBtn.disabled = false;
             }
         }
 
-        async function saveLogEntry() {
-            const st = logModalState;
-            const time = document.getElementById('log-modal-time').value;
-            const content = document.getElementById('log-modal-content').value.trim();
-            if (!time) return alert('시간을 입력해 주세요.');
-            if (!content) return alert('내용을 입력해 주세요.');
-            const entry = { date: st.date, time, category: st.category, author: st.author, content };
-            const data = await postLog({ action: 'save', id: st.id, entry });
-            if (!data) return;
-            logEntries = logEntries.filter(e => e.id !== data.entry.id).concat(data.entry);
-            workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
-            closeLogModal();
-            renderWorkSchedule();
+        function startLogEdit(id, rerender = true) {
+            const e = logEntries.find(x => x.id === id);
+            if (!e) return;
+            logEditId = id;
+            logEditDraft = { time: e.time, category: e.category, author: e.author, content: e.content };
+            if (rerender) renderLogPopup();
         }
 
-        async function deleteLogEntry() {
-            if (!logModalState.id || !confirm('이 기록을 삭제할까요? 삭제하면 되돌릴 수 없습니다.')) return;
-            const data = await postLog({ action: 'delete', id: logModalState.id });
-            if (!data) return;
-            logEntries = logEntries.filter(e => e.id !== logModalState.id);
-            workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
-            closeLogModal();
-            renderWorkSchedule();
+        function cancelLogEdit() {
+            logEditId = null;
+            logEditDraft = null;
+            renderLogPopup();
         }
 
-        function closeLogModal(e) {
-            if (e && e.target !== e.currentTarget) return;
-            document.getElementById('log-modal').style.display = 'none';
+        function validLog(d) {
+            if (!d.time) { alert('시간을 입력해 주세요.'); return false; }
+            if (!d.content.trim()) { alert('내용을 입력해 주세요.'); return false; }
+            return true;
         }
+
+        // 저장 후 달력(일지 N·주간 일지 줄)과 팝업을 함께 갱신
+        function storeLogEntries(next, message) {
+            logEntries = next;
+            workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
+            renderWorkSchedule();
+            renderLogPopup();
+            flashLogPopup(message);
+        }
+
+        async function addLogEntry() {
+            if (!validLog(logNewDraft)) return;
+            const data = await postLog({ action: 'save', entry: { date: logPopupIso, ...logNewDraft, content: logNewDraft.content.trim() } });
+            if (!data) return;
+            logNewDraft = { ...freshLogDraft(logPopupIso), category: logNewDraft.category, author: logNewDraft.author };
+            storeLogEntries(logEntries.concat(data.entry), '일지를 추가했어요');
+        }
+
+        async function saveLogEdit(id) {
+            if (!validLog(logEditDraft)) return;
+            const original = logEntries.find(e => e.id === id);
+            const data = await postLog({ action: 'save', id, entry: { date: original.date, ...logEditDraft, content: logEditDraft.content.trim() } });
+            if (!data) return;
+            logEditId = null;
+            logEditDraft = null;
+            storeLogEntries(logEntries.filter(e => e.id !== id).concat(data.entry), '저장했어요');
+        }
+
+        async function deleteLogEntry(id) {
+            if (!confirm('이 기록을 삭제할까요? 삭제하면 되돌릴 수 없습니다.')) return;
+            const data = await postLog({ action: 'delete', id });
+            if (!data) return;
+            logEditId = null;
+            logEditDraft = null;
+            storeLogEntries(logEntries.filter(e => e.id !== id), '삭제했어요');
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && logPopupIso) closeLogModal();
+        });
 
         function renderSmsCards() {
             const container = document.getElementById('sms-container');
