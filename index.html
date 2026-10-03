@@ -580,7 +580,7 @@
         #tooltip .tt-row b { color: #f8fafc; font-weight: 700; }
         #tooltip .tt-memo { color: #ff9c6e; font-weight: 600; }
 
-        #modal, #holiday-modal, #create-modal, #work-modal, #log-modal, #day-modal {
+        #modal, #holiday-modal, #create-modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
             justify-content: center; align-items: center; z-index: 99999;
             backdrop-filter: blur(4px);
@@ -679,30 +679,81 @@
         input.sms-stepper-value::-webkit-outer-spin-button,
         input.sms-stepper-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-        /* 날짜 요약 창 위에 근무·일지 수정 창이 뜨도록 */
-        #work-modal, #log-modal { z-index: 100001; }
-
-        /* 날짜 요약 창 */
+        /* 날짜 팝업: 날짜를 누르면 하나의 팝업에서 근무·일지를 바로 수정 (팝업이 겹치지 않음) */
+        .day-overlay {
+            display: none; position: fixed; inset: 0; z-index: 99999; padding: 16px;
+            background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(4px); justify-content: center; align-items: center;
+        }
+        .day-overlay.open { display: flex; }
+        .day-panel {
+            width: 480px; max-width: 100%; max-height: min(86vh, 760px); background: #fff; border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15); display: flex; flex-direction: column; overflow: hidden;
+        }
+        .day-panel-head { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid var(--cal-line); }
+        .day-panel-nav { display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }
+        .day-panel-nav h4 { font-size: 16px; font-weight: 800; color: var(--cal-ink); margin: 0 4px; white-space: nowrap; }
+        .day-panel-nav h4 small { font-size: 12px; font-weight: 700; color: var(--cal-sun); margin-left: 6px; }
+        .day-panel-icon {
+            width: 28px; height: 28px; border: none; background: transparent; border-radius: 6px; cursor: pointer;
+            color: var(--cal-ink-3); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;
+        }
+        .day-panel-icon:hover { background: #f1f5f9; color: var(--cal-ink); }
+        .day-panel-status { font-size: 11px; font-weight: 700; color: #17663e; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
+        .day-panel-status.show { opacity: 1; }
+        .day-panel-body { flex: 1; overflow-y: auto; padding: 0 16px 24px; }
+        .day-panel-section { padding: 14px 0; border-bottom: 1px solid var(--cal-line-2); }
+        .day-panel-section:last-child { border-bottom: none; }
+        .day-panel-label { font-size: 12px; font-weight: 800; color: var(--cal-ink-2); margin-bottom: 8px; }
+        .dp-auth {
+            margin-top: 14px; background: var(--cal-surface); border: 1px solid var(--cal-line); border-radius: 8px;
+            padding: 10px 12px; font-size: 12px; color: var(--cal-ink-2);
+        }
+        .dp-auth-row { display: flex; gap: 6px; margin-top: 6px; }
+        .dp-auth-error { color: var(--cal-sun); font-size: 11px; margin-top: 4px; }
+        .dp-staff { padding: 8px 0; border-bottom: 1px dashed var(--cal-line-2); }
+        .dp-staff:last-child { border-bottom: none; }
+        .dp-staff-top { display: flex; align-items: center; gap: 8px; }
+        .dp-staff-name {
+            border: none; background: transparent; padding: 0; font-size: 13px; font-weight: 800; color: var(--cal-ink);
+            cursor: pointer; display: inline-flex; align-items: center; gap: 3px; min-width: 64px;
+        }
+        .dp-staff-name svg { color: var(--cal-ink-4); transition: transform 0.2s; }
+        .dp-staff.open .dp-staff-name svg { transform: rotate(180deg); }
+        .dp-seg { display: inline-flex; margin-left: auto; border: 1px solid var(--cal-line); border-radius: 6px; padding: 2px; gap: 2px; background: #fff; }
+        .dp-seg button {
+            border: none; background: transparent; height: 26px; padding: 0 9px; border-radius: 4px;
+            font-size: 11.5px; font-weight: 700; color: var(--cal-ink-3); cursor: pointer;
+        }
+        .dp-seg button:hover { background: #f1f5f9; color: var(--cal-ink); }
+        .dp-seg button.active.open { background: #fff3d6; color: #92600a; }
+        .dp-seg button.active.close { background: #e9e8fb; color: #3d3a8c; }
+        .dp-seg button.active.leave { background: #fdeeee; color: #b42318; }
+        .dp-seg button.active.off { background: #f1f5f9; color: var(--cal-ink); }
+        .dp-staff-sub { font-size: 11px; color: var(--cal-ink-3); margin-top: 4px; line-height: 1.5; }
+        .dp-staff-sub .dp-hourly { color: var(--cal-sun); font-weight: 700; }
+        .dp-staff-detail { margin-top: 10px; background: var(--cal-surface); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
+        .dp-field > span { display: block; font-size: 11.5px; font-weight: 700; color: var(--cal-ink-2); margin-bottom: 5px; }
+        .dp-note { font-size: 11px; color: var(--cal-ink-4); }
+        .dp-actions { display: flex; justify-content: flex-end; gap: 6px; }
+        .dp-btn {
+            height: 30px; padding: 0 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;
+            border: 1px solid var(--cal-line); background: #fff; color: var(--cal-ink-2);
+        }
+        .dp-btn:hover { background: #f1f5f9; }
+        .dp-btn.primary { background: var(--cal-ink); border-color: var(--cal-ink); color: #fff; }
+        .dp-btn.primary:hover { background: #1e293b; }
+        .dp-btn.danger { color: var(--cal-sun); border-color: #fecaca; margin-right: auto; }
+        .dp-btn.danger:hover { background: var(--cal-sun-soft); }
+        .dp-btn:disabled { opacity: 0.5; cursor: default; }
+        .dp-log-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+        .dp-log-form { display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--cal-line); border-radius: 8px; padding: 10px; background: #fff; }
+        .dp-log-form-row { display: flex; gap: 6px; }
+        .dp-log-form-row .sms-control { width: auto; flex: 1; min-width: 0; }
+        .dp-log-form-row input[type="time"] { flex: 0 0 108px; }
+        .dp-empty { font-size: 12px; color: var(--cal-ink-4); padding: 2px 0 8px; }
+        .day-panel .work-log-item-text { -webkit-line-clamp: unset; display: block; font-size: 12.5px; }
         .work-week-table thead th.work-week-day { cursor: pointer; }
         .work-week-table thead th.work-week-day:hover { background: #eef2f6; }
-        .day-sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-        .day-sheet-head h4 small { font-size: 12px; font-weight: 700; color: var(--cal-sun); margin-left: 6px; }
-        .day-sheet-close { border: none; background: transparent; color: var(--cal-ink-3); font-size: 14px; cursor: pointer; width: 28px; height: 28px; border-radius: 6px; }
-        .day-sheet-close:hover { background: #f1f5f9; color: var(--cal-ink); }
-        .day-sheet-section { padding: 12px 0; border-top: 1px solid var(--cal-line-2); }
-        .day-sheet-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 12px; font-weight: 800; color: var(--cal-ink-2); }
-        .day-sheet-action {
-            height: 28px; padding: 0 10px; border-radius: 6px; border: 1px solid var(--cal-line); background: #fff;
-            font-size: 11.5px; font-weight: 700; color: var(--cal-ink-2); cursor: pointer;
-        }
-        .day-sheet-action:hover { background: #f1f5f9; }
-        .day-sheet-action.primary { background: var(--cal-ink); border-color: var(--cal-ink); color: #fff; }
-        .day-sheet-action.primary:hover { background: #1e293b; }
-        .day-sheet-work { display: flex; flex-wrap: wrap; gap: 6px; }
-        .day-sheet-work .work-shift { flex: 0 0 auto; padding: 3px 8px; }
-        .day-sheet-log { display: flex; flex-direction: column; gap: 6px; }
-        .day-sheet-log .work-log-item-text { -webkit-line-clamp: unset; display: block; font-size: 12.5px; }
-        .day-sheet-empty { font-size: 12px; color: var(--cal-ink-4); padding: 4px 0; }
 
         /* 운영 일지 (근무표 안) */
         .work-day-top { display: flex; align-items: center; flex-wrap: wrap; }
@@ -734,11 +785,6 @@
         .work-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
         .work-title { font-size: 20px; font-weight: 800; color: var(--cal-ink); letter-spacing: -0.01em; }
         .work-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-        .work-btn-primary {
-            height: 32px; padding: 0 12px; border-radius: 6px; border: none; background: var(--cal-ink); color: #fff;
-            font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-        }
-        .work-btn-primary:hover { background: #1e293b; }
         .work-board { border: 1px solid var(--cal-line); border-radius: 8px; overflow: hidden; background: var(--cal-paper); }
 
         /* 이름 칩은 회색조로 통일하고, 근무 종류 색은 작은 태그(월간)·행 제목(주간)에만 사용 */
@@ -842,12 +888,6 @@
         }
         .work-seg button:hover { background: #f1f5f9; }
         .work-seg button.active { background: var(--cal-cat-a-bg); color: var(--cal-cat-a); border-color: #c7d2fe; }
-        .work-modal-actions { display: flex; justify-content: space-between; gap: 8px; margin-top: 16px; }
-        .work-modal-actions button { height: 34px; padding: 0 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
-        .work-btn-ghost { border: 1px solid var(--cal-line); background: #fff; color: var(--cal-ink-2); }
-        .work-btn-ghost:hover { background: #f1f5f9; }
-        .work-btn-danger { border: 1px solid #fecaca; background: #fff; color: var(--cal-sun); }
-        .work-btn-danger:hover { background: var(--cal-sun-soft); }
 
         .cal-footer {
             display: flex; justify-content: space-between; align-items: center;
@@ -1167,7 +1207,7 @@
             <div class="work-header">
                 <div>
                     <div class="work-title" id="work-title"></div>
-                    <p class="text-xs text-slate-500 mt-1">기본 근무는 자동으로 표시됩니다. 연차·대직 등 바뀌는 날만 등록하고, 그날의 운영 이슈는 일지로 기록하세요.</p>
+                    <p class="text-xs text-slate-500 mt-1">기본 근무는 자동으로 표시됩니다. 날짜를 누르면 그날 근무를 바꾸고 운영 일지를 쓸 수 있어요.</p>
                     <p class="text-[11px] mt-1 flex items-center gap-2">
                         <span id="work-sync-status" class="text-slate-400"></span>
                         <button type="button" onclick="fetchWorkOverrides()" class="text-slate-500 hover:text-slate-900 underline underline-offset-2">새로고침</button>
@@ -1185,10 +1225,6 @@
                         <button class="btn-view-toggle active" id="work-view-month" onclick="setWorkView('month')">월간</button>
                         <button class="btn-view-toggle" id="work-view-week" onclick="setWorkView('week')">주간</button>
                     </div>
-                    <button class="work-btn-primary" onclick="openWorkModal()">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                        일정 등록
-                    </button>
                 </div>
             </div>
 
@@ -1197,175 +1233,22 @@
 
     </main>
 
-    <!-- 날짜 요약 창: 그날 근무 + 운영 일지 -->
-    <div id="day-modal" onclick="closeDaySheet(event)">
-        <div class="modal-box" style="width: 460px;" onclick="event.stopPropagation()">
-            <div class="day-sheet-head">
-                <h4 id="day-sheet-title" style="margin: 0;"></h4>
-                <button type="button" class="day-sheet-close" aria-label="닫기" onclick="closeDaySheet()">✕</button>
-            </div>
-            <div class="day-sheet-section">
-                <div class="day-sheet-label">
-                    <span>근무</span>
-                    <button type="button" class="day-sheet-action" onclick="dayToWork()">근무 변경</button>
-                </div>
-                <div id="day-sheet-work" class="day-sheet-work"></div>
-            </div>
-            <div class="day-sheet-section">
-                <div class="day-sheet-label">
-                    <span>운영 일지</span>
-                    <button type="button" class="day-sheet-action primary" onclick="dayToLog()">+ 일지 추가</button>
-                </div>
-                <div id="day-sheet-log" class="day-sheet-log"></div>
-            </div>
+    <!-- 날짜 팝업: 그날 근무 + 운영 일지 (내용은 renderDayPanel이 채움) -->
+    <div id="day-overlay" class="day-overlay" onclick="if (event.target === this) closeDayPanel()">
+    <div id="day-panel" class="day-panel" role="dialog" aria-label="날짜 상세">
+        <div class="day-panel-head" id="day-panel-head"></div>
+        <div class="day-panel-body">
+            <div id="day-panel-auth"></div>
+            <section class="day-panel-section">
+                <div class="day-panel-label">근무</div>
+                <div id="day-panel-work"></div>
+            </section>
+            <section class="day-panel-section">
+                <div class="day-panel-label">운영 일지</div>
+                <div id="day-panel-log"></div>
+            </section>
         </div>
     </div>
-
-    <!-- 운영 일지 기록 모달 -->
-    <div id="log-modal" onclick="closeLogModal(event)">
-        <div class="modal-box" style="width: 480px;" onclick="event.stopPropagation()">
-            <h4 style="margin-bottom: 14px;" id="log-modal-title">운영 이슈 기록</h4>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <div class="cal-form-group">
-                    <label>날짜</label>
-                    <div class="sms-stepper" style="width: fit-content;">
-                        <button type="button" aria-label="전날" onclick="stepLogModalDate(-1)"></button>
-                        <span class="sms-stepper-divider"></span>
-                        <span id="log-modal-date" class="sms-stepper-value" style="min-width: 150px;"></span>
-                        <span class="sms-stepper-divider"></span>
-                        <button type="button" aria-label="다음날" onclick="stepLogModalDate(1)"></button>
-                    </div>
-                </div>
-                <div class="cal-form-group">
-                    <label for="log-modal-time">시간</label>
-                    <input type="time" id="log-modal-time" class="sms-control" style="width: 120px;">
-                </div>
-            </div>
-            <div class="cal-form-group">
-                <label>분류</label>
-                <div class="work-seg" id="log-modal-category"></div>
-            </div>
-            <div class="cal-form-group">
-                <label>작성자</label>
-                <div class="work-seg" id="log-modal-author"></div>
-            </div>
-            <div class="cal-form-group">
-                <label for="log-modal-content">내용</label>
-                <textarea id="log-modal-content" rows="5" class="log-textarea" placeholder="예: 북측 골대 그물 하단 찢어짐. 시설팀에 수리 요청함."></textarea>
-            </div>
-            <div class="cal-form-group" id="log-modal-password-group">
-                <label for="log-modal-password">수정 비밀번호</label>
-                <input type="password" id="log-modal-password" placeholder="근무표와 같은 비밀번호" autocomplete="off">
-                <span id="log-modal-password-error" class="text-[11px]" style="color: var(--cal-sun);"></span>
-            </div>
-            <div class="work-modal-actions">
-                <button type="button" id="log-modal-delete" class="work-btn-danger" onclick="deleteLogEntry()">삭제</button>
-                <div style="display: flex; gap: 8px; margin-left: auto;">
-                    <button type="button" class="work-btn-ghost" onclick="closeLogModal()">취소</button>
-                    <button type="button" id="log-modal-save" class="work-btn-primary" style="height: 34px;" onclick="saveLogEntry()">저장</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 근무 일정 등록 모달 -->
-    <div id="work-modal" onclick="closeWorkModal(event)">
-        <div class="modal-box" onclick="event.stopPropagation()">
-            <h4 style="margin-bottom: 14px;">근무 일정 등록</h4>
-            <div class="cal-form-group">
-                <label>날짜</label>
-                <div class="sms-stepper" style="width: fit-content;">
-                    <button type="button" aria-label="전날" onclick="stepWorkModalDate(-1)"></button>
-                    <span class="sms-stepper-divider"></span>
-                    <span id="work-modal-date" class="sms-stepper-value" style="min-width: 150px;"></span>
-                    <span class="sms-stepper-divider"></span>
-                    <button type="button" aria-label="다음날" onclick="stepWorkModalDate(1)"></button>
-                </div>
-            </div>
-            <div class="cal-form-group">
-                <label>직원</label>
-                <div class="work-seg" id="work-modal-staff"></div>
-            </div>
-            <div class="cal-form-group">
-                <label>근무</label>
-                <div class="work-seg" id="work-modal-shift"></div>
-                <span id="work-modal-default" class="text-[11px] text-slate-400"></span>
-            </div>
-            <div class="cal-form-group" id="work-modal-hourly-group">
-                <label>시차 (시간 단위 연차)</label>
-                <div class="work-seg" id="work-modal-hourly-toggle"></div>
-                <div id="work-modal-hourly-range" class="work-hourly-range">
-                    <select id="work-modal-hourly-from" class="sms-control" onchange="updateWorkHourly()"></select>
-                    <span>~</span>
-                    <select id="work-modal-hourly-to" class="sms-control" onchange="updateWorkHourly()"></select>
-                    <span id="work-modal-hourly-hours" class="work-hourly-hours"></span>
-                </div>
-            </div>
-            <div class="cal-form-group">
-                <label for="work-modal-memo">메모</label>
-                <input type="text" id="work-modal-memo" placeholder="예: 손은지 연차로 대직">
-            </div>
-            <div class="cal-form-group" id="work-modal-password-group">
-                <label for="work-modal-password">수정 비밀번호</label>
-                <input type="password" id="work-modal-password" placeholder="처음 한 번만 입력하면 이 브라우저에서 기억합니다" autocomplete="off">
-                <span id="work-modal-password-error" class="text-[11px]" style="color: var(--cal-sun);"></span>
-            </div>
-            <div class="work-modal-actions">
-                <button type="button" id="work-modal-reset" class="work-btn-danger" onclick="resetWorkOverride()">기본 근무로 되돌리기</button>
-                <div style="display: flex; gap: 8px; margin-left: auto;">
-                    <button type="button" class="work-btn-ghost" onclick="closeWorkModal()">취소</button>
-                    <button type="button" id="work-modal-save" class="work-btn-primary" style="height: 34px;" onclick="saveWorkOverride()">저장</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CALENDAR PORTAL MODALS -->
-    <!-- 1차 보안 접속 잠금 게이트웨이 -->
-    <div id="auth-gate-overlay" class="hidden">
-        <div style="background: #ffffff; padding: 32px 28px; border-radius: 12px; width: 340px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.08); text-align: center;">
-            <div style="font-size: 32px; margin-bottom: 12px;">🔒</div>
-            <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">동명근린공원 대관 관리</h3>
-            <p style="font-size: 12.5px; color: #64748b; margin-bottom: 20px;">보안을 위해 접속 비밀번호를 입력해주세요.</p>
-            
-            <form onsubmit="handleGateAuth(event)" style="display: flex; flex-direction: column; gap: 10px;">
-                <input type="password" id="gate-password-input" placeholder="비밀번호 입력" style="padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 14px; text-align: center; outline: none;">
-                <div id="gate-error-msg" style="color: #dc2626; font-size: 12px; font-weight: 600; display: none;">비밀번호가 일치하지 않습니다.</div>
-                <button type="submit" id="btn-gate-submit" style="margin-top: 6px; padding: 10px; background: #2563eb; color: #ffffff; border: none; border-radius: 6px; font-size: 13.5px; font-weight: 700; cursor: pointer;">접속하기</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="tooltip"></div>
-
-    <!-- 예약 상세 모달 -->
-    <div id="modal" onclick="closeModal(event)">
-        <div class="modal-box" onclick="event.stopPropagation()">
-            <h4 id="m-team">대관 상세</h4>
-            <p><strong>일시:</strong> <span id="m-time"></span></p>
-            <p><strong>구분:</strong> <span id="m-cat"></span></p>
-            <p><strong>요청 기관:</strong> <span id="m-agency"></span></p>
-            <p><strong>대관료:</strong> <span id="m-fee"></span></p>
-            <p><strong>현재 상태:</strong> <span id="m-status"></span></p>
-
-            <div id="m-memo-container" style="display:none;">
-                <p><strong>비고:</strong> <span id="m-memo" style="color: var(--cal-ink-2); word-break: break-all;"></span></p>
-            </div>
-
-            <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cal-line); display: flex; flex-direction: column; gap: 8px;">
-                <div style="font-size: 12px; font-weight: 700; color: var(--cal-ink-3);">상태 즉시 변경</div>
-                <div style="display: flex; gap: 6px;">
-                    <button type="button" onclick="quickUpdateStatus('등록 대기')" style="flex: 1; padding: 8px 4px; background: var(--cal-line-2); color: #2563eb; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">등록 대기</button>
-                    <button type="button" onclick="quickUpdateStatus('결제 대기')" style="flex: 1; padding: 8px 4px; background: var(--cal-line-2); color: #d97706; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">결제 대기</button>
-                    <button type="button" onclick="quickUpdateStatus('결제 완료')" style="flex: 1; padding: 8px 4px; background: var(--cal-line-2); color: #059669; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">결제 완료</button>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 8px; margin-top: 14px;">
-                <button type="button" onclick="deleteCurrentEvent()" style="flex: 1; padding: 9px; background: transparent; color: var(--cal-ink-3); border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">삭제</button>
-                <button type="button" onclick="document.getElementById('modal').style.display='none'" style="flex: 1.5; padding: 9px; background: var(--cal-ink); color: #ffffff; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">닫기</button>
-            </div>
-        </div>
     </div>
 
     <!-- 신규 예약 모달 -->
@@ -2358,47 +2241,43 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             renderWorkSchedule();
         }
 
-        // entry가 null이면 기본 근무로 되돌림
-        async function postWorkEntry(date, staffId, entry) {
-            const typed = document.getElementById('work-modal-password').value;
-            const password = typed || workStorageGet(WORK_PASSWORD_KEY);
-            const errorEl = document.getElementById('work-modal-password-error');
-            errorEl.innerText = '';
+        // 수정 비밀번호가 필요한 저장 요청 (근무표·운영 일지 공용). 실패하면 null
+        async function postWithPassword(url, body) {
+            const password = workStorageGet(WORK_PASSWORD_KEY);
             if (!password) {
-                document.getElementById('work-modal-password-group').style.display = '';
-                errorEl.innerText = '수정 비밀번호를 입력해 주세요.';
-                return false;
+                showDayPanelAuth('수정하려면 비밀번호를 먼저 입력해 주세요.');
+                return null;
             }
-            const saveBtn = document.getElementById('work-modal-save');
-            saveBtn.disabled = true;
-            saveBtn.innerText = '저장 중...';
             try {
-                const res = await fetch(WORK_API, {
+                const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password, date, staffId, entry })
+                    body: JSON.stringify({ password, ...body })
                 });
                 const data = await res.json().catch(() => ({}));
                 if (res.status === 401) {
                     workStorageSet(WORK_PASSWORD_KEY, null);
-                    document.getElementById('work-modal-password-group').style.display = '';
-                    document.getElementById('work-modal-password').value = '';
-                    errorEl.innerText = '비밀번호가 올바르지 않습니다.';
-                    return false;
+                    showDayPanelAuth('비밀번호가 맞지 않아요. 다시 입력해 주세요.');
+                    return null;
                 }
                 if (!res.ok) throw new Error(data.error || '저장 실패');
-                workStorageSet(WORK_PASSWORD_KEY, password);
-                if (Object.keys(data.day).length) workOverrides[date] = data.day;
-                else delete workOverrides[date];
-                workStorageSet(WORK_CACHE_KEY, JSON.stringify(workOverrides));
-                return true;
+                return data;
             } catch (e) {
                 alert('서버에 저장하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.');
-                return false;
-            } finally {
-                saveBtn.disabled = false;
-                saveBtn.innerText = '저장';
+                return null;
             }
+        }
+
+        // entry가 null이면 기본 근무로 되돌림
+        async function postWorkEntry(date, staffId, entry) {
+            const data = await postWithPassword(WORK_API, { date, staffId, entry });
+            if (!data) return false;
+            if (Object.keys(data.day).length) workOverrides[date] = data.day;
+            else delete workOverrides[date];
+            workStorageSet(WORK_CACHE_KEY, JSON.stringify(workOverrides));
+            flashDayPanel('저장했어요');
+            renderWorkSchedule();
+            return true;
         }
 
         function workDefaultShift(staff, date) {
@@ -2483,7 +2362,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const label = entry.label ? `<span class="work-time-note">${entry.label}</span>` : '';
             const badge = cover + label + time;
             return `<div class="work-shift ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(workChipTitle(staff, entry))}"
-                onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
+                onclick="event.stopPropagation(); openDayPanel('${smsToISO(date)}', '${staff.id}')">
                 <span class="work-kind-tag ${entry.shift}">${WORK_ICONS[entry.shift] || ''}${s.label}</span><span>${staff.name}</span>${badge}</div>`;
         }
 
@@ -2496,7 +2375,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 ? `<span class="work-name-chip-time">${info.time}</span><span class="work-hourly-badge">${info.hourly}</span>`
                 : (info.custom ? `<span class="work-time-note">${info.time}</span>` : ''));
             return `<div class="work-shift work-name-chip ${entry.shift}${entry.changed ? ' changed' : ''}" title="${smsEscape(workChipTitle(staff, entry))}"
-                onclick="event.stopPropagation(); openWorkModal('${smsToISO(date)}', '${staff.id}')">
+                onclick="event.stopPropagation(); openDayPanel('${smsToISO(date)}', '${staff.id}')">
                 <span class="work-name-chip-name">${staff.name}</span>${timeLine}${entry.memo ? `<small>${smsEscape(entry.memo)}</small>` : ''}</div>`;
         }
 
@@ -2524,7 +2403,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
         function renderWorkSchedule() {
             renderTodayWorkers();
-            if (daySheetIso) renderDaySheet();
+            renderDayPanel();
             const board = document.getElementById('work-board');
             if (!board) return;
             const today = smsTodayISO();
@@ -2552,7 +2431,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                         .filter(x => x.entry.shift && x.entry.shift !== 'off')
                         .sort((a, b) => ['open', 'close', 'leave'].indexOf(a.entry.shift) - ['open', 'close', 'leave'].indexOf(b.entry.shift))
                         .map(x => workShiftChip(x.staff, d, x.entry)).join('');
-                    cells += `<div class="${classes.join(' ')}" onclick="openDaySheet('${iso}')">
+                    cells += `<div class="${classes.join(' ')}" onclick="openDayPanel('${iso}')">
                         <div class="work-day-top"><span class="work-day-num">${d.getDate()}</span>${KR_HOLIDAYS[iso] ? `<span class="work-holiday-name">${KR_HOLIDAYS[iso]}</span>` : ''}${logCountBadge(iso)}</div>${chips}</div>`;
                 }
                 board.innerHTML = `<div class="work-month-head">${SMS_WEEKDAYS.map(w => `<div>${w}</div>`).join('')}</div>
@@ -2566,7 +2445,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     const iso = smsToISO(d);
                     const cls = [d.getDay() === 0 ? 'sun' : d.getDay() === 6 ? 'sat' : '', KR_HOLIDAYS[iso] ? 'holiday' : '', iso === today ? 'today' : ''].join(' ');
                     const holiday = KR_HOLIDAYS[iso] ? `<span class="work-week-holiday">${KR_HOLIDAYS[iso]}</span>` : '';
-                    return `<th class="${cls} work-week-day" onclick="openDaySheet('${iso}')" title="이 날짜 보기">${SMS_WEEKDAYS[d.getDay()]}<span class="work-week-date">${d.getMonth() + 1}/${d.getDate()}</span>${holiday}</th>`;
+                    return `<th class="${cls} work-week-day" onclick="openDayPanel('${iso}')" title="이 날짜 보기">${SMS_WEEKDAYS[d.getDay()]}<span class="work-week-date">${d.getMonth() + 1}/${d.getDate()}</span>${holiday}</th>`;
                 }).join('');
                 // 행 = 근무 종류, 칸 = 그날 해당 근무를 하는 직원 이름
                 const rows = Object.entries(WORK_SHIFTS).map(([key, s]) => {
@@ -2576,17 +2455,17 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                             .map(staff => ({ staff, entry: workShiftFor(staff, d) }))
                             .filter(x => x.entry.shift === key)
                             .map(x => workNameChip(x.staff, d, x.entry)).join('');
-                        const inner = names || `<span class="work-empty" onclick="openWorkModal('${iso}')">${['open', 'close'].includes(key) ? '비어 있음' : '–'}</span>`;
+                        const inner = names || `<span class="work-empty" onclick="openDayPanel('${iso}')">${['open', 'close'].includes(key) ? '비어 있음' : '–'}</span>`;
                         return `<td class="${iso === today ? 'today' : ''}"><div class="work-name-list">${inner}</div></td>`;
                     }).join('');
                     return `<tr class="row-${key}"><td class="work-week-name"><span class="work-week-kind ${key}">${WORK_ICONS[key] || ''}${s.label}</span><small>${s.time || ''}</small></td>${cells}</tr>`;
                 }).join('') + `<tr class="row-log"><td class="work-week-name"><span class="work-week-kind">운영 일지</span></td>${days.map(d => {
                     const iso = smsToISO(d);
                     const entries = logEntries.filter(e => e.date === iso).sort((a, b) => a.time.localeCompare(b.time));
-                    const inner = entries.map(e => `<div class="work-log-item" onclick="openLogModal('${e.id}')" title="${smsEscape(e.content)}">
+                    const inner = entries.map(e => `<div class="work-log-item" onclick="openDayPanel('${iso}', null, '${e.id}')" title="${smsEscape(e.content)}">
                             <div class="work-log-item-meta"><span>${e.time}</span><span class="log-cat ${e.category}">${LOG_CATEGORIES[e.category]}</span></div>
                             <div class="work-log-item-text">${smsEscape(e.content)}</div></div>`).join('')
-                        || `<span class="work-empty" onclick="openLogModal(null, '${iso}')">+</span>`;
+                        || `<span class="work-empty" onclick="openDayPanel('${iso}', null, 'new')">+</span>`;
                     return `<td class="${iso === today ? 'today' : ''}"><div class="work-name-list">${inner}</div></td>`;
                 }).join('')}</tr>`;
                 board.innerHTML = `<div style="overflow-x: auto;"><table class="work-week-table" style="min-width: 720px;">
@@ -2614,50 +2493,6 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             renderWorkSchedule();
         }
 
-        // 날짜 요약 창: 그날 근무자와 운영 일지를 보고, 근무 변경·일지 추가로 이어짐
-        let daySheetIso = null;
-
-        function openDaySheet(iso) {
-            daySheetIso = iso;
-            renderDaySheet();
-            document.getElementById('day-modal').style.display = 'flex';
-        }
-
-        function renderDaySheet() {
-            if (!daySheetIso) return;
-            const iso = daySheetIso;
-            const [y, m, d] = iso.split('-').map(Number);
-            const date = new Date(y, m - 1, d);
-            document.getElementById('day-sheet-title').innerHTML =
-                `${m}월 ${d}일 (${SMS_WEEKDAYS[date.getDay()]})${KR_HOLIDAYS[iso] ? `<small>${KR_HOLIDAYS[iso]}</small>` : ''}`;
-            const order = ['open', 'close', 'leave'];
-            const chips = WORK_STAFF.map(staff => ({ staff, entry: workShiftFor(staff, date) }))
-                .filter(x => order.includes(x.entry.shift))
-                .sort((a, b) => order.indexOf(a.entry.shift) - order.indexOf(b.entry.shift))
-                .map(x => workShiftChip(x.staff, date, x.entry)).join('');
-            document.getElementById('day-sheet-work').innerHTML = chips || '<div class="day-sheet-empty">근무자가 없습니다.</div>';
-            const logs = logEntries.filter(e => e.date === iso).sort((a, b) => a.time.localeCompare(b.time));
-            document.getElementById('day-sheet-log').innerHTML = logs.map(e => `
-                <div class="work-log-item" onclick="openLogModal('${e.id}')">
-                    <div class="work-log-item-meta"><span>${e.time}</span><span class="log-cat ${e.category}">${LOG_CATEGORIES[e.category]}</span><span>${smsEscape(e.author)}</span></div>
-                    <div class="work-log-item-text">${smsEscape(e.content)}</div>
-                </div>`).join('') || '<div class="day-sheet-empty">기록된 운영 이슈가 없습니다.</div>';
-        }
-
-        function dayToWork() {
-            openWorkModal(daySheetIso);
-        }
-
-        function dayToLog() {
-            openLogModal(null, daySheetIso);
-        }
-
-        function closeDaySheet(e) {
-            if (e && e.target !== e.currentTarget) return;
-            document.getElementById('day-modal').style.display = 'none';
-            daySheetIso = null;
-        }
-
         // 월간 날짜 칸의 "일지 N" → 그 주의 주간 보기로 이동
         function logCountBadge(iso) {
             const count = logEntries.filter(e => e.date === iso).length;
@@ -2670,130 +2505,352 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             setWorkView('week');
         }
 
-        // 등록 모달
-        function openWorkModal(iso, staffId) {
-            const date = iso || smsTodayISO();
-            const staff = staffId || WORK_STAFF[0].id;
-            workModalState = { date, staff, shift: null, memo: '' };
-            loadWorkModalEntry();
-            // 비밀번호를 기억하고 있으면 입력칸을 숨김
-            document.getElementById('work-modal-password').value = '';
-            document.getElementById('work-modal-password-error').innerText = '';
-            document.getElementById('work-modal-password-group').style.display = workStorageGet(WORK_PASSWORD_KEY) ? 'none' : '';
-            document.getElementById('work-modal').style.display = 'flex';
+        // ===== 날짜 팝업 =====
+        // 날짜를 누르면 팝업 하나가 열림. 근무 버튼은 누르는 즉시 저장, 시차·메모는 펼쳐서 적용, 일지는 바로 작성·수정.
+        let dayPanelIso = null;
+        let dayPanelOpenStaff = null;   // 시차·메모를 펼친 직원
+        let dayPanelDraft = null;       // 펼친 직원의 시차·메모 입력값
+        let dayPanelEditLog = null;     // 수정 중인 일지 id
+        let dpEditLog = null;           // 수정 중인 일지 입력값
+        let dpNewLog = null;            // 새 일지 입력값
+        let dayPanelAuthError = '';
+        let dayPanelFlashTimer = null;
+
+        function isoToDate(iso) {
+            const [y, m, d] = iso.split('-').map(Number);
+            return new Date(y, m - 1, d);
         }
 
-        function loadWorkModalEntry() {
-            const [y, m, d] = workModalState.date.split('-').map(Number);
-            const staff = WORK_STAFF.find(s => s.id === workModalState.staff);
-            const entry = workShiftFor(staff, new Date(y, m - 1, d));
-            workModalState.shift = entry.shift || 'open';
-            workModalState.memo = entry.memo;
-            workModalState.hourly = entry.hourly ? { ...entry.hourly } : null;
-            workModalState.changed = entry.changed;
-            document.getElementById('work-modal-memo').value = entry.memo;
-            renderWorkModal();
-        }
-
-        function renderWorkModal() {
-            const [y, m, d] = workModalState.date.split('-').map(Number);
-            const staff = WORK_STAFF.find(s => s.id === workModalState.staff);
-            document.getElementById('work-modal-date').innerText = smsDateLabel(workModalState.date);
-            document.getElementById('work-modal-staff').innerHTML = WORK_STAFF.map(s =>
-                `<button type="button" class="${s.id === workModalState.staff ? 'active' : ''}" onclick="selectWorkModalStaff('${s.id}')">${s.name}</button>`).join('');
-            document.getElementById('work-modal-shift').innerHTML = Object.entries(WORK_SHIFTS).map(([key, s]) =>
-                `<button type="button" class="${key === workModalState.shift ? 'active' : ''}" onclick="selectWorkModalShift('${key}')">${s.label}${s.time ? ' ' + s.time : ''}</button>`).join('');
-            const def = workDefaultShift(staff, new Date(y, m - 1, d));
-            document.getElementById('work-modal-default').innerText = `기본 근무: ${def ? WORK_SHIFTS[def].label + (def !== 'off' ? ' ' + workStartFor(staff, new Date(y, m - 1, d), def) + '~' : '') : '없음'}`;
-            document.getElementById('work-modal-reset').style.visibility = workModalState.changed ? 'visible' : 'hidden';
-
-            // 시간 연차는 개시·마감 근무일 때만 사용
-            const canHourly = ['open', 'close'].includes(workModalState.shift);
-            if (!canHourly) workModalState.hourly = null;
-            document.getElementById('work-modal-hourly-group').style.display = canHourly ? '' : 'none';
-            const on = !!workModalState.hourly;
-            document.getElementById('work-modal-hourly-toggle').innerHTML = `
-                <button type="button" class="${on ? '' : 'active'}" onclick="toggleWorkHourly(false)">사용 안 함</button>
-                <button type="button" class="${on ? 'active' : ''}" onclick="toggleWorkHourly(true)">사용</button>`;
-            document.getElementById('work-modal-hourly-range').style.display = on ? 'flex' : 'none';
-            if (on) {
-                const opts = selected => WORK_HOURLY_TIMES.map(t => `<option value="${t}" ${t === selected ? 'selected' : ''}>${t}</option>`).join('');
-                document.getElementById('work-modal-hourly-from').innerHTML = opts(workModalState.hourly.from);
-                document.getElementById('work-modal-hourly-to').innerHTML = opts(workModalState.hourly.to);
-                const hours = workHourlyHours(workModalState.hourly);
-                document.getElementById('work-modal-hourly-hours').innerText = hours > 0 ? `${hours}시간` : '시간을 확인하세요';
-            }
-        }
-
-        function toggleWorkHourly(on) {
-            const [y, mo, d] = workModalState.date.split('-').map(Number);
-            const staff = WORK_STAFF.find(s => s.id === workModalState.staff);
-            const start = workStartFor(staff, new Date(y, mo - 1, d), workModalState.shift);
-            const [h, m] = start.split(':').map(Number);
-            workModalState.hourly = on ? { from: start, to: `${String(h + 2).padStart(2, '0')}:${String(m).padStart(2, '0')}` } : null;
-            renderWorkModal();
-        }
-
-        function updateWorkHourly() {
-            workModalState.hourly = {
-                from: document.getElementById('work-modal-hourly-from').value,
-                to: document.getElementById('work-modal-hourly-to').value
+        function freshDayLog(iso) {
+            const now = new Date();
+            const date = isoToDate(iso);
+            const onDuty = WORK_STAFF.find(s => ['open', 'close'].includes(workShiftFor(s, date).shift));
+            return {
+                time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
+                category: 'facility',
+                author: (onDuty || WORK_STAFF[0]).name,
+                content: ''
             };
-            renderWorkModal();
         }
 
-        function selectWorkModalStaff(id) {
-            workModalState.staff = id;
-            loadWorkModalEntry();
+        // staffId: 그 직원의 시차·메모를 펼쳐서 열기 / logId: 그 일지를 수정 상태로, 'new'면 새 일지 입력칸에 커서
+        function openDayPanel(iso, staffId, logId) {
+            if (dayPanelIso !== iso) dpNewLog = freshDayLog(iso);
+            dayPanelIso = iso;
+            dayPanelOpenStaff = null;
+            dayPanelDraft = null;
+            if (staffId) expandDayStaff(staffId, false);
+            dayPanelEditLog = null;
+            if (logId && logId !== 'new') startDayLogEdit(logId, false);
+            renderWorkSchedule();
+            if (logId === 'new') document.getElementById('dp-new-content')?.focus();
         }
 
-        function selectWorkModalShift(key) {
-            workModalState.shift = key;
-            renderWorkModal();
+        function closeDayPanel() {
+            dayPanelIso = null;
+            renderWorkSchedule();
         }
 
-        function stepWorkModalDate(delta) {
-            const [y, m, d] = workModalState.date.split('-').map(Number);
-            workModalState.date = smsToISO(new Date(y, m - 1, d + delta));
-            loadWorkModalEntry();
+        function stepDayPanel(delta) {
+            const d = isoToDate(dayPanelIso);
+            openDayPanel(smsToISO(new Date(d.getFullYear(), d.getMonth(), d.getDate() + delta)));
         }
 
-        async function saveWorkOverride() {
-            const { date, staff, shift, hourly } = workModalState;
-            if (hourly && workHourlyHours(hourly) <= 0) {
-                alert('시차의 끝나는 시간이 시작 시간보다 늦어야 합니다.');
-                return;
+        function flashDayPanel(text) {
+            const el = document.getElementById('day-panel-status');
+            if (!el) return;
+            el.innerText = text;
+            el.classList.add('show');
+            clearTimeout(dayPanelFlashTimer);
+            dayPanelFlashTimer = setTimeout(() => el.classList.remove('show'), 1600);
+        }
+
+        function showDayPanelAuth(message) {
+            dayPanelAuthError = message;
+            renderDayPanel();
+            document.getElementById('dp-password')?.focus();
+        }
+
+        async function verifyDayPanelPassword() {
+            const password = document.getElementById('dp-password').value;
+            if (!password) return;
+            try {
+                const res = await fetch(WORK_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password, action: 'verify' })
+                });
+                if (res.status === 401) return showDayPanelAuth('비밀번호가 맞지 않아요.');
+                if (!res.ok) throw new Error();
+                workStorageSet(WORK_PASSWORD_KEY, password);
+                dayPanelAuthError = '';
+                renderDayPanel();
+            } catch (e) {
+                showDayPanelAuth('서버에 연결할 수 없어요. 잠시 후 다시 시도해 주세요.');
             }
-            const memo = document.getElementById('work-modal-memo').value.trim();
-            const [y, m, d] = date.split('-').map(Number);
-            const def = workDefaultShift(WORK_STAFF.find(s => s.id === staff), new Date(y, m - 1, d));
-            // 기본 근무와 같고 메모·시간 연차도 없으면 변경 일정으로 남기지 않음
+        }
+
+        function renderDayPanel() {
+            const overlay = document.getElementById('day-overlay');
+            if (!overlay) return;
+            overlay.classList.toggle('open', !!dayPanelIso);
+            if (!dayPanelIso) return;
+            const iso = dayPanelIso;
+            const date = isoToDate(iso);
+
+            document.getElementById('day-panel-head').innerHTML = `
+                <div class="day-panel-nav">
+                    <button type="button" class="day-panel-icon" aria-label="전날" onclick="stepDayPanel(-1)">${SMS_ICON_PREV}</button>
+                    <h4>${date.getMonth() + 1}월 ${date.getDate()}일 (${SMS_WEEKDAYS[date.getDay()]})${KR_HOLIDAYS[iso] ? `<small>${KR_HOLIDAYS[iso]}</small>` : ''}</h4>
+                    <button type="button" class="day-panel-icon" aria-label="다음날" onclick="stepDayPanel(1)">${SMS_ICON_NEXT}</button>
+                </div>
+                <span id="day-panel-status" class="day-panel-status"></span>
+                <button type="button" class="day-panel-icon" aria-label="닫기" onclick="closeDayPanel()">✕</button>`;
+
+            // 비밀번호를 기억하고 있지 않으면 위에 입력칸
+            document.getElementById('day-panel-auth').innerHTML = workStorageGet(WORK_PASSWORD_KEY) ? '' : `
+                <div class="dp-auth">
+                    근무를 바꾸거나 일지를 쓰려면 수정 비밀번호를 입력하세요. 한 번 입력하면 이 브라우저에서 기억해요.
+                    <div class="dp-auth-row">
+                        <input type="password" id="dp-password" class="sms-control" placeholder="수정 비밀번호" autocomplete="off"
+                            onkeydown="if (event.key === 'Enter') verifyDayPanelPassword()">
+                        <button type="button" class="dp-btn primary" onclick="verifyDayPanelPassword()">확인</button>
+                    </div>
+                    ${dayPanelAuthError ? `<div class="dp-auth-error">${dayPanelAuthError}</div>` : ''}
+                </div>`;
+
+            document.getElementById('day-panel-work').innerHTML = WORK_STAFF.map(staff => renderDayStaff(staff, date)).join('');
+            renderDayPanelLog(iso);
+        }
+
+        // 직원 한 줄: 이름(누르면 시차·메모 펼침) + [개시|마감|연차|휴무] + 요약
+        function renderDayStaff(staff, date) {
+            const entry = workShiftFor(staff, date);
+            const def = workDefaultShift(staff, date);
+            const open = dayPanelOpenStaff === staff.id;
+            const seg = ['open', 'close', 'leave', 'off'].map(key =>
+                `<button type="button" class="${entry.shift === key ? 'active ' + key : ''}" onclick="setDayShift('${staff.id}', '${key}')">${WORK_SHIFTS[key].label}</button>`).join('');
+
+            const defText = def ? WORK_SHIFTS[def].label + (def !== 'off' ? ' ' + workStartFor(staff, date, def) + '~' : '') : '근무 없음';
+            const info = entry.shift ? workTimeInfo(entry) : null;
+            const notes = [`기본 ${defText}`];
+            if (entry.changed && info?.time) notes.push(`출근 ${info.time}`);
+            if (workIsCover(staff, date, entry)) notes.push('대직');
+            if (entry.label) notes.push(entry.label);
+            if (entry.hourly) notes.push(`<span class="dp-hourly">시차 ${entry.hourly.from}~${entry.hourly.to}</span>`);
+            if (entry.memo) notes.push(smsEscape(entry.memo));
+
+            let detail = '';
+            if (open && dayPanelDraft) {
+                const d = dayPanelDraft;
+                const canHourly = ['open', 'close'].includes(entry.shift);
+                const opts = selected => WORK_HOURLY_TIMES.map(t => `<option value="${t}" ${t === selected ? 'selected' : ''}>${t}</option>`).join('');
+                const hours = d.hourlyOn ? workHourlyHours({ from: d.from, to: d.to }) : 0;
+                detail = `
+                    <div class="dp-staff-detail">
+                        <div class="dp-field">
+                            <span>시차 (시간 단위 연차)</span>
+                            ${canHourly ? `
+                                <div class="work-seg">
+                                    <button type="button" class="${d.hourlyOn ? '' : 'active'}" onclick="setDayDraft('hourlyOn', false)">사용 안 함</button>
+                                    <button type="button" class="${d.hourlyOn ? 'active' : ''}" onclick="setDayDraft('hourlyOn', true)">사용</button>
+                                </div>
+                                ${d.hourlyOn ? `
+                                    <div class="work-hourly-range">
+                                        <select class="sms-control" onchange="setDayDraft('from', this.value)">${opts(d.from)}</select>
+                                        <span>~</span>
+                                        <select class="sms-control" onchange="setDayDraft('to', this.value)">${opts(d.to)}</select>
+                                        <span class="work-hourly-hours">${hours > 0 ? hours + '시간' : '시간을 확인하세요'}</span>
+                                    </div>` : ''}`
+                                : `<div class="dp-note">개시·마감 근무일 때만 쓸 수 있어요.</div>`}
+                        </div>
+                        <div class="dp-field">
+                            <span>메모</span>
+                            <input type="text" class="sms-control" value="${smsEscape(d.memo)}" placeholder="예: 손은지 연차로 대직" oninput="dayPanelDraft.memo = this.value">
+                        </div>
+                        <div class="dp-actions">
+                            ${entry.changed ? `<button type="button" class="dp-btn danger" onclick="resetDayStaff('${staff.id}')">기본 근무로 되돌리기</button>` : ''}
+                            <button type="button" class="dp-btn primary" onclick="applyDayStaff('${staff.id}')">적용</button>
+                        </div>
+                    </div>`;
+            }
+
+            return `<div class="dp-staff ${open ? 'open' : ''}">
+                <div class="dp-staff-top">
+                    <button type="button" class="dp-staff-name" onclick="expandDayStaff('${staff.id}')" title="시차·메모">
+                        ${staff.name}<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"></polyline></svg>
+                    </button>
+                    <div class="dp-seg">${seg}</div>
+                </div>
+                <div class="dp-staff-sub">${notes.join(' · ')}</div>
+                ${detail}
+            </div>`;
+        }
+
+        function expandDayStaff(id, rerender = true) {
+            if (dayPanelOpenStaff === id) {
+                dayPanelOpenStaff = null;
+                dayPanelDraft = null;
+            } else {
+                const staff = WORK_STAFF.find(s => s.id === id);
+                const date = isoToDate(dayPanelIso);
+                const entry = workShiftFor(staff, date);
+                const start = entry.start || workStartFor(staff, date, 'open');
+                const [h, m] = start.split(':').map(Number);
+                dayPanelOpenStaff = id;
+                dayPanelDraft = {
+                    hourlyOn: !!entry.hourly,
+                    from: entry.hourly?.from || start,
+                    to: entry.hourly?.to || `${String(h + 2).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
+                    memo: entry.memo || ''
+                };
+            }
+            if (rerender) renderDayPanel();
+        }
+
+        function setDayDraft(field, value) {
+            dayPanelDraft[field] = value;
+            renderDayPanel();
+        }
+
+        // 기본 근무와 같고 메모·시차도 없으면 변경 일정으로 남기지 않음
+        async function saveDayStaff(staff, shift, memo, hourly) {
+            const def = workDefaultShift(staff, isoToDate(dayPanelIso));
             const entry = (shift === def && !memo && !hourly) ? null : (hourly ? { shift, memo, hourly } : { shift, memo });
-            if (await postWorkEntry(date, staff, entry)) {
-                closeWorkModal();
-                renderWorkSchedule();
+            return postWorkEntry(dayPanelIso, staff.id, entry);
+        }
+
+        // 근무 버튼: 메모는 유지, 시차는 같은 근무일 때만 유지
+        async function setDayShift(id, key) {
+            const staff = WORK_STAFF.find(s => s.id === id);
+            const cur = workShiftFor(staff, isoToDate(dayPanelIso));
+            if (cur.shift === key) return;
+            const memo = cur.changed ? cur.memo : '';
+            const hourly = ['open', 'close'].includes(key) && cur.shift === key ? cur.hourly : null;
+            if (await saveDayStaff(staff, key, memo, hourly) && dayPanelOpenStaff === id) {
+                dayPanelOpenStaff = null;
+                expandDayStaff(id);
             }
         }
 
-        async function resetWorkOverride() {
-            const { date, staff } = workModalState;
-            if (!confirm('등록한 변경 일정을 지우고 기본 근무로 되돌릴까요?')) return;
-            if (await postWorkEntry(date, staff, null)) {
-                closeWorkModal();
-                renderWorkSchedule();
+        async function applyDayStaff(id) {
+            const staff = WORK_STAFF.find(s => s.id === id);
+            const cur = workShiftFor(staff, isoToDate(dayPanelIso));
+            const d = dayPanelDraft;
+            const canHourly = ['open', 'close'].includes(cur.shift);
+            const hourly = canHourly && d.hourlyOn ? { from: d.from, to: d.to } : null;
+            if (hourly && workHourlyHours(hourly) <= 0) return alert('시차의 끝나는 시간이 시작 시간보다 늦어야 합니다.');
+            if (!cur.shift) return alert('먼저 근무(개시·마감·연차·휴무)를 골라 주세요.');
+            if (await saveDayStaff(staff, cur.shift, d.memo.trim(), hourly)) {
+                dayPanelOpenStaff = null;
+                dayPanelDraft = null;
+                renderDayPanel();
             }
         }
 
-        function closeWorkModal(e) {
-            if (e && e.target !== e.currentTarget) return;
-            document.getElementById('work-modal').style.display = 'none';
+        async function resetDayStaff(id) {
+            if (!confirm('이 날의 변경 일정을 지우고 기본 근무로 되돌릴까요?')) return;
+            if (await postWorkEntry(dayPanelIso, id, null)) {
+                dayPanelOpenStaff = null;
+                dayPanelDraft = null;
+                renderDayPanel();
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            ['#work-modal', '#log-modal'].forEach(modal => {
-                const btns = document.querySelectorAll(`${modal} .sms-stepper button`);
-                if (btns.length === 2) { btns[0].innerHTML = SMS_ICON_PREV; btns[1].innerHTML = SMS_ICON_NEXT; }
-            });
+        // 운영 일지: 목록(누르면 그 자리에서 수정) + 아래 새 일지 입력칸
+        function dayLogForm(draftName, d, actions, contentId) {
+            const cats = Object.entries(LOG_CATEGORIES).map(([k, v]) => `<option value="${k}" ${k === d.category ? 'selected' : ''}>${v}</option>`).join('');
+            const authors = WORK_STAFF.map(s => `<option value="${s.name}" ${s.name === d.author ? 'selected' : ''}>${s.name}</option>`).join('');
+            return `<div class="dp-log-form" onclick="event.stopPropagation()">
+                <div class="dp-log-form-row">
+                    <input type="time" class="sms-control" value="${d.time}" oninput="${draftName}.time = this.value" aria-label="시간">
+                    <select class="sms-control" onchange="${draftName}.category = this.value" aria-label="분류">${cats}</select>
+                    <select class="sms-control" onchange="${draftName}.author = this.value" aria-label="작성자">${authors}</select>
+                </div>
+                <textarea ${contentId ? `id="${contentId}"` : ''} class="log-textarea" rows="3" placeholder="예: 북측 골대 그물 하단 찢어짐. 시설팀에 수리 요청함."
+                    oninput="${draftName}.content = this.value">${smsEscape(d.content)}</textarea>
+                <div class="dp-actions">${actions}</div>
+            </div>`;
+        }
+
+        function renderDayPanelLog(iso) {
+            const logs = logEntries.filter(e => e.date === iso).sort((a, b) => a.time.localeCompare(b.time));
+            const list = logs.map(e => e.id === dayPanelEditLog && dpEditLog
+                ? dayLogForm('dpEditLog', dpEditLog, `
+                    <button type="button" class="dp-btn danger" onclick="deleteDayLog('${e.id}')">삭제</button>
+                    <button type="button" class="dp-btn" onclick="cancelDayLogEdit()">취소</button>
+                    <button type="button" class="dp-btn primary" onclick="saveDayLogEdit('${e.id}')">저장</button>`)
+                : `<div class="work-log-item" onclick="startDayLogEdit('${e.id}')" title="눌러서 수정">
+                    <div class="work-log-item-meta"><span>${e.time}</span><span class="log-cat ${e.category}">${LOG_CATEGORIES[e.category]}</span><span>${smsEscape(e.author)}</span></div>
+                    <div class="work-log-item-text">${smsEscape(e.content)}</div>
+                </div>`).join('');
+            if (!dpNewLog) dpNewLog = freshDayLog(iso);
+            document.getElementById('day-panel-log').innerHTML = `
+                <div class="dp-log-list">${list || '<div class="dp-empty">기록된 운영 이슈가 없습니다.</div>'}</div>
+                ${dayLogForm('dpNewLog', dpNewLog, `<button type="button" class="dp-btn primary" onclick="addDayLog()">일지 추가</button>`, 'dp-new-content')}`;
+        }
+
+        function startDayLogEdit(id, rerender = true) {
+            const e = logEntries.find(x => x.id === id);
+            if (!e) return;
+            dayPanelEditLog = id;
+            dpEditLog = { time: e.time, category: e.category, author: e.author, content: e.content };
+            if (rerender) renderDayPanel();
+        }
+
+        function cancelDayLogEdit() {
+            dayPanelEditLog = null;
+            dpEditLog = null;
+            renderDayPanel();
+        }
+
+        function validDayLog(d) {
+            if (!d.time) { alert('시간을 입력해 주세요.'); return false; }
+            if (!d.content.trim()) { alert('내용을 입력해 주세요.'); return false; }
+            return true;
+        }
+
+        function storeDayLog(entry) {
+            logEntries = logEntries.filter(e => e.id !== entry.id).concat(entry);
+            workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
+        }
+
+        async function addDayLog() {
+            if (!validDayLog(dpNewLog)) return;
+            const data = await postWithPassword(LOG_API, { action: 'save', entry: { date: dayPanelIso, ...dpNewLog, content: dpNewLog.content.trim() } });
+            if (!data) return;
+            storeDayLog(data.entry);
+            dpNewLog = { ...freshDayLog(dayPanelIso), category: dpNewLog.category, author: dpNewLog.author };
+            flashDayPanel('일지를 추가했어요');
+            renderWorkSchedule();
+        }
+
+        async function saveDayLogEdit(id) {
+            if (!validDayLog(dpEditLog)) return;
+            const original = logEntries.find(e => e.id === id);
+            const data = await postWithPassword(LOG_API, { action: 'save', id, entry: { date: original.date, ...dpEditLog, content: dpEditLog.content.trim() } });
+            if (!data) return;
+            storeDayLog(data.entry);
+            dayPanelEditLog = null;
+            dpEditLog = null;
+            flashDayPanel('저장했어요');
+            renderWorkSchedule();
+        }
+
+        async function deleteDayLog(id) {
+            if (!confirm('이 기록을 삭제할까요? 삭제하면 되돌릴 수 없습니다.')) return;
+            const data = await postWithPassword(LOG_API, { action: 'delete', id });
+            if (!data) return;
+            logEntries = logEntries.filter(e => e.id !== id);
+            workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
+            dayPanelEditLog = null;
+            dpEditLog = null;
+            flashDayPanel('삭제했어요');
+            renderWorkSchedule();
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && dayPanelIso) closeDayPanel();
         });
 
         // ===== 운영 일지 =====
@@ -2808,121 +2865,9 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             etc: '기타'
         };
 
-        let logModalState = null;
         let logEntries = (() => {
             try { return JSON.parse(workStorageGet(LOG_CACHE_KEY)) || []; } catch (e) { return []; }
         })();
-
-        // 기록 모달 (id가 있으면 수정, 없으면 새 기록)
-        function openLogModal(id, dateIso) {
-            const existing = id ? logEntries.find(e => e.id === id) : null;
-            const now = new Date();
-            const onDuty = WORK_STAFF.find(s => ['open', 'close'].includes(workShiftFor(s, now).shift));
-            logModalState = existing ? { ...existing } : {
-                id: null,
-                date: dateIso || smsTodayISO(),
-                time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
-                category: 'facility',
-                author: (onDuty || WORK_STAFF[0]).name,
-                content: ''
-            };
-            document.getElementById('log-modal-title').innerText = existing ? '운영 이슈 수정' : '운영 이슈 기록';
-            document.getElementById('log-modal-time').value = logModalState.time;
-            document.getElementById('log-modal-content').value = logModalState.content;
-            document.getElementById('log-modal-delete').style.visibility = existing ? 'visible' : 'hidden';
-            document.getElementById('log-modal-password').value = '';
-            document.getElementById('log-modal-password-error').innerText = '';
-            document.getElementById('log-modal-password-group').style.display = workStorageGet(WORK_PASSWORD_KEY) ? 'none' : '';
-            renderLogModal();
-            document.getElementById('log-modal').style.display = 'flex';
-        }
-
-        function renderLogModal() {
-            const st = logModalState;
-            document.getElementById('log-modal-date').innerText = smsDateLabel(st.date);
-            const seg = (field, items) => items.map(([key, label]) =>
-                `<button type="button" class="${key === st[field] ? 'active' : ''}" onclick="setLogModalField('${field}', '${key}')">${label}</button>`).join('');
-            document.getElementById('log-modal-category').innerHTML = seg('category', Object.entries(LOG_CATEGORIES));
-            document.getElementById('log-modal-author').innerHTML = seg('author', WORK_STAFF.map(s => [s.name, s.name]));
-        }
-
-        function setLogModalField(field, value) {
-            logModalState[field] = value;
-            renderLogModal();
-        }
-
-        function stepLogModalDate(delta) {
-            const [y, m, d] = logModalState.date.split('-').map(Number);
-            logModalState.date = smsToISO(new Date(y, m - 1, d + delta));
-            renderLogModal();
-        }
-
-        async function postLog(body) {
-            const typed = document.getElementById('log-modal-password').value;
-            const password = typed || workStorageGet(WORK_PASSWORD_KEY);
-            const errorEl = document.getElementById('log-modal-password-error');
-            errorEl.innerText = '';
-            if (!password) {
-                document.getElementById('log-modal-password-group').style.display = '';
-                errorEl.innerText = '수정 비밀번호를 입력해 주세요.';
-                return null;
-            }
-            const saveBtn = document.getElementById('log-modal-save');
-            saveBtn.disabled = true;
-            try {
-                const res = await fetch(LOG_API, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password, ...body })
-                });
-                const data = await res.json().catch(() => ({}));
-                if (res.status === 401) {
-                    workStorageSet(WORK_PASSWORD_KEY, null);
-                    document.getElementById('log-modal-password-group').style.display = '';
-                    document.getElementById('log-modal-password').value = '';
-                    errorEl.innerText = '비밀번호가 올바르지 않습니다.';
-                    return null;
-                }
-                if (!res.ok) throw new Error(data.error || '저장 실패');
-                workStorageSet(WORK_PASSWORD_KEY, password);
-                return data;
-            } catch (e) {
-                alert('서버에 저장하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.');
-                return null;
-            } finally {
-                saveBtn.disabled = false;
-            }
-        }
-
-        async function saveLogEntry() {
-            const st = logModalState;
-            const time = document.getElementById('log-modal-time').value;
-            const content = document.getElementById('log-modal-content').value.trim();
-            if (!time) return alert('시간을 입력해 주세요.');
-            if (!content) return alert('내용을 입력해 주세요.');
-            const entry = { date: st.date, time, category: st.category, author: st.author, content };
-            const data = await postLog({ action: 'save', id: st.id, entry });
-            if (!data) return;
-            logEntries = logEntries.filter(e => e.id !== data.entry.id).concat(data.entry);
-            workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
-            closeLogModal();
-            renderWorkSchedule();
-        }
-
-        async function deleteLogEntry() {
-            if (!logModalState.id || !confirm('이 기록을 삭제할까요? 삭제하면 되돌릴 수 없습니다.')) return;
-            const data = await postLog({ action: 'delete', id: logModalState.id });
-            if (!data) return;
-            logEntries = logEntries.filter(e => e.id !== logModalState.id);
-            workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
-            closeLogModal();
-            renderWorkSchedule();
-        }
-
-        function closeLogModal(e) {
-            if (e && e.target !== e.currentTarget) return;
-            document.getElementById('log-modal').style.display = 'none';
-        }
 
         function renderSmsCards() {
             const container = document.getElementById('sms-container');
@@ -3001,6 +2946,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             }
             if (tabId === 'work') {
                 fetchWorkOverrides();
+            } else if (typeof dayPanelIso !== 'undefined' && dayPanelIso) {
+                closeDayPanel();
             }
         }
 
