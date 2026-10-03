@@ -580,7 +580,7 @@
         #tooltip .tt-row b { color: #f8fafc; font-weight: 700; }
         #tooltip .tt-memo { color: #ff9c6e; font-weight: 600; }
 
-        #modal, #holiday-modal, #create-modal, #work-modal {
+        #modal, #holiday-modal, #create-modal, #work-modal, #log-modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
             justify-content: center; align-items: center; z-index: 99999;
             backdrop-filter: blur(4px);
@@ -678,6 +678,44 @@
         input.sms-stepper-value { width: 48px; -moz-appearance: textfield; }
         input.sms-stepper-value::-webkit-outer-spin-button,
         input.sms-stepper-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* 운영 일지 */
+        .log-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+        .log-search { width: 220px; }
+        .log-list { display: flex; flex-direction: column; gap: 14px; }
+        .log-day { border: 1px solid var(--cal-line); border-radius: 8px; background: var(--cal-paper); overflow: hidden; }
+        .log-day-head {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 14px;
+            background: var(--cal-surface); border-bottom: 1px solid var(--cal-line);
+        }
+        .log-day-date { font-size: 14px; font-weight: 800; color: var(--cal-ink); }
+        .log-day-date.sun, .log-day-date.holiday { color: var(--cal-sun); }
+        .log-day-date.sat { color: var(--cal-sat); }
+        .log-day-holiday { font-size: 11px; font-weight: 700; color: var(--cal-sun); }
+        .log-day-staff { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: var(--cal-ink-2); margin-left: auto; }
+        .log-entry { display: grid; grid-template-columns: 52px 1fr; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--cal-line-2); cursor: pointer; }
+        .log-entry:last-child { border-bottom: none; }
+        .log-entry:hover { background: #fafbfc; }
+        .log-entry-time { font-size: 12px; font-weight: 700; color: var(--cal-ink-3); font-variant-numeric: tabular-nums; padding-top: 1px; }
+        .log-entry-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .log-entry-content { font-size: 13px; line-height: 1.6; color: var(--cal-ink); white-space: pre-wrap; word-break: break-word; }
+        .log-entry-author { font-size: 11.5px; font-weight: 600; color: var(--cal-ink-3); }
+        .log-cat { font-size: 10.5px; font-weight: 800; border-radius: 3px; padding: 0 5px; line-height: 1.6; background: #f1f5f9; color: var(--cal-ink-2); }
+        .log-cat.safety { background: #fdeeee; color: #b42318; }
+        .log-cat.complaint { background: #fff3d6; color: #92600a; }
+        .log-cat.facility { background: #e9e8fb; color: #3d3a8c; }
+        .log-cat.booking { background: #e6f4ee; color: #17663e; }
+        .log-status { font-size: 10.5px; font-weight: 800; }
+        .log-status.open { color: #b45309; }
+        .log-status.done { color: var(--cal-ink-4); }
+        .log-entry.done .log-entry-content { color: var(--cal-ink-3); }
+        .log-empty { text-align: center; color: var(--cal-ink-4); font-size: 12.5px; padding: 40px 0; border: 1px dashed var(--cal-line); border-radius: 8px; }
+        .log-textarea {
+            width: 100%; padding: 8px 10px; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 13px;
+            line-height: 1.6; outline: none; resize: vertical; font-family: inherit;
+        }
+        .log-textarea:focus { border-color: var(--cal-today-border); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .log-open-count { font-size: 12px; font-weight: 700; color: #b45309; margin-left: 8px; }
 
         /* 근무표 */
         .work-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
@@ -931,6 +969,9 @@
                 <button onclick="switchTab('work')" id="tab-btn-work" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     근무표
                 </button>
+                <button onclick="switchTab('log')" id="tab-btn-log" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                    운영 일지
+                </button>
             </div>
         </nav>
     </header>
@@ -1144,7 +1185,92 @@
             <div class="work-board" id="work-board"></div>
         </section>
 
+        <!-- TAB 6: OPERATIONS LOG -->
+        <section id="tab-log" class="tab-content hidden space-y-4">
+            <div class="work-header">
+                <div>
+                    <div class="work-title" id="log-title"></div>
+                    <p class="text-xs text-slate-500 mt-1">시설 고장, 민원, 부상 등 그날 있었던 운영 이슈를 기록하고 처리 상태를 관리합니다.</p>
+                    <p class="text-[11px] mt-1 flex items-center gap-2">
+                        <span id="log-sync-status" class="text-slate-400"></span>
+                        <button type="button" onclick="fetchLogEntries()" class="text-slate-500 hover:text-slate-900 underline underline-offset-2">새로고침</button>
+                    </p>
+                </div>
+                <div class="work-controls">
+                    <div class="nav-capsule">
+                        <button class="nav-btn" onclick="navigateLog(-1)">이전 달</button>
+                        <div class="nav-divider"></div>
+                        <button class="nav-btn btn-today" onclick="goLogToday()">이번 달</button>
+                        <div class="nav-divider"></div>
+                        <button class="nav-btn" onclick="navigateLog(1)">다음 달</button>
+                    </div>
+                    <button class="work-btn-primary" onclick="openLogModal()">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                        기록하기
+                    </button>
+                </div>
+            </div>
+
+            <div class="log-toolbar">
+                <div class="work-seg" id="log-filter"></div>
+                <input type="text" id="log-search" oninput="renderLog()" placeholder="내용·작성자 검색" class="sms-control log-search">
+            </div>
+
+            <div id="log-list" class="log-list"></div>
+        </section>
+
     </main>
+
+    <!-- 운영 일지 기록 모달 -->
+    <div id="log-modal" onclick="closeLogModal(event)">
+        <div class="modal-box" style="width: 480px;" onclick="event.stopPropagation()">
+            <h4 style="margin-bottom: 14px;" id="log-modal-title">운영 이슈 기록</h4>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <div class="cal-form-group">
+                    <label>날짜</label>
+                    <div class="sms-stepper" style="width: fit-content;">
+                        <button type="button" aria-label="전날" onclick="stepLogModalDate(-1)"></button>
+                        <span class="sms-stepper-divider"></span>
+                        <span id="log-modal-date" class="sms-stepper-value" style="min-width: 150px;"></span>
+                        <span class="sms-stepper-divider"></span>
+                        <button type="button" aria-label="다음날" onclick="stepLogModalDate(1)"></button>
+                    </div>
+                </div>
+                <div class="cal-form-group">
+                    <label for="log-modal-time">시간</label>
+                    <input type="time" id="log-modal-time" class="sms-control" style="width: 120px;">
+                </div>
+            </div>
+            <div class="cal-form-group">
+                <label>분류</label>
+                <div class="work-seg" id="log-modal-category"></div>
+            </div>
+            <div class="cal-form-group">
+                <label>작성자</label>
+                <div class="work-seg" id="log-modal-author"></div>
+            </div>
+            <div class="cal-form-group">
+                <label>처리 상태</label>
+                <div class="work-seg" id="log-modal-status"></div>
+            </div>
+            <div class="cal-form-group">
+                <label for="log-modal-content">내용</label>
+                <textarea id="log-modal-content" rows="5" class="log-textarea" placeholder="예: 북측 골대 그물 하단 찢어짐. 시설팀에 수리 요청함."></textarea>
+            </div>
+            <div class="cal-form-group" id="log-modal-password-group">
+                <label for="log-modal-password">수정 비밀번호</label>
+                <input type="password" id="log-modal-password" placeholder="근무표와 같은 비밀번호" autocomplete="off">
+                <span id="log-modal-password-error" class="text-[11px]" style="color: var(--cal-sun);"></span>
+            </div>
+            <div class="work-modal-actions">
+                <button type="button" id="log-modal-delete" class="work-btn-danger" onclick="deleteLogEntry()">삭제</button>
+                <div style="display: flex; gap: 8px; margin-left: auto;">
+                    <button type="button" class="work-btn-ghost" onclick="closeLogModal()">취소</button>
+                    <button type="button" id="log-modal-save" class="work-btn-primary" style="height: 34px;" onclick="saveLogEntry()">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- 근무 일정 등록 모달 -->
     <div id="work-modal" onclick="closeWorkModal(event)">
@@ -2597,9 +2723,247 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const btns = document.querySelectorAll('#work-modal .sms-stepper button');
-            if (btns.length === 2) { btns[0].innerHTML = SMS_ICON_PREV; btns[1].innerHTML = SMS_ICON_NEXT; }
+            ['#work-modal', '#log-modal'].forEach(modal => {
+                const btns = document.querySelectorAll(`${modal} .sms-stepper button`);
+                if (btns.length === 2) { btns[0].innerHTML = SMS_ICON_PREV; btns[1].innerHTML = SMS_ICON_NEXT; }
+            });
         });
+
+        // ===== 운영 일지 =====
+        // 기록은 Vercel 서버(/api/log)에 저장되고 모든 직원이 함께 봅니다. 수정 비밀번호는 근무표와 같습니다.
+        const LOG_API = '/api/log';
+        const LOG_CACHE_KEY = 'dm-log-entries-cache';
+        const LOG_CATEGORIES = {
+            facility: '시설',
+            complaint: '민원',
+            safety: '안전·부상',
+            booking: '대관·예약',
+            etc: '기타'
+        };
+        const LOG_STATUS = { open: '진행 중', done: '처리 완료' };
+
+        let logCursor = new Date();
+        let logFilter = 'all';
+        let logModalState = null;
+        let logEntries = (() => {
+            try { return JSON.parse(workStorageGet(LOG_CACHE_KEY)) || []; } catch (e) { return []; }
+        })();
+
+        function setLogSyncStatus(text, isError) {
+            const el = document.getElementById('log-sync-status');
+            if (!el) return;
+            el.innerText = text;
+            el.style.color = isError ? 'var(--cal-sun)' : '';
+        }
+
+        async function fetchLogEntries() {
+            setLogSyncStatus('운영 일지를 불러오는 중...');
+            try {
+                const res = await fetch(LOG_API, { cache: 'no-store' });
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                logEntries = data.entries || [];
+                workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
+                const now = new Date();
+                setLogSyncStatus(`최신 상태 · ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} 기준`);
+            } catch (e) {
+                setLogSyncStatus('서버에 연결할 수 없어 마지막으로 받은 일지를 보여주고 있습니다.', true);
+            }
+            renderLog();
+        }
+
+        function navigateLog(delta) {
+            logCursor = new Date(logCursor.getFullYear(), logCursor.getMonth() + delta, 1);
+            renderLog();
+        }
+
+        function goLogToday() {
+            logCursor = new Date();
+            renderLog();
+        }
+
+        function setLogFilter(key) {
+            logFilter = key;
+            renderLog();
+        }
+
+        // 그날 근무자 (근무표 기준)
+        function logDayStaff(date) {
+            return ['open', 'close'].map(key => {
+                const names = WORK_STAFF.filter(staff => workShiftFor(staff, date).shift === key).map(s => s.name).join(', ');
+                return names ? `<span class="work-kind-tag ${key}">${WORK_ICONS[key]}${WORK_SHIFTS[key].label}</span><span>${names}</span>` : '';
+            }).join('');
+        }
+
+        function renderLog() {
+            const list = document.getElementById('log-list');
+            if (!list) return;
+            const y = logCursor.getFullYear(), m = logCursor.getMonth();
+            const monthKey = `${y}-${String(m + 1).padStart(2, '0')}`;
+            const query = (document.getElementById('log-search')?.value || '').trim().toLowerCase();
+
+            const inMonth = logEntries.filter(e => e.date.startsWith(monthKey));
+            const openCount = logEntries.filter(e => e.status === 'open').length;
+            document.getElementById('log-title').innerHTML = `${y}년 ${m + 1}월 운영 일지${openCount ? `<span class="log-open-count">진행 중 ${openCount}건</span>` : ''}`;
+
+            const counts = { all: inMonth.length, open: inMonth.filter(e => e.status === 'open').length };
+            Object.keys(LOG_CATEGORIES).forEach(k => { counts[k] = inMonth.filter(e => e.category === k).length; });
+            const filters = [['all', '전체'], ['open', '진행 중'], ...Object.entries(LOG_CATEGORIES)];
+            document.getElementById('log-filter').innerHTML = filters.map(([key, label]) =>
+                `<button type="button" class="${logFilter === key ? 'active' : ''}" onclick="setLogFilter('${key}')">${label} ${counts[key]}</button>`).join('');
+
+            const shown = inMonth
+                .filter(e => logFilter === 'all' || (logFilter === 'open' ? e.status === 'open' : e.category === logFilter))
+                .filter(e => !query || e.content.toLowerCase().includes(query) || e.author.toLowerCase().includes(query))
+                .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
+
+            if (!shown.length) {
+                list.innerHTML = `<div class="log-empty">${inMonth.length ? '조건에 맞는 기록이 없습니다.' : '이 달에 기록된 운영 이슈가 없습니다.'}</div>`;
+                return;
+            }
+
+            const byDate = {};
+            shown.forEach(e => { (byDate[e.date] = byDate[e.date] || []).push(e); });
+            list.innerHTML = Object.entries(byDate).map(([iso, entries]) => {
+                const [yy, mm, dd] = iso.split('-').map(Number);
+                const date = new Date(yy, mm - 1, dd);
+                const dayCls = KR_HOLIDAYS[iso] ? 'holiday' : date.getDay() === 0 ? 'sun' : date.getDay() === 6 ? 'sat' : '';
+                const rows = entries.map(e => `
+                    <div class="log-entry ${e.status}" onclick="openLogModal('${e.id}')">
+                        <div class="log-entry-time">${e.time}</div>
+                        <div>
+                            <div class="log-entry-meta">
+                                <span class="log-cat ${e.category}">${LOG_CATEGORIES[e.category]}</span>
+                                <span class="log-status ${e.status}">${LOG_STATUS[e.status]}</span>
+                                <span class="log-entry-author">${smsEscape(e.author)}</span>
+                            </div>
+                            <div class="log-entry-content">${smsEscape(e.content)}</div>
+                        </div>
+                    </div>`).join('');
+                return `<div class="log-day">
+                    <div class="log-day-head">
+                        <span class="log-day-date ${dayCls}">${mm}월 ${dd}일 (${SMS_WEEKDAYS[date.getDay()]})</span>
+                        ${KR_HOLIDAYS[iso] ? `<span class="log-day-holiday">${KR_HOLIDAYS[iso]}</span>` : ''}
+                        <span class="log-day-staff">${logDayStaff(date)}</span>
+                    </div>${rows}</div>`;
+            }).join('');
+        }
+
+        // 기록 모달 (id가 있으면 수정, 없으면 새 기록)
+        function openLogModal(id) {
+            const existing = id ? logEntries.find(e => e.id === id) : null;
+            const now = new Date();
+            const onDuty = WORK_STAFF.find(s => ['open', 'close'].includes(workShiftFor(s, now).shift));
+            logModalState = existing ? { ...existing } : {
+                id: null,
+                date: smsTodayISO(),
+                time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
+                category: 'facility',
+                author: (onDuty || WORK_STAFF[0]).name,
+                status: 'open',
+                content: ''
+            };
+            document.getElementById('log-modal-title').innerText = existing ? '운영 이슈 수정' : '운영 이슈 기록';
+            document.getElementById('log-modal-time').value = logModalState.time;
+            document.getElementById('log-modal-content').value = logModalState.content;
+            document.getElementById('log-modal-delete').style.visibility = existing ? 'visible' : 'hidden';
+            document.getElementById('log-modal-password').value = '';
+            document.getElementById('log-modal-password-error').innerText = '';
+            document.getElementById('log-modal-password-group').style.display = workStorageGet(WORK_PASSWORD_KEY) ? 'none' : '';
+            renderLogModal();
+            document.getElementById('log-modal').style.display = 'flex';
+        }
+
+        function renderLogModal() {
+            const st = logModalState;
+            document.getElementById('log-modal-date').innerText = smsDateLabel(st.date);
+            const seg = (field, items) => items.map(([key, label]) =>
+                `<button type="button" class="${key === st[field] ? 'active' : ''}" onclick="setLogModalField('${field}', '${key}')">${label}</button>`).join('');
+            document.getElementById('log-modal-category').innerHTML = seg('category', Object.entries(LOG_CATEGORIES));
+            document.getElementById('log-modal-status').innerHTML = seg('status', Object.entries(LOG_STATUS));
+            document.getElementById('log-modal-author').innerHTML = seg('author', WORK_STAFF.map(s => [s.name, s.name]));
+        }
+
+        function setLogModalField(field, value) {
+            logModalState[field] = value;
+            renderLogModal();
+        }
+
+        function stepLogModalDate(delta) {
+            const [y, m, d] = logModalState.date.split('-').map(Number);
+            logModalState.date = smsToISO(new Date(y, m - 1, d + delta));
+            renderLogModal();
+        }
+
+        async function postLog(body) {
+            const typed = document.getElementById('log-modal-password').value;
+            const password = typed || workStorageGet(WORK_PASSWORD_KEY);
+            const errorEl = document.getElementById('log-modal-password-error');
+            errorEl.innerText = '';
+            if (!password) {
+                document.getElementById('log-modal-password-group').style.display = '';
+                errorEl.innerText = '수정 비밀번호를 입력해 주세요.';
+                return null;
+            }
+            const saveBtn = document.getElementById('log-modal-save');
+            saveBtn.disabled = true;
+            try {
+                const res = await fetch(LOG_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password, ...body })
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.status === 401) {
+                    workStorageSet(WORK_PASSWORD_KEY, null);
+                    document.getElementById('log-modal-password-group').style.display = '';
+                    document.getElementById('log-modal-password').value = '';
+                    errorEl.innerText = '비밀번호가 올바르지 않습니다.';
+                    return null;
+                }
+                if (!res.ok) throw new Error(data.error || '저장 실패');
+                workStorageSet(WORK_PASSWORD_KEY, password);
+                return data;
+            } catch (e) {
+                alert('서버에 저장하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.');
+                return null;
+            } finally {
+                saveBtn.disabled = false;
+            }
+        }
+
+        async function saveLogEntry() {
+            const st = logModalState;
+            const time = document.getElementById('log-modal-time').value;
+            const content = document.getElementById('log-modal-content').value.trim();
+            if (!time) return alert('시간을 입력해 주세요.');
+            if (!content) return alert('내용을 입력해 주세요.');
+            const entry = { date: st.date, time, category: st.category, author: st.author, status: st.status, content };
+            const data = await postLog({ action: 'save', id: st.id, entry });
+            if (!data) return;
+            logEntries = logEntries.filter(e => e.id !== data.entry.id).concat(data.entry);
+            workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
+            // 기록한 날짜의 달로 이동해서 바로 보이게
+            const [y, m] = data.entry.date.split('-').map(Number);
+            logCursor = new Date(y, m - 1, 1);
+            closeLogModal();
+            renderLog();
+        }
+
+        async function deleteLogEntry() {
+            if (!logModalState.id || !confirm('이 기록을 삭제할까요? 삭제하면 되돌릴 수 없습니다.')) return;
+            const data = await postLog({ action: 'delete', id: logModalState.id });
+            if (!data) return;
+            logEntries = logEntries.filter(e => e.id !== logModalState.id);
+            workStorageSet(LOG_CACHE_KEY, JSON.stringify(logEntries));
+            closeLogModal();
+            renderLog();
+        }
+
+        function closeLogModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('log-modal').style.display = 'none';
+        }
 
         function renderSmsCards() {
             const container = document.getElementById('sms-container');
@@ -2678,6 +3042,9 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             }
             if (tabId === 'work') {
                 fetchWorkOverrides();
+            }
+            if (tabId === 'log') {
+                fetchLogEntries();
             }
         }
 

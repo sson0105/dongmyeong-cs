@@ -1,35 +1,10 @@
-const crypto = require('crypto');
+const { redisConfig, redis, readHash, passwordMatches } = require('./_store');
 
-// 근무표 변경 일정 저장소 (Upstash Redis, Vercel Storage 연결 시 환경변수 자동 등록)
-// 해시 키 하나에 날짜별로 저장: field = 'YYYY-MM-DD', value = { staffId: { shift, memo, hourly? } }
+// 근무표 변경 일정: 해시 키 하나에 날짜별로 저장
+// field = 'YYYY-MM-DD', value = { staffId: { shift, memo, hourly? } }
 const HASH_KEY = 'dm:work:overrides';
 const VALID_SHIFTS = ['open', 'close', 'leave', 'off'];
 const VALID_STAFF = ['eunji', 'b', 'c', 'wonchang'];
-
-function redisConfig() {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  return url && token ? { url, token } : null;
-}
-
-async function redis(config, command) {
-  const response = await fetch(config.url, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${config.token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(command)
-  });
-  const data = await response.json();
-  if (!response.ok || data.error) throw new Error(data.error || 'Redis 요청 실패');
-  return data.result;
-}
-
-function passwordMatches(input) {
-  const expected = process.env.WORK_EDIT_PASSWORD;
-  if (!expected || typeof input !== 'string') return false;
-  const a = crypto.createHash('sha256').update(input).digest();
-  const b = crypto.createHash('sha256').update(expected).digest();
-  return crypto.timingSafeEqual(a, b);
-}
 
 function isValidEntry(entry) {
   if (!entry || !VALID_SHIFTS.includes(entry.shift)) return false;
@@ -51,10 +26,7 @@ module.exports = async (req, res) => {
 
   try {
     if (req.method === 'GET') {
-      const flat = (await redis(config, ['HGETALL', HASH_KEY])) || [];
-      const overrides = {};
-      for (let i = 0; i < flat.length; i += 2) overrides[flat[i]] = JSON.parse(flat[i + 1]);
-      return res.status(200).json({ overrides });
+      return res.status(200).json({ overrides: await readHash(config, HASH_KEY) });
     }
 
     if (req.method !== 'POST') {
