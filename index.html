@@ -708,7 +708,9 @@
             margin-top: 14px; background: var(--cal-surface); border: 1px solid var(--cal-line); border-radius: 8px;
             padding: 10px 12px; font-size: 12px; color: var(--cal-ink-2);
         }
-        .dp-auth-row { display: flex; gap: 6px; margin-top: 6px; }
+        .dp-auth-row { display: flex; gap: 6px; margin-top: 8px; }
+        .dp-auth-row .sms-control { flex: 1; min-width: 0; }
+        .dp-auth-row .dp-btn { height: 32px; padding: 0 16px; }
         .dp-auth-error { color: var(--cal-sun); font-size: 11px; margin-top: 4px; }
         .dp-staff { padding: 8px 0; border-bottom: 1px dashed var(--cal-line-2); }
         .dp-staff:last-child { border-bottom: none; }
@@ -737,6 +739,7 @@
         .dp-actions { display: flex; justify-content: flex-end; gap: 6px; }
         .dp-btn {
             height: 30px; padding: 0 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;
+            white-space: nowrap; flex-shrink: 0;
             border: 1px solid var(--cal-line); background: #fff; color: var(--cal-ink-2);
         }
         .dp-btn:hover { background: #f1f5f9; }
@@ -2610,7 +2613,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             // 비밀번호를 기억하고 있지 않으면 위에 입력칸
             document.getElementById('day-panel-auth').innerHTML = workStorageGet(WORK_PASSWORD_KEY) ? '' : `
                 <div class="dp-auth">
-                    근무를 바꾸거나 일지를 쓰려면 수정 비밀번호를 입력하세요. 한 번 입력하면 이 브라우저에서 기억해요.
+                    수정하려면 비밀번호를 입력하세요. 한 번 입력하면 이 브라우저에서 기억해요.
                     <div class="dp-auth-row">
                         <input type="password" id="dp-password" class="sms-control" placeholder="수정 비밀번호" autocomplete="off"
                             onkeydown="if (event.key === 'Enter') verifyDayPanelPassword()">
