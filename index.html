@@ -705,17 +705,12 @@
         .log-cat.complaint { background: #fff3d6; color: #92600a; }
         .log-cat.facility { background: #e9e8fb; color: #3d3a8c; }
         .log-cat.booking { background: #e6f4ee; color: #17663e; }
-        .log-status { font-size: 10.5px; font-weight: 800; }
-        .log-status.open { color: #b45309; }
-        .log-status.done { color: var(--cal-ink-4); }
-        .log-entry.done .log-entry-content { color: var(--cal-ink-3); }
         .log-empty { text-align: center; color: var(--cal-ink-4); font-size: 12.5px; padding: 40px 0; border: 1px dashed var(--cal-line); border-radius: 8px; }
         .log-textarea {
             width: 100%; padding: 8px 10px; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 13px;
             line-height: 1.6; outline: none; resize: vertical; font-family: inherit;
         }
         .log-textarea:focus { border-color: var(--cal-today-border); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-        .log-open-count { font-size: 12px; font-weight: 700; color: #b45309; margin-left: 8px; }
 
         /* 근무표 */
         .work-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
@@ -1190,7 +1185,7 @@
             <div class="work-header">
                 <div>
                     <div class="work-title" id="log-title"></div>
-                    <p class="text-xs text-slate-500 mt-1">시설 고장, 민원, 부상 등 그날 있었던 운영 이슈를 기록하고 처리 상태를 관리합니다.</p>
+                    <p class="text-xs text-slate-500 mt-1">시설 고장, 민원, 부상 등 그날 있었던 운영 이슈를 기록합니다.</p>
                     <p class="text-[11px] mt-1 flex items-center gap-2">
                         <span id="log-sync-status" class="text-slate-400"></span>
                         <button type="button" onclick="fetchLogEntries()" class="text-slate-500 hover:text-slate-900 underline underline-offset-2">새로고침</button>
@@ -1248,10 +1243,6 @@
             <div class="cal-form-group">
                 <label>작성자</label>
                 <div class="work-seg" id="log-modal-author"></div>
-            </div>
-            <div class="cal-form-group">
-                <label>처리 상태</label>
-                <div class="work-seg" id="log-modal-status"></div>
             </div>
             <div class="cal-form-group">
                 <label for="log-modal-content">내용</label>
@@ -2740,7 +2731,6 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             booking: '대관·예약',
             etc: '기타'
         };
-        const LOG_STATUS = { open: '진행 중', done: '처리 완료' };
 
         let logCursor = new Date();
         let logFilter = 'all';
@@ -2803,17 +2793,16 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const query = (document.getElementById('log-search')?.value || '').trim().toLowerCase();
 
             const inMonth = logEntries.filter(e => e.date.startsWith(monthKey));
-            const openCount = logEntries.filter(e => e.status === 'open').length;
-            document.getElementById('log-title').innerHTML = `${y}년 ${m + 1}월 운영 일지${openCount ? `<span class="log-open-count">진행 중 ${openCount}건</span>` : ''}`;
+            document.getElementById('log-title').innerText = `${y}년 ${m + 1}월 운영 일지`;
 
-            const counts = { all: inMonth.length, open: inMonth.filter(e => e.status === 'open').length };
+            const counts = { all: inMonth.length };
             Object.keys(LOG_CATEGORIES).forEach(k => { counts[k] = inMonth.filter(e => e.category === k).length; });
-            const filters = [['all', '전체'], ['open', '진행 중'], ...Object.entries(LOG_CATEGORIES)];
+            const filters = [['all', '전체'], ...Object.entries(LOG_CATEGORIES)];
             document.getElementById('log-filter').innerHTML = filters.map(([key, label]) =>
                 `<button type="button" class="${logFilter === key ? 'active' : ''}" onclick="setLogFilter('${key}')">${label} ${counts[key]}</button>`).join('');
 
             const shown = inMonth
-                .filter(e => logFilter === 'all' || (logFilter === 'open' ? e.status === 'open' : e.category === logFilter))
+                .filter(e => logFilter === 'all' || e.category === logFilter)
                 .filter(e => !query || e.content.toLowerCase().includes(query) || e.author.toLowerCase().includes(query))
                 .sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
 
@@ -2829,12 +2818,11 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 const date = new Date(yy, mm - 1, dd);
                 const dayCls = KR_HOLIDAYS[iso] ? 'holiday' : date.getDay() === 0 ? 'sun' : date.getDay() === 6 ? 'sat' : '';
                 const rows = entries.map(e => `
-                    <div class="log-entry ${e.status}" onclick="openLogModal('${e.id}')">
+                    <div class="log-entry" onclick="openLogModal('${e.id}')">
                         <div class="log-entry-time">${e.time}</div>
                         <div>
                             <div class="log-entry-meta">
                                 <span class="log-cat ${e.category}">${LOG_CATEGORIES[e.category]}</span>
-                                <span class="log-status ${e.status}">${LOG_STATUS[e.status]}</span>
                                 <span class="log-entry-author">${smsEscape(e.author)}</span>
                             </div>
                             <div class="log-entry-content">${smsEscape(e.content)}</div>
@@ -2860,7 +2848,6 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
                 category: 'facility',
                 author: (onDuty || WORK_STAFF[0]).name,
-                status: 'open',
                 content: ''
             };
             document.getElementById('log-modal-title').innerText = existing ? '운영 이슈 수정' : '운영 이슈 기록';
@@ -2880,7 +2867,6 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const seg = (field, items) => items.map(([key, label]) =>
                 `<button type="button" class="${key === st[field] ? 'active' : ''}" onclick="setLogModalField('${field}', '${key}')">${label}</button>`).join('');
             document.getElementById('log-modal-category').innerHTML = seg('category', Object.entries(LOG_CATEGORIES));
-            document.getElementById('log-modal-status').innerHTML = seg('status', Object.entries(LOG_STATUS));
             document.getElementById('log-modal-author').innerHTML = seg('author', WORK_STAFF.map(s => [s.name, s.name]));
         }
 
@@ -2938,7 +2924,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const content = document.getElementById('log-modal-content').value.trim();
             if (!time) return alert('시간을 입력해 주세요.');
             if (!content) return alert('내용을 입력해 주세요.');
-            const entry = { date: st.date, time, category: st.category, author: st.author, status: st.status, content };
+            const entry = { date: st.date, time, category: st.category, author: st.author, content };
             const data = await postLog({ action: 'save', id: st.id, entry });
             if (!data) return;
             logEntries = logEntries.filter(e => e.id !== data.entry.id).concat(data.entry);

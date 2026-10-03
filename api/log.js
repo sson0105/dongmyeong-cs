@@ -2,21 +2,20 @@ const crypto = require('crypto');
 const { redisConfig, redis, readHash, passwordMatches } = require('./_store');
 
 // 운영 일지: 해시 키 하나에 기록별로 저장
-// field = 기록 id, value = { id, date, time, category, author, status, content, createdAt, updatedAt }
+// field = 기록 id, value = { id, date, time, category, author, content, createdAt, updatedAt }
 const HASH_KEY = 'dm:log:entries';
 const VALID_CATEGORIES = ['facility', 'complaint', 'safety', 'booking', 'etc'];
-const VALID_STATUS = ['open', 'done'];
 const MAX_CONTENT = 2000;
 
 function cleanEntry(input) {
   if (!input || typeof input !== 'object') return null;
-  const { date, time, category, author, status, content } = input;
+  const { date, time, category, author, content } = input;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) return null;
   if (!/^\d{2}:\d{2}$/.test(time || '')) return null;
-  if (!VALID_CATEGORIES.includes(category) || !VALID_STATUS.includes(status)) return null;
+  if (!VALID_CATEGORIES.includes(category)) return null;
   if (typeof author !== 'string' || !author.trim() || author.length > 20) return null;
   if (typeof content !== 'string' || !content.trim() || content.length > MAX_CONTENT) return null;
-  return { date, time, category, author: author.trim(), status, content: content.trim() };
+  return { date, time, category, author: author.trim(), content: content.trim() };
 }
 
 module.exports = async (req, res) => {
