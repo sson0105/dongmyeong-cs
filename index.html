@@ -698,7 +698,8 @@
         .day-sheet-action:hover { background: #f1f5f9; }
         .day-sheet-action.primary { background: var(--cal-ink); border-color: var(--cal-ink); color: #fff; }
         .day-sheet-action.primary:hover { background: #1e293b; }
-        .day-sheet-work { display: flex; flex-direction: column; gap: 4px; }
+        .day-sheet-work { display: flex; flex-wrap: wrap; gap: 6px; }
+        .day-sheet-work .work-shift { flex: 0 0 auto; padding: 3px 8px; }
         .day-sheet-log { display: flex; flex-direction: column; gap: 6px; }
         .day-sheet-log .work-log-item-text { -webkit-line-clamp: unset; display: block; font-size: 12.5px; }
         .day-sheet-empty { font-size: 12px; color: var(--cal-ink-4); padding: 4px 0; }
