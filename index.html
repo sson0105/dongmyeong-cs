@@ -713,14 +713,6 @@
         .lp-icon:hover { background: #f1f5f9; color: var(--cal-ink); }
         .lp-status { font-size: 11px; font-weight: 700; color: #17663e; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
         .lp-status.show { opacity: 1; }
-        .lp-auth {
-            margin-bottom: 14px; background: var(--cal-surface); border: 1px solid var(--cal-line); border-radius: 8px;
-            padding: 10px 12px; font-size: 12px; color: var(--cal-ink-2);
-        }
-        .lp-auth-row { display: flex; gap: 6px; margin-top: 8px; }
-        .lp-auth-row .sms-control { flex: 1; min-width: 0; }
-        .lp-auth-row .lp-btn { height: 32px; padding: 0 16px; }
-        .lp-auth-error { color: var(--cal-sun); font-size: 11px; margin-top: 4px; }
         .lp-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
         .lp-list .work-log-item-text { -webkit-line-clamp: unset; display: block; font-size: 12.5px; white-space: pre-wrap; }
         .lp-empty { font-size: 12px; color: var(--cal-ink-4); padding: 4px 0; }
@@ -1220,7 +1212,6 @@
         <div class="modal-box log-popup" role="dialog" aria-label="운영 일지" onclick="event.stopPropagation()">
             <div class="log-popup-head" id="log-popup-head"></div>
             <div class="log-popup-body">
-                <div id="log-popup-auth"></div>
                 <div id="log-popup-list"></div>
             </div>
         </div>
@@ -2725,6 +2716,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         let logEditDraft = null;    // 수정 중인 일지 입력값
         let logNewDraft = null;     // 새 일지 입력값
         let logAuthError = '';
+        let logTypedPassword = '';  // 다시 그려도 입력한 비밀번호가 지워지지 않게
         let logFlashTimer = null;
 
         function logIsoToDate(iso) {
@@ -2751,6 +2743,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             if (logPopupIso !== iso || !logNewDraft) logNewDraft = freshLogDraft(iso);
             logPopupIso = iso;
             logAuthError = '';
+            logTypedPassword = '';
             logEditId = null;
             logEditDraft = null;
             if (existing) startLogEdit(existing.id, false);
@@ -2779,7 +2772,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             logFlashTimer = setTimeout(() => el.classList.remove('show'), 1600);
         }
 
-        function logForm(draftName, d, actions, contentId) {
+        function logForm(draftName, d, actions, contentId, extra = '') {
             const cats = Object.entries(LOG_CATEGORIES).map(([k, v]) => `<option value="${k}" ${k === d.category ? 'selected' : ''}>${v}</option>`).join('');
             const authors = WORK_STAFF.map(s => `<option value="${s.name}" ${s.name === d.author ? 'selected' : ''}>${s.name}</option>`).join('');
             return `<div class="lp-form">
@@ -2790,6 +2783,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 </div>
                 <textarea ${contentId ? `id="${contentId}"` : ''} class="log-textarea" rows="3" placeholder="예: 북측 골대 그물 하단 찢어짐. 시설팀에 수리 요청함."
                     oninput="${draftName}.content = this.value">${smsEscape(d.content)}</textarea>
+                ${extra}
                 <div class="lp-actions">${actions}</div>
             </div>`;
         }
@@ -2807,24 +2801,22 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 <span id="log-popup-status" class="lp-status"></span>
                 <button type="button" class="lp-icon" aria-label="닫기" onclick="closeLogModal()">✕</button>`;
 
-            // 비밀번호를 기억하고 있지 않으면 위에 입력칸
-            document.getElementById('log-popup-auth').innerHTML = workStorageGet(WORK_PASSWORD_KEY) ? '' : `
-                <div class="lp-auth">
-                    수정하려면 비밀번호를 입력하세요. 한 번 입력하면 이 브라우저에서 기억해요.
-                    <div class="lp-auth-row">
-                        <input type="password" id="log-password" class="sms-control" placeholder="수정 비밀번호" autocomplete="off"
-                            onkeydown="if (event.key === 'Enter') verifyLogPassword()">
-                        <button type="button" class="lp-btn primary" onclick="verifyLogPassword()">확인</button>
-                    </div>
-                    ${logAuthError ? `<div class="lp-auth-error">${logAuthError}</div>` : ''}
+            // 비밀번호를 기억하고 있지 않으면 근무 일정 등록과 같은 비밀번호 칸을 저장 버튼 바로 위에
+            const passwordField = workStorageGet(WORK_PASSWORD_KEY) ? '' : `
+                <div class="cal-form-group" style="margin: 2px 0 0;">
+                    <label for="log-password">수정 비밀번호</label>
+                    <input type="password" id="log-password" value="${smsEscape(logTypedPassword)}" placeholder="처음 한 번만 입력하면 이 브라우저에서 기억합니다" autocomplete="off"
+                        oninput="logTypedPassword = this.value">
+                    <span class="text-[11px]" style="color: var(--cal-sun);">${logAuthError}</span>
                 </div>`;
+            const editing = !!(logEditId && logEditDraft);
 
             const logs = logEntries.filter(e => e.date === iso).sort((a, b) => a.time.localeCompare(b.time));
             const list = logs.map(e => e.id === logEditId && logEditDraft
                 ? logForm('logEditDraft', logEditDraft, `
                     <button type="button" class="lp-btn danger" onclick="deleteLogEntry('${e.id}')">삭제</button>
                     <button type="button" class="lp-btn" onclick="cancelLogEdit()">취소</button>
-                    <button type="button" class="lp-btn primary" onclick="saveLogEdit('${e.id}')">저장</button>`)
+                    <button type="button" class="lp-btn primary" onclick="saveLogEdit('${e.id}')">저장</button>`, null, passwordField)
                 : `<div class="work-log-item" onclick="startLogEdit('${e.id}')" title="눌러서 수정">
                     <div class="work-log-item-meta"><span>${e.time}</span><span class="log-cat ${e.category}">${LOG_CATEGORIES[e.category]}</span><span>${smsEscape(e.author)}</span></div>
                     <div class="work-log-item-text">${smsEscape(e.content)}</div>
@@ -2832,34 +2824,14 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             document.getElementById('log-popup-list').innerHTML = `
                 <div class="lp-list">${list || '<div class="lp-empty">기록된 운영 이슈가 없습니다.</div>'}</div>
                 <div class="lp-label">새 일지</div>
-                ${logForm('logNewDraft', logNewDraft, `<button type="button" class="lp-btn primary" onclick="addLogEntry()">일지 추가</button>`, 'log-new-content')}`;
-        }
-
-        async function verifyLogPassword() {
-            const password = document.getElementById('log-password').value;
-            if (!password) return;
-            try {
-                const res = await fetch(WORK_API, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password, action: 'verify' })
-                });
-                if (res.status === 401) { logAuthError = '비밀번호가 맞지 않아요.'; return renderLogPopup(); }
-                if (!res.ok) throw new Error();
-                workStorageSet(WORK_PASSWORD_KEY, password);
-                logAuthError = '';
-                renderLogPopup();
-            } catch (e) {
-                logAuthError = '서버에 연결할 수 없어요. 잠시 후 다시 시도해 주세요.';
-                renderLogPopup();
-            }
+                ${logForm('logNewDraft', logNewDraft, `<button type="button" class="lp-btn primary" onclick="addLogEntry()">일지 추가</button>`, 'log-new-content', editing ? '' : passwordField)}`;
         }
 
         // 수정 비밀번호가 필요한 일지 저장 요청. 실패하면 null
         async function postLog(body) {
-            const password = workStorageGet(WORK_PASSWORD_KEY);
+            const password = logTypedPassword || workStorageGet(WORK_PASSWORD_KEY);
             if (!password) {
-                logAuthError = '수정하려면 비밀번호를 먼저 입력해 주세요.';
+                logAuthError = '수정 비밀번호를 입력해 주세요.';
                 renderLogPopup();
                 document.getElementById('log-password')?.focus();
                 return null;
@@ -2873,11 +2845,15 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 const data = await res.json().catch(() => ({}));
                 if (res.status === 401) {
                     workStorageSet(WORK_PASSWORD_KEY, null);
-                    logAuthError = '비밀번호가 맞지 않아요. 다시 입력해 주세요.';
+                    logTypedPassword = '';
+                    logAuthError = '비밀번호가 올바르지 않습니다.';
                     renderLogPopup();
                     return null;
                 }
                 if (!res.ok) throw new Error(data.error || '저장 실패');
+                workStorageSet(WORK_PASSWORD_KEY, password);
+                logTypedPassword = '';
+                logAuthError = '';
                 return data;
             } catch (e) {
                 alert('서버에 저장하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.');
