@@ -1,10 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#15803d"/>
-  <rect x="6" y="6" width="52" height="52" rx="9" fill="#16a34a"/>
-  <rect x="10" y="10" width="44" height="44" fill="#16a34a" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/>
-  <line x1="10" y1="32" x2="54" y2="32" stroke="#fff" stroke-width="2.6"/>
-  <circle cx="32" cy="32" r="7.5" fill="none" stroke="#fff" stroke-width="2.6"/>
-  <circle cx="32" cy="32" r="1.9" fill="#fff"/>
-  <rect x="22" y="10" width="20" height="8" fill="none" stroke="#fff" stroke-width="2.6"/>
-  <rect x="22" y="46" width="20" height="8" fill="none" stroke="#fff" stroke-width="2.6"/>
+  <rect width="64" height="64" rx="14" fill="#0f172a"/>
+  <path fill="#fff" transform="translate(13.90 40.48) scale(0.01527 -0.01527)" d="M634 -21C922 -21 1115 134 1150 384L828 436C807 315 741 246 638 246C504 246 428 365 428 557C428 750 504 865 638 865C741 865 805 798 827 681L1149 735C1114 978 919 1132 634 1132C284 1132 72 900 72 555C72 211 284 -21 634 -21Z M1775 -21C2080 -21 2299 127 2299 357C2299 519 2192 617 1970 659L1756 699C1660 718 1630 753 1630 798C1630 855 1696 892 1780 892C1874 892 1938 848 1959 773L2267 822C2228 1014 2054 1132 1774 1132C1474 1132 1282 1000 1282 777C1282 606 1392 497 1613 455L1808 417C1901 398 1945 369 1945 317C1945 260 1886 224 1788 224C1669 224 1606 274 1578 371L1254 320C1293 106 1489 -21 1775 -21Z"/>
 </svg>
