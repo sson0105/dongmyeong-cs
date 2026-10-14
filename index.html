@@ -937,6 +937,8 @@
                 page-break-after: avoid !important;
                 page-break-before: avoid !important;
                 box-sizing: border-box !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
         }
 
@@ -3982,7 +3984,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
     <!-- REACT CALENDAR GENERATOR SCRIPT (신규 로직 전면 통합) -->
     <script type="text/babel">
-        const { useState, useMemo } = React;
+        const { useState, useMemo, useEffect } = React;
 
         const SUMMER_PARTS = ['1부', '2부', '3부', '4부', '5부', '6부'];
         const WINTER_PARTS = ['1부', '2부', '3부', '4부', '5부'];
@@ -4017,6 +4019,10 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const [fileName, setFileName] = useState('');
             const [alertMsg, setAlertMsg] = useState('');
             const [isDragging, setIsDragging] = useState(false);
+            // 연동 캘린더(구글 시트)의 종일 대관 일정: { 'YYYY-MM-DD': [{ title, status }] }
+            const [fullDayMap, setFullDayMap] = useState({});
+            const [syncState, setSyncState] = useState('idle'); // idle | loading | ok | noauth | error
+            const [syncTick, setSyncTick] = useState(0);
 
             const processFileBuffer = (buffer, name) => {
                 try {
@@ -4173,6 +4179,54 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 reader.readAsArrayBuffer(file);
             };
 
+            // 엑셀 월이 정해지면 같은 달 연동 캘린더에서 '종일' 일정을 가져옴
+            useEffect(() => {
+                if (!yearMonth) return;
+                const token = typeof getStoredAuth === 'function' ? getStoredAuth() : '';
+                if (!token) { setFullDayMap({}); setSyncState('noauth'); return; }
+
+                const [y, m] = yearMonth.split('-').map(Number);
+                const sheetName = `${y}년 ${m}월`;
+                const toMap = (list) => {
+                    const map = {};
+                    (Array.isArray(list) ? list : []).forEach(ev => {
+                        const raw = ev.extendedProps?.rawTime || '';
+                        const status = ev.extendedProps?.status || '';
+                        if (!raw.includes('종일') || status.includes('취소')) return;
+                        const date = String(ev.start || '').substring(0, 10);
+                        if (!date.startsWith(yearMonth)) return;
+                        (map[date] = map[date] || []).push({
+                            title: String(ev.title || '').replace(/\[.*?\]\s*/, '').trim(),
+                            status
+                        });
+                    });
+                    return map;
+                };
+
+                const cached = calDataCache[sheetName];
+                if (syncTick === 0 && cached && Date.now() - cached.timestamp < 300000) {
+                    setFullDayMap(toMap(cached.data));
+                    setSyncState('ok');
+                    return;
+                }
+
+                let cancelled = false;
+                setSyncState('loading');
+                fetch(`${CAL_API_ENDPOINT}?sheet=${encodeURIComponent(sheetName)}&auth=${encodeURIComponent(token)}&_t=${Date.now()}`, { redirect: 'follow' })
+                    .then(res => res.json())
+                    .then(list => {
+                        if (cancelled) return;
+                        if (!Array.isArray(list)) throw new Error('invalid');
+                        calDataCache[sheetName] = { data: list, timestamp: Date.now() };
+                        setFullDayMap(toMap(list));
+                        setSyncState('ok');
+                    })
+                    .catch(() => { if (!cancelled) { setFullDayMap({}); setSyncState('error'); } });
+                return () => { cancelled = true; };
+            }, [yearMonth, syncTick]);
+
+            const fullDayCount = Object.values(fullDayMap).reduce((n, arr) => n + arr.length, 0);
+
             const isWinter = useMemo(() => {
                 if (!yearMonth) return false;
                 const month = parseInt(yearMonth.split('-')[1], 10);
@@ -4273,6 +4327,16 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                         파일 변경
                                     </label>
                                     <input type="file" accept=".xls,.xlsx" onChange={handleFileUpload} id="reUpload" className="hidden" />
+                                    <span className="text-slate-300">|</span>
+                                    {syncState === 'loading' && <span className="text-xs text-slate-500 font-semibold">종일 일정 불러오는 중...</span>}
+                                    {syncState === 'ok' && <span className="text-xs px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-800">종일 대관 {fullDayCount}건 반영</span>}
+                                    {syncState === 'noauth' && <span className="text-xs px-2 py-0.5 rounded font-bold bg-slate-100 text-slate-600">대관 캘린더 탭에서 로그인하면 종일 일정도 반영돼요</span>}
+                                    {syncState === 'error' && <span className="text-xs px-2 py-0.5 rounded font-bold bg-red-100 text-red-700">종일 일정 불러오기 실패</span>}
+                                    {syncState !== 'loading' && (
+                                        <button onClick={() => setSyncTick(t => t + 1)} className="text-xs text-blue-600 hover:underline font-semibold">
+                                            다시 불러오기
+                                        </button>
+                                    )}
                                 </div>
 
                                 <button 
@@ -4337,8 +4401,27 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                                     ) : <span />}
                                                 </div>
                                                 
-                                                {/* 1부~6부 슬롯 + 12시 독립 점선 분할 */}
-                                                {item.day ? (
+                                                {/* 종일 대관: 슬롯 대신 하루 전체 블록 */}
+                                                {item.day && fullDayMap[item.dateStr] ? (() => {
+                                                    const list = fullDayMap[item.dateStr];
+                                                    const overlap = Object.keys(dayObj || {}).length;
+                                                    return (
+                                                        <div className="flex-1 flex flex-col justify-center items-center text-center gap-[2px] px-1 rounded-[1px] bg-amber-50 border border-amber-300 overflow-hidden">
+                                                            <span className="text-[9px] font-black text-amber-700 tracking-wider">종일 대관</span>
+                                                            {list.map((fd, i) => (
+                                                                <span key={i} className="text-[10.5px] font-bold text-slate-950 leading-tight break-keep" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }} title={fd.title}>
+                                                                    {fd.title}
+                                                                </span>
+                                                            ))}
+                                                            {list.some(fd => !fd.status.includes('완료')) && (
+                                                                <span className="text-[8.5px] font-semibold text-amber-700">({list.map(fd => fd.status).filter(st => !st.includes('완료')).join(', ')})</span>
+                                                            )}
+                                                            {overlap > 0 && (
+                                                                <span className="no-print text-[8.5px] font-bold text-red-600">엑셀 예약 {overlap}건 겹침</span>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })() : item.day ? (
                                                     <div className="flex flex-col justify-between flex-1 h-full">
                                                         {/* 오전 그룹 (1부, 2부) */}
                                                         <div className="flex flex-col justify-between flex-1">
@@ -4401,7 +4484,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
                                 {/* 푸터 */}
                                 <div className="text-[8.5px] text-slate-400 pt-0.5 border-t border-slate-100 flex justify-between shrink-0">
-                                    <span>* 굵은 점선 기준 상단: 오전(08:00~12:00) / 하단: 오후(12:00 이후)</span>
+                                    <span>* 굵은 점선 기준 상단: 오전(08:00~12:00) / 하단: 오후(12:00 이후) · 노란 칸: 종일 대관(행사)</span>
                                     <span>동명근린공원 축구장 현장 관리용</span>
                                 </div>
 
