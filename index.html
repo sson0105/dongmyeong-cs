@@ -891,9 +891,11 @@
         .btn-footer-refresh:hover { background: #f1f5f9; color: var(--cal-ink); }
 
         /* GENERATOR TAB PRINT & LAYOUT STYLES */
+        /* 프린터는 용지 가장자리 몇 mm를 인쇄하지 못하므로, 용지 여백 6mm를 두고
+           그 안쪽(285 x 198mm)에 달력을 왼쪽 위 기준으로 고정해 잘림을 막는다. */
         @page {
             size: A4 landscape;
-            margin: 0 !important;
+            margin: 6mm !important;
         }
         @media print {
             header, footer, #live-status-container, #live-clock-display, #tab-qa, #tab-calendar, #chatbot-wrapper, .no-print {
@@ -901,42 +903,76 @@
             }
             
             html, body {
-                width: 297mm !important;
-                height: 210mm !important;
-                max-height: 210mm !important;
+                width: 285mm !important;
+                height: 198mm !important;
+                max-height: 198mm !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 background: #ffffff !important;
-                overflow: hidden !important;
+                overflow: visible !important;
             }
+
+            body { display: block !important; min-height: 0 !important; }
 
             main {
                 padding: 0 !important;
                 margin: 0 !important;
-                max-width: 100% !important;
+                width: 285mm !important;
+                max-width: none !important;
             }
 
             #tab-generator {
                 display: block !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                width: 297mm !important;
-                height: 210mm !important;
-                overflow: hidden !important;
+                width: 285mm !important;
+                height: 198mm !important;
+                overflow: visible !important;
             }
 
+            /* 화면용 가운데 정렬(flex)을 풀어서 달력이 왼쪽으로 밀려 잘리지 않게 함 */
+            #generator-root, #generator-root > div {
+                display: block !important;
+                width: 285mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* 인쇄용 달력 바깥 틀 (두께 1.4px)
+               크롬은 테두리 두께를 정수 px로 내림해서 1.4px가 1px이 되므로, 내림되지 않는 그림자로 틀을 그린다.
+               격자 끝 칸의 오른쪽·아래 1px 선은 빼서 틀과 겹쳐 두꺼워지지 않게 한다. */
+            .print-page .gen-grid,
+            .print-page .gen-dow {
+                border-left: 0 !important;
+                border-right: 0 !important;
+            }
+            .print-page .gen-dow {
+                box-shadow: -1.4px 0 0 0 #cbd5e1, 1.4px 0 0 0 #cbd5e1 !important;
+            }
+            .print-page .gen-grid {
+                border-top: 0 !important;
+                border-bottom: 0 !important;
+                box-shadow: -1.4px 0 0 0 #cbd5e1, 1.4px 0 0 0 #cbd5e1, 0 1.4px 0 0 #cbd5e1,
+                            -1.4px 1.4px 0 0 #cbd5e1, 1.4px 1.4px 0 0 #cbd5e1 !important;
+            }
+            .print-page .gen-grid > div:nth-child(7n) { border-right-width: 0 !important; }
+            .print-page .gen-grid > div:nth-last-child(-n+7) { border-bottom-width: 0 !important; }
+
             .print-page {
-                width: 297mm !important;
-                height: 204mm !important;
-                max-height: 204mm !important;
-                margin: 0 auto !important;
-                padding: 4mm 7mm !important;
+                width: 281mm !important;
+                height: 194mm !important;
+                max-height: 194mm !important;
+                margin: 0 0 0 2mm !important;
+                padding: 1mm 2.5mm !important;
+                overflow: visible !important;
                 box-shadow: none !important;
                 border: none !important;
                 page-break-inside: avoid !important;
                 page-break-after: avoid !important;
                 page-break-before: avoid !important;
                 box-sizing: border-box !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
         }
 
@@ -945,6 +981,10 @@
             height: 210mm;
             max-height: 210mm;
             box-sizing: border-box;
+        }
+        /* 캘린더 생성기: 안의 모든 글씨를 프리텐다드로 통일 */
+        .gen-font, .gen-font * {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
         }
         .noon-divider {
             border-bottom: 2.3px dashed #c9c9c9 !important;
@@ -1166,7 +1206,7 @@
 
         <!-- TAB 3: CALENDAR GENERATOR TAB (교체 적용 완료) -->
         <section id="tab-generator" class="tab-content hidden space-y-4">
-            <div id="generator-root" class="w-full flex justify-center"></div>
+            <div id="generator-root" class="gen-font w-full flex justify-center"></div>
         </section>
 
         <!-- TAB 4: SMS TEMPLATES -->
@@ -3982,7 +4022,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
     <!-- REACT CALENDAR GENERATOR SCRIPT (신규 로직 전면 통합) -->
     <script type="text/babel">
-        const { useState, useMemo } = React;
+        const { useState, useMemo, useEffect } = React;
 
         const SUMMER_PARTS = ['1부', '2부', '3부', '4부', '5부', '6부'];
         const WINTER_PARTS = ['1부', '2부', '3부', '4부', '5부'];
@@ -4017,6 +4057,39 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const [fileName, setFileName] = useState('');
             const [alertMsg, setAlertMsg] = useState('');
             const [isDragging, setIsDragging] = useState(false);
+            // 캘린더를 만든 시점(엑셀을 올린 시각). 이후 취소·변경 건이 있을 수 있어 출력물에 표기
+            const [generatedAt, setGeneratedAt] = useState(null);
+            // 연동 캘린더(구글 시트)의 종일 대관 일정: { 'YYYY-MM-DD': [{ title, status }] }
+            const [fullDayMap, setFullDayMap] = useState({});
+            const [syncState, setSyncState] = useState('idle'); // idle | loading | ok | noauth | error
+            const [syncTick, setSyncTick] = useState(0);
+            // 생성기 화면에서 바로 연동 캘린더 로그인 (대관 캘린더 탭과 같은 비밀번호·같은 저장소 사용)
+            const [authPw, setAuthPw] = useState('');
+            const [authBusy, setAuthBusy] = useState(false);
+            const [authErr, setAuthErr] = useState('');
+
+            const handleInlineAuth = async (e) => {
+                e.preventDefault();
+                const pw = authPw.trim();
+                if (!pw || authBusy) return;
+                setAuthBusy(true);
+                setAuthErr('');
+                try {
+                    const res = await fetch(`${CAL_API_ENDPOINT}?type=checkAuth&auth=${encodeURIComponent(pw)}`, { redirect: 'follow' });
+                    const data = await res.json();
+                    if (data && data.authenticated) {
+                        sessionStorage.setItem('dm_calendar_token', pw);
+                        setAuthPw('');
+                        setSyncTick(t => t + 1);
+                    } else {
+                        setAuthErr('비밀번호가 맞지 않아요');
+                    }
+                } catch (err) {
+                    setAuthErr('연결에 실패했어요. 잠시 후 다시 시도해 주세요');
+                } finally {
+                    setAuthBusy(false);
+                }
+            };
 
             const processFileBuffer = (buffer, name) => {
                 try {
@@ -4141,6 +4214,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                         ymCounts[a] >= ymCounts[b] ? a : b, parsedList[0].date.substring(0, 7)
                     );
                     setYearMonth(mainYm);
+                    setGeneratedAt(new Date());
 
                 } catch (err) {
                     console.error(err);
@@ -4172,6 +4246,54 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 };
                 reader.readAsArrayBuffer(file);
             };
+
+            // 엑셀 월이 정해지면 같은 달 연동 캘린더에서 '종일' 일정을 가져옴
+            useEffect(() => {
+                if (!yearMonth) return;
+                const token = typeof getStoredAuth === 'function' ? getStoredAuth() : '';
+                if (!token) { setFullDayMap({}); setSyncState('noauth'); return; }
+
+                const [y, m] = yearMonth.split('-').map(Number);
+                const sheetName = `${y}년 ${m}월`;
+                const toMap = (list) => {
+                    const map = {};
+                    (Array.isArray(list) ? list : []).forEach(ev => {
+                        const raw = ev.extendedProps?.rawTime || '';
+                        const status = ev.extendedProps?.status || '';
+                        if (!raw.includes('종일') || status.includes('취소')) return;
+                        const date = String(ev.start || '').substring(0, 10);
+                        if (!date.startsWith(yearMonth)) return;
+                        (map[date] = map[date] || []).push({
+                            title: String(ev.title || '').replace(/\[.*?\]\s*/, '').trim(),
+                            status
+                        });
+                    });
+                    return map;
+                };
+
+                const cached = calDataCache[sheetName];
+                if (syncTick === 0 && cached && Date.now() - cached.timestamp < 300000) {
+                    setFullDayMap(toMap(cached.data));
+                    setSyncState('ok');
+                    return;
+                }
+
+                let cancelled = false;
+                setSyncState('loading');
+                fetch(`${CAL_API_ENDPOINT}?sheet=${encodeURIComponent(sheetName)}&auth=${encodeURIComponent(token)}&_t=${Date.now()}`, { redirect: 'follow' })
+                    .then(res => res.json())
+                    .then(list => {
+                        if (cancelled) return;
+                        if (!Array.isArray(list)) throw new Error('invalid');
+                        calDataCache[sheetName] = { data: list, timestamp: Date.now() };
+                        setFullDayMap(toMap(list));
+                        setSyncState('ok');
+                    })
+                    .catch(() => { if (!cancelled) { setFullDayMap({}); setSyncState('error'); } });
+                return () => { cancelled = true; };
+            }, [yearMonth, syncTick]);
+
+            const fullDayCount = Object.values(fullDayMap).reduce((n, arr) => n + arr.length, 0);
 
             const isWinter = useMemo(() => {
                 if (!yearMonth) return false;
@@ -4265,7 +4387,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                             <div className="no-print w-[297mm] bg-white p-2.5 rounded-lg shadow-sm border border-slate-200 mb-3 flex items-center justify-between">
                                 <div className="flex items-center space-x-3">
                                     <span className="text-xs font-bold text-slate-500">등록 파일:</span>
-                                    <span className="text-xs bg-slate-100 text-slate-800 px-2.5 py-0.5 rounded font-mono truncate max-w-xs">{fileName}</span>
+                                    <span className="text-xs bg-slate-100 text-slate-800 px-2.5 py-0.5 rounded truncate max-w-xs">{fileName}</span>
                                     <span className={`text-xs px-2 py-0.5 rounded font-bold ${isWinter ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}`}>
                                         {isWinter ? '동절기 운영 (1~5부)' : '하절기 운영 (1~6부)'}
                                     </span>
@@ -4273,6 +4395,37 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                         파일 변경
                                     </label>
                                     <input type="file" accept=".xls,.xlsx" onChange={handleFileUpload} id="reUpload" className="hidden" />
+                                    <span className="text-slate-300">|</span>
+                                    {syncState === 'loading' && <span className="text-xs text-slate-500 font-semibold">종일 일정 불러오는 중...</span>}
+                                    {syncState === 'ok' && <span className="text-xs px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-800">종일 대관 {fullDayCount}건 반영</span>}
+                                    {syncState === 'noauth' && (
+                                        <form onSubmit={handleInlineAuth} className="flex items-center gap-1.5">
+                                            <span className="text-xs font-bold text-slate-600">종일 대관 불러오기</span>
+                                            <input
+                                                type="password"
+                                                id="gen-auth-input"
+                                                value={authPw}
+                                                onChange={(e) => { setAuthPw(e.target.value); setAuthErr(''); }}
+                                                placeholder="대관 캘린더 비밀번호"
+                                                autoComplete="current-password"
+                                                className={`w-36 text-xs px-2 py-1 rounded border outline-none focus:ring-2 focus:ring-blue-200 ${authErr ? 'border-red-400' : 'border-slate-300'}`}
+                                            />
+                                            <button
+                                                type="submit"
+                                                disabled={authBusy || !authPw.trim()}
+                                                className="text-xs font-bold px-2.5 py-1 rounded bg-slate-800 text-white hover:bg-slate-900 disabled:opacity-40 transition"
+                                            >
+                                                {authBusy ? '확인 중...' : '불러오기'}
+                                            </button>
+                                            {authErr && <span className="text-xs font-semibold text-red-600">{authErr}</span>}
+                                        </form>
+                                    )}
+                                    {syncState === 'error' && <span className="text-xs px-2 py-0.5 rounded font-bold bg-red-100 text-red-700">종일 일정 불러오기 실패</span>}
+                                    {syncState !== 'loading' && syncState !== 'noauth' && (
+                                        <button onClick={() => setSyncTick(t => t + 1)} className="text-xs text-blue-600 hover:underline font-semibold">
+                                            다시 불러오기
+                                        </button>
+                                    )}
                                 </div>
 
                                 <button 
@@ -4297,11 +4450,11 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                             }
                                         </span>
                                     </div>
-                                    <span className="text-base font-black text-blue-900 tracking-wider font-mono">{yearMonth}</span>
+                                    <span className="text-base font-black text-blue-900 tracking-wider tabular-nums">{yearMonth}</span>
                                 </div>
 
                                 {/* 요일 헤더 바 */}
-                                <div className="grid grid-cols-7 border-b border-slate-400 text-center font-bold text-[11px] py-0.5 bg-slate-100 shrink-0">
+                                <div className="gen-dow grid grid-cols-7 border-b border-slate-400 text-center font-black text-[14px] py-1 bg-slate-100 shrink-0">
                                     <div className="text-red-600">일</div>
                                     <div>월</div>
                                     <div>화</div>
@@ -4313,7 +4466,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
                                 {/* 달력 본체 그리드 */}
                                 <div 
-                                    className="grid grid-cols-7 border-l border-t border-slate-300 flex-1"
+                                    className="gen-grid grid grid-cols-7 border-l border-t border-slate-300 flex-1"
                                     style={{
                                         gridTemplateRows: `repeat(${totalWeeks}, minmax(0, 1fr))`
                                     }}
@@ -4331,65 +4484,57 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                                 {/* 날짜 헤더 */}
                                                 <div className="flex justify-between items-center px-0.5 mb-[1px]">
                                                     {item.day ? (
-                                                        <span className={`font-black text-[11.5px] leading-none ${isSun ? 'text-red-500' : isSat ? 'text-blue-600' : 'text-slate-800'}`}>
+                                                        <span className={`font-black text-[15px] leading-none ${isSun ? 'text-red-500' : isSat ? 'text-blue-600' : 'text-slate-800'}`}>
                                                             {item.day}
                                                         </span>
                                                     ) : <span />}
                                                 </div>
                                                 
-                                                {/* 1부~6부 슬롯 + 12시 독립 점선 분할 */}
-                                                {item.day ? (
-                                                    <div className="flex flex-col justify-between flex-1 h-full">
-                                                        {/* 오전 그룹 (1부, 2부) */}
-                                                        <div className="flex flex-col justify-between flex-1">
-                                                            {['1부', '2부'].map((part) => {
-                                                                const ev = dayObj ? dayObj[part] : null;
-                                                                return (
-                                                                    <div 
-                                                                        key={part} 
-                                                                        className={`flex items-center px-1 rounded-[1px] leading-none h-[48%] overflow-hidden ${
-                                                                            ev 
-                                                                                ? 'bg-blue-50/90 border border-blue-200 text-slate-950 font-bold' 
-                                                                                : 'bg-slate-50/40 border border-slate-100 text-slate-300'
-                                                                        }`}
-                                                                    >
-                                                                        <span className={`text-[9px] font-black mr-1 shrink-0 ${ev ? 'text-blue-700' : 'text-slate-300'}`}>
-                                                                            {part.replace('부', '')}
-                                                                        </span>
-                                                                        <span className="text-[10.5px] tracking-tight truncate flex-1" title={ev ? ev.team : ''}>
-                                                                            {ev ? ev.team : ''}
-                                                                        </span>
-                                                                    </div>
-                                                                );
-                                                            })}
+                                                {/* 종일 대관: 슬롯 대신 빨간 글씨로 대관명 표기 */}
+                                                {item.day && fullDayMap[item.dateStr] ? (() => {
+                                                    const list = fullDayMap[item.dateStr];
+                                                    const overlap = Object.keys(dayObj || {}).length;
+                                                    return (
+                                                        <div className="flex-1 flex flex-col items-start text-left gap-[2px] px-0.5 pt-0.5 overflow-hidden">
+                                                            {list.map((fd, i) => (
+                                                                <span key={i} className="text-[11px] font-bold text-red-600 leading-snug break-keep" style={{ display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }} title={fd.title}>
+                                                                    {fd.title}
+                                                                </span>
+                                                            ))}
+                                                            {list.some(fd => !fd.status.includes('완료')) && (
+                                                                <span className="text-[8.5px] font-semibold text-red-400">({list.map(fd => fd.status).filter(st => !st.includes('완료')).join(', ')})</span>
+                                                            )}
+                                                            {overlap > 0 && (
+                                                                <span className="no-print text-[8.5px] font-bold text-red-600">엑셀 예약 {overlap}건 겹침</span>
+                                                            )}
                                                         </div>
-
-                                                        {/* 12시 독립 점선 */}
-                                                        <div className="noon-divider"></div>
-
-                                                        {/* 오후 그룹 (3부 ~ 5/6부) */}
-                                                        <div className="flex flex-col justify-between flex-[2]">
-                                                            {activeParts.slice(2).map((part) => {
-                                                                const ev = dayObj ? dayObj[part] : null;
-                                                                return (
-                                                                    <div 
-                                                                        key={part} 
-                                                                        className={`flex items-center px-1 rounded-[1px] leading-none my-[0.5px] flex-1 overflow-hidden ${
-                                                                            ev 
-                                                                                ? 'bg-blue-50/90 border border-blue-200 text-slate-950 font-bold' 
-                                                                                : 'bg-slate-50/40 border border-slate-100 text-slate-300'
-                                                                        }`}
-                                                                    >
-                                                                        <span className={`text-[9px] font-black mr-1 shrink-0 ${ev ? 'text-blue-700' : 'text-slate-300'}`}>
-                                                                            {part.replace('부', '')}
-                                                                        </span>
-                                                                        <span className="text-[10.5px] tracking-tight truncate flex-1" title={ev ? ev.team : ''}>
-                                                                            {ev ? ev.team : ''}
-                                                                        </span>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
+                                                    );
+                                                })() : item.day ? (
+                                                    <div
+                                                        className="grid flex-1 min-h-0 gap-[1px]"
+                                                        style={{ gridTemplateRows: `repeat(${activeParts.length}, minmax(0, 1fr))` }}
+                                                    >
+                                                        {/* 1부 ~ 5/6부: 모든 칸 같은 높이 */}
+                                                        {activeParts.map((part) => {
+                                                            const ev = dayObj ? dayObj[part] : null;
+                                                            return (
+                                                                <div 
+                                                                    key={part} 
+                                                                    className={`flex items-center px-1 rounded-[1px] leading-none min-h-0 overflow-hidden ${
+                                                                        ev 
+                                                                            ? 'bg-slate-700 border border-slate-700 text-white font-medium' 
+                                                                            : 'bg-slate-50/40 border border-slate-100 text-slate-300'
+                                                                    }`}
+                                                                >
+                                                                    <span className={`text-[9px] mr-1 shrink-0 ${ev ? 'font-semibold text-slate-300' : 'font-black text-slate-300'}`}>
+                                                                        {part.replace('부', '')}
+                                                                    </span>
+                                                                    <span className="text-[10.5px] tracking-normal truncate flex-1" title={ev ? ev.team : ''}>
+                                                                        {ev ? ev.team : ''}
+                                                                    </span>
+                                                                </div>
+                                                            );
+                                                        })}
                                                     </div>
                                                 ) : (
                                                     <div className="flex-1 bg-slate-50/30" />
@@ -4400,9 +4545,15 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 </div>
 
                                 {/* 푸터 */}
-                                <div className="text-[8.5px] text-slate-400 pt-0.5 border-t border-slate-100 flex justify-between shrink-0">
-                                    <span>* 굵은 점선 기준 상단: 오전(08:00~12:00) / 하단: 오후(12:00 이후)</span>
-                                    <span>동명근린공원 축구장 현장 관리용</span>
+                                <div className="text-[11px] font-medium text-slate-500 pt-1 border-t border-slate-100 flex justify-end shrink-0">
+                                    <span>
+                                        {generatedAt && (() => {
+                                            const d = generatedAt;
+                                            const p2 = (n) => String(n).padStart(2, '0');
+                                            const dow = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
+                                            return <span className="tabular-nums">{`${d.getFullYear()}.${p2(d.getMonth() + 1)}.${p2(d.getDate())}(${dow}) ${p2(d.getHours())}:${p2(d.getMinutes())} 기준 생성`}</span>;
+                                        })()}
+                                    </span>
                                 </div>
 
                             </div>
