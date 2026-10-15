@@ -948,6 +948,10 @@
             max-height: 210mm;
             box-sizing: border-box;
         }
+        /* 캘린더 생성기: 안의 모든 글씨를 프리텐다드로 통일 */
+        .gen-font, .gen-font * {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
+        }
         .noon-divider {
             border-bottom: 2.3px dashed #c9c9c9 !important;
             margin-top: 1px !important;
@@ -1168,7 +1172,7 @@
 
         <!-- TAB 3: CALENDAR GENERATOR TAB (교체 적용 완료) -->
         <section id="tab-generator" class="tab-content hidden space-y-4">
-            <div id="generator-root" class="w-full flex justify-center"></div>
+            <div id="generator-root" class="gen-font w-full flex justify-center"></div>
         </section>
 
         <!-- TAB 4: SMS TEMPLATES -->
@@ -4319,7 +4323,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                             <div className="no-print w-[297mm] bg-white p-2.5 rounded-lg shadow-sm border border-slate-200 mb-3 flex items-center justify-between">
                                 <div className="flex items-center space-x-3">
                                     <span className="text-xs font-bold text-slate-500">등록 파일:</span>
-                                    <span className="text-xs bg-slate-100 text-slate-800 px-2.5 py-0.5 rounded font-mono truncate max-w-xs">{fileName}</span>
+                                    <span className="text-xs bg-slate-100 text-slate-800 px-2.5 py-0.5 rounded truncate max-w-xs">{fileName}</span>
                                     <span className={`text-xs px-2 py-0.5 rounded font-bold ${isWinter ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}`}>
                                         {isWinter ? '동절기 운영 (1~5부)' : '하절기 운영 (1~6부)'}
                                     </span>
@@ -4361,7 +4365,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                             }
                                         </span>
                                     </div>
-                                    <span className="text-base font-black text-blue-900 tracking-wider font-mono">{yearMonth}</span>
+                                    <span className="text-base font-black text-blue-900 tracking-wider tabular-nums">{yearMonth}</span>
                                 </div>
 
                                 {/* 요일 헤더 바 */}
