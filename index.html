@@ -4422,54 +4422,31 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                                         </div>
                                                     );
                                                 })() : item.day ? (
-                                                    <div className="flex flex-col justify-between flex-1 h-full">
-                                                        {/* 오전 그룹 (1부, 2부) */}
-                                                        <div className="flex flex-col justify-between flex-1">
-                                                            {['1부', '2부'].map((part) => {
-                                                                const ev = dayObj ? dayObj[part] : null;
-                                                                return (
-                                                                    <div 
-                                                                        key={part} 
-                                                                        className={`flex items-center px-1 rounded-[1px] leading-none h-[48%] overflow-hidden ${
-                                                                            ev 
-                                                                                ? 'bg-slate-700 border border-slate-700 text-white font-medium' 
-                                                                                : 'bg-slate-50/40 border border-slate-100 text-slate-300'
-                                                                        }`}
-                                                                    >
-                                                                        <span className={`text-[9px] mr-1 shrink-0 ${ev ? 'font-semibold text-slate-300' : 'font-black text-slate-300'}`}>
-                                                                            {part.replace('부', '')}
-                                                                        </span>
-                                                                        <span className="text-[10.5px] tracking-normal truncate flex-1" title={ev ? ev.team : ''}>
-                                                                            {ev ? ev.team : ''}
-                                                                        </span>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-
-                                                        {/* 오후 그룹 (3부 ~ 5/6부) */}
-                                                        <div className="flex flex-col justify-between flex-[2]">
-                                                            {activeParts.slice(2).map((part) => {
-                                                                const ev = dayObj ? dayObj[part] : null;
-                                                                return (
-                                                                    <div 
-                                                                        key={part} 
-                                                                        className={`flex items-center px-1 rounded-[1px] leading-none my-[0.5px] flex-1 overflow-hidden ${
-                                                                            ev 
-                                                                                ? 'bg-slate-700 border border-slate-700 text-white font-medium' 
-                                                                                : 'bg-slate-50/40 border border-slate-100 text-slate-300'
-                                                                        }`}
-                                                                    >
-                                                                        <span className={`text-[9px] mr-1 shrink-0 ${ev ? 'font-semibold text-slate-300' : 'font-black text-slate-300'}`}>
-                                                                            {part.replace('부', '')}
-                                                                        </span>
-                                                                        <span className="text-[10.5px] tracking-normal truncate flex-1" title={ev ? ev.team : ''}>
-                                                                            {ev ? ev.team : ''}
-                                                                        </span>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
+                                                    <div
+                                                        className="grid flex-1 min-h-0 gap-[1px]"
+                                                        style={{ gridTemplateRows: `repeat(${activeParts.length}, minmax(0, 1fr))` }}
+                                                    >
+                                                        {/* 1부 ~ 5/6부: 모든 칸 같은 높이 */}
+                                                        {activeParts.map((part) => {
+                                                            const ev = dayObj ? dayObj[part] : null;
+                                                            return (
+                                                                <div 
+                                                                    key={part} 
+                                                                    className={`flex items-center px-1 rounded-[1px] leading-none min-h-0 overflow-hidden ${
+                                                                        ev 
+                                                                            ? 'bg-slate-700 border border-slate-700 text-white font-medium' 
+                                                                            : 'bg-slate-50/40 border border-slate-100 text-slate-300'
+                                                                    }`}
+                                                                >
+                                                                    <span className={`text-[9px] mr-1 shrink-0 ${ev ? 'font-semibold text-slate-300' : 'font-black text-slate-300'}`}>
+                                                                        {part.replace('부', '')}
+                                                                    </span>
+                                                                    <span className="text-[10.5px] tracking-normal truncate flex-1" title={ev ? ev.team : ''}>
+                                                                        {ev ? ev.team : ''}
+                                                                    </span>
+                                                                </div>
+                                                            );
+                                                        })}
                                                     </div>
                                                 ) : (
                                                     <div className="flex-1 bg-slate-50/30" />
