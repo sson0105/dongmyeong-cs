@@ -909,7 +909,7 @@
                 margin: 0 !important;
                 padding: 0 !important;
                 background: #ffffff !important;
-                overflow: hidden !important;
+                overflow: visible !important;
             }
 
             body { display: block !important; min-height: 0 !important; }
@@ -927,7 +927,7 @@
                 padding: 0 !important;
                 width: 285mm !important;
                 height: 198mm !important;
-                overflow: hidden !important;
+                overflow: visible !important;
             }
 
             /* 화면용 가운데 정렬(flex)을 풀어서 달력이 왼쪽으로 밀려 잘리지 않게 함 */
@@ -938,12 +938,16 @@
                 padding: 0 !important;
             }
 
+            /* 달력 틀 왼쪽 선이 반 픽셀 위치에서 사라지지 않도록 두께 보강 */
+            .print-page .grid.border-l { border-left-width: 1.5px !important; }
+
             .print-page {
-                width: 285mm !important;
-                height: 196mm !important;
-                max-height: 196mm !important;
-                margin: 0 !important;
-                padding: 1mm 1.5mm !important;
+                width: 281mm !important;
+                height: 194mm !important;
+                max-height: 194mm !important;
+                margin: 0 0 0 2mm !important;
+                padding: 1mm 2.5mm !important;
+                overflow: visible !important;
                 box-shadow: none !important;
                 border: none !important;
                 page-break-inside: avoid !important;
