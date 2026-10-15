@@ -4365,7 +4365,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 </div>
 
                                 {/* 요일 헤더 바 */}
-                                <div className="grid grid-cols-7 border-b border-slate-400 text-center font-bold text-[11px] py-0.5 bg-slate-100 shrink-0">
+                                <div className="grid grid-cols-7 border-b border-slate-400 text-center font-black text-[14px] py-1 bg-slate-100 shrink-0">
                                     <div className="text-red-600">일</div>
                                     <div>월</div>
                                     <div>화</div>
@@ -4395,7 +4395,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                                 {/* 날짜 헤더 */}
                                                 <div className="flex justify-between items-center px-0.5 mb-[1px]">
                                                     {item.day ? (
-                                                        <span className={`font-black text-[11.5px] leading-none ${isSun ? 'text-red-500' : isSat ? 'text-blue-600' : 'text-slate-800'}`}>
+                                                        <span className={`font-black text-[15px] leading-none ${isSun ? 'text-red-500' : isSat ? 'text-blue-600' : 'text-slate-800'}`}>
                                                             {item.day}
                                                         </span>
                                                     ) : <span />}
@@ -4447,9 +4447,6 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                                             })}
                                                         </div>
 
-                                                        {/* 12시 독립 점선 */}
-                                                        <div className="noon-divider"></div>
-
                                                         {/* 오후 그룹 (3부 ~ 5/6부) */}
                                                         <div className="flex flex-col justify-between flex-[2]">
                                                             {activeParts.slice(2).map((part) => {
@@ -4484,7 +4481,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
                                 {/* 푸터 */}
                                 <div className="text-[8.5px] text-slate-400 pt-0.5 border-t border-slate-100 flex justify-between shrink-0">
-                                    <span>* 굵은 점선 기준 상단: 오전(08:00~12:00) / 하단: 오후(12:00 이후) · 노란 칸: 종일 대관(행사)</span>
+                                    <span>* 노란 칸: 종일 대관(행사)</span>
                                     <span>동명근린공원 축구장 현장 관리용</span>
                                 </div>
 
