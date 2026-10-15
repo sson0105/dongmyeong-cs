@@ -4401,20 +4401,19 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                                     ) : <span />}
                                                 </div>
                                                 
-                                                {/* 종일 대관: 슬롯 대신 하루 전체 블록 */}
+                                                {/* 종일 대관: 슬롯 대신 빨간 글씨로 대관명 표기 */}
                                                 {item.day && fullDayMap[item.dateStr] ? (() => {
                                                     const list = fullDayMap[item.dateStr];
                                                     const overlap = Object.keys(dayObj || {}).length;
                                                     return (
-                                                        <div className="flex-1 flex flex-col justify-center items-center text-center gap-[2px] px-1 rounded-[1px] bg-amber-50 border border-amber-300 overflow-hidden">
-                                                            <span className="text-[9px] font-black text-amber-700 tracking-wider">종일 대관</span>
+                                                        <div className="flex-1 flex flex-col items-start text-left gap-[2px] px-0.5 pt-0.5 overflow-hidden">
                                                             {list.map((fd, i) => (
-                                                                <span key={i} className="text-[10.5px] font-bold text-slate-950 leading-tight break-keep" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }} title={fd.title}>
+                                                                <span key={i} className="text-[11px] font-bold text-red-600 leading-snug break-keep" style={{ display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }} title={fd.title}>
                                                                     {fd.title}
                                                                 </span>
                                                             ))}
                                                             {list.some(fd => !fd.status.includes('완료')) && (
-                                                                <span className="text-[8.5px] font-semibold text-amber-700">({list.map(fd => fd.status).filter(st => !st.includes('완료')).join(', ')})</span>
+                                                                <span className="text-[8.5px] font-semibold text-red-400">({list.map(fd => fd.status).filter(st => !st.includes('완료')).join(', ')})</span>
                                                             )}
                                                             {overlap > 0 && (
                                                                 <span className="no-print text-[8.5px] font-bold text-red-600">엑셀 예약 {overlap}건 겹침</span>
@@ -4458,7 +4457,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
                                 {/* 푸터 */}
                                 <div className="text-[8.5px] text-slate-400 pt-0.5 border-t border-slate-100 flex justify-between shrink-0">
-                                    <span>* 노란 칸: 종일 대관(행사)</span>
+                                    <span>* 빨간 글씨: 종일 대관(행사)</span>
                                     <span>동명근린공원 축구장 현장 관리용</span>
                                 </div>
 
