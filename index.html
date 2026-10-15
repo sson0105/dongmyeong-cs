@@ -891,9 +891,11 @@
         .btn-footer-refresh:hover { background: #f1f5f9; color: var(--cal-ink); }
 
         /* GENERATOR TAB PRINT & LAYOUT STYLES */
+        /* 프린터는 용지 가장자리 몇 mm를 인쇄하지 못하므로, 용지 여백 6mm를 두고
+           그 안쪽(285 x 198mm)에 달력을 왼쪽 위 기준으로 고정해 잘림을 막는다. */
         @page {
             size: A4 landscape;
-            margin: 0 !important;
+            margin: 6mm !important;
         }
         @media print {
             header, footer, #live-status-container, #live-clock-display, #tab-qa, #tab-calendar, #chatbot-wrapper, .no-print {
@@ -901,36 +903,47 @@
             }
             
             html, body {
-                width: 297mm !important;
-                height: 210mm !important;
-                max-height: 210mm !important;
+                width: 285mm !important;
+                height: 198mm !important;
+                max-height: 198mm !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 background: #ffffff !important;
                 overflow: hidden !important;
             }
 
+            body { display: block !important; min-height: 0 !important; }
+
             main {
                 padding: 0 !important;
                 margin: 0 !important;
-                max-width: 100% !important;
+                width: 285mm !important;
+                max-width: none !important;
             }
 
             #tab-generator {
                 display: block !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                width: 297mm !important;
-                height: 210mm !important;
+                width: 285mm !important;
+                height: 198mm !important;
                 overflow: hidden !important;
             }
 
+            /* 화면용 가운데 정렬(flex)을 풀어서 달력이 왼쪽으로 밀려 잘리지 않게 함 */
+            #generator-root, #generator-root > div {
+                display: block !important;
+                width: 285mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
             .print-page {
-                width: 297mm !important;
-                height: 204mm !important;
-                max-height: 204mm !important;
-                margin: 0 auto !important;
-                padding: 4mm 7mm !important;
+                width: 285mm !important;
+                height: 196mm !important;
+                max-height: 196mm !important;
+                margin: 0 !important;
+                padding: 1mm 1.5mm !important;
                 box-shadow: none !important;
                 border: none !important;
                 page-break-inside: avoid !important;
