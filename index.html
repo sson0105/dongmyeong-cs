@@ -23,6 +23,8 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- 바이너리 .xls, .xlsx 및 HTML 테이블 동시 지원 SheetJS -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- 팝업 생성기: 화면 요소를 PNG로 저장 -->
+    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
 
     <style>
         body {
@@ -986,6 +988,51 @@
         .gen-font, .gen-font * {
             font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
         }
+        /* 팝업 생성기: Team Friends 주간 운영 안내 (피그마 시안F, 560px 폭) */
+        @font-face {
+            font-family: "TF Bowlby One";
+            src: url("https://cdn.jsdelivr.net/npm/@fontsource/bowlby-one@5/files/bowlby-one-latin-400-normal.woff2") format("woff2");
+            font-weight: 400; font-style: normal; font-display: swap;
+        }
+        .tf-card, .tf-card * {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+            box-sizing: border-box; margin: 0;
+        }
+        .tf-card {
+            width: 560px; background: #f0f2f7; color: #0f1f45;
+            padding: 30px 28px 28px; display: flex; flex-direction: column; gap: 22px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .tf-head { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+        .tf-head-main { display: flex; flex-direction: column; align-items: center; gap: 12px; white-space: nowrap; }
+        .tf-card .tf-logo { display: flex; gap: 11.6px; font-family: "TF Bowlby One", "Arial Black", sans-serif; font-size: 35.875px; line-height: 1; letter-spacing: -0.36px; }
+        .tf-logo .g { color: #1f7a4d; } .tf-logo .b { color: #2645a8; }
+        .tf-title { font-size: 30px; font-weight: 800; line-height: normal; color: #0f1f45; }
+        .tf-sub { font-size: 15px; font-weight: 400; opacity: 0.65; white-space: pre; }
+        .tf-body { display: flex; flex-direction: column; gap: 12px; }
+        .tf-grid { display: flex; gap: 6px; align-items: flex-start; }
+        .tf-day { flex: 1 0 0; min-width: 0; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; background: #fff; border: 1px solid #dbe0eb; }
+        .tf-day .bar { height: 4px; background: #2b5ced; }
+        .tf-day .in { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 0 18px; white-space: nowrap; line-height: normal; }
+        .tf-day .dow { font-size: 14px; font-weight: 700; opacity: 0.55; }
+        .tf-day .date { font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; }
+        .tf-day .st { font-size: 14px; font-weight: 700; color: #2b5ced; }
+        .tf-day .note { font-size: 12px; font-weight: 400; opacity: 0.5; max-width: 100%; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; }
+        .tf-day.off { background: #db333d; border-color: #db333d; color: #fff; }
+        .tf-day.off .bar { background: #0f1f45; }
+        .tf-day.off .dow, .tf-day.off .note { opacity: 0.8; }
+        .tf-day.off .st { color: #fff; }
+        .tf-alert { background: #fceded; border: 1px solid #ffd5d5; border-radius: 4px; padding: 6px 8px; text-align: center; color: #d94045; font-size: 14px; font-weight: 700; line-height: 1.5; letter-spacing: 0.14px; word-break: keep-all; white-space: pre-line; }
+        .tf-foot { text-align: center; font-size: 13px; opacity: 0.65; line-height: 1.5; word-break: keep-all; }
+
+        .tf-day-row { display: grid; grid-template-columns: 76px 1fr; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid var(--cal-line-2); }
+        .tf-day-row:first-child { border-top: none; padding-top: 0; }
+        .tf-seg { display: inline-flex; height: 32px; border: 1px solid var(--cal-line); border-radius: 6px; overflow: hidden; background: #fff; }
+        .tf-seg button { padding: 0 12px; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); border: none; background: transparent; cursor: pointer; }
+        .tf-seg button + button { border-left: 1px solid var(--cal-line); }
+        .tf-seg button.on-open { background: #2b5ced; color: #fff; }
+        .tf-seg button.on-off { background: #db333d; color: #fff; }
+
         .noon-divider {
             border-bottom: 2.3px dashed #c9c9c9 !important;
             margin-top: 1px !important;
@@ -1044,6 +1091,9 @@
                 </button>
                 <button onclick="switchTab('generator')" id="tab-btn-generator" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     캘린더 생성기
+                </button>
+                <button onclick="switchTab('popup')" id="tab-btn-popup" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                    팝업 생성기
                 </button>
                 <button onclick="switchTab('sms')" id="tab-btn-sms" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     안내문자 템플릿
@@ -1207,6 +1257,11 @@
         <!-- TAB 3: CALENDAR GENERATOR TAB (교체 적용 완료) -->
         <section id="tab-generator" class="tab-content hidden space-y-4">
             <div id="generator-root" class="gen-font w-full flex justify-center"></div>
+        </section>
+
+        <!-- TAB: POPUP GENERATOR (Team Friends 주간 운영 안내) -->
+        <section id="tab-popup" class="tab-content hidden space-y-4">
+            <div id="popup-root"></div>
         </section>
 
         <!-- TAB 4: SMS TEMPLATES -->
@@ -4564,6 +4619,300 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         ReactDOM.createRoot(document.getElementById('generator-root')).render(<CalendarGeneratorApp />);
+
+        /* =========================================================
+         * 팝업 생성기: Team Friends 주간 운영 안내 (홈페이지 팝업용 PNG)
+         * 디자인 원본: 피그마 '시안F 스코어보드×캠프 색감' (560px 폭)
+         * ========================================================= */
+        const TF_DOW = ['일', '월', '화', '수', '목', '금', '토'];
+        const TF_REASONS = ['대관 행사', '시설 점검', '우천', '기상 악화'];
+        const TF_DEFAULT_TIME = '16–18시';
+        const TF_DEFAULT_FOOT = '※ 행사 일정에 따라 변경될 수 있으며, 주말·공휴일은 운영하지 않습니다.';
+
+        function tfIso(d) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+        function tfAddDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+        // 다음 주 월요일 (공지는 보통 다음 주 운영을 미리 올리므로)
+        function tfNextMonday(from = new Date()) {
+            const d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+            const diff = ((8 - d.getDay()) % 7) || 7;
+            return tfAddDays(d, diff);
+        }
+        function tfMondayOf(d) {
+            const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            const back = (x.getDay() + 6) % 7;
+            return tfAddDays(x, -back);
+        }
+        // 받침 유무로 '로/으로' 선택 (ㄹ 받침은 '로')
+        function tfRo(word) {
+            const ch = word.trim().slice(-1);
+            const code = ch.charCodeAt(0) - 0xAC00;
+            if (code < 0 || code > 11171) return '로';
+            const jong = code % 28;
+            return jong === 0 || jong === 8 ? '로' : '으로';
+        }
+        function tfReasonPhrase(reason) {
+            const r = (reason || '').trim();
+            if (!r) return '운영 사정으로';
+            if (r === '대관 행사') return '축구장 대관행사로';
+            return r + tfRo(r);
+        }
+
+        // PNG에 넣을 폰트만 골라서 내장 (Noto Sans KR 같은 큰 웹폰트를 통째로 받지 않도록)
+        const TF_FONT_FILES = [
+            { family: 'TF Bowlby One', weight: 400, url: 'https://cdn.jsdelivr.net/npm/@fontsource/bowlby-one@5/files/bowlby-one-latin-400-normal.woff2' },
+            { family: 'Pretendard', weight: 400, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Regular.woff2' },
+            { family: 'Pretendard', weight: 700, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Bold.woff2' },
+            { family: 'Pretendard', weight: 800, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-ExtraBold.woff2' },
+            { family: 'Pretendard', weight: 900, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Black.woff2' },
+        ];
+        let tfFontCssPromise = null;
+        function tfGetFontCss() {
+            if (!tfFontCssPromise) {
+                tfFontCssPromise = Promise.all(TF_FONT_FILES.map(f =>
+                    fetch(f.url).then(r => { if (!r.ok) throw new Error(f.url); return r.blob(); })
+                        .then(blob => new Promise((res, rej) => {
+                            const fr = new FileReader();
+                            fr.onload = () => res(`@font-face{font-family:"${f.family}";font-weight:${f.weight};font-style:normal;src:url(${fr.result}) format("woff2");}`);
+                            fr.onerror = rej;
+                            fr.readAsDataURL(blob);
+                        }))
+                )).then(list => list.join('\n')).catch(err => { tfFontCssPromise = null; throw err; });
+            }
+            return tfFontCssPromise;
+        }
+
+        function PopupGeneratorApp() {
+            const [weekStart, setWeekStart] = useState(() => tfNextMonday());
+            // 날짜별 수정 내용 (주를 옮겨도 유지) { 'YYYY-MM-DD': { open, reason } }
+            const [edits, setEdits] = useState({});
+            const [timeText, setTimeText] = useState(TF_DEFAULT_TIME);
+            const [alertOverride, setAlertOverride] = useState(null); // null이면 자동 문구
+            const [footText, setFootText] = useState(TF_DEFAULT_FOOT);
+            const [busy, setBusy] = useState('');
+            const [msg, setMsg] = useState('');
+            const cardRef = React.useRef(null);
+
+            const days = useMemo(() => [0, 1, 2, 3, 4].map(i => {
+                const d = tfAddDays(weekStart, i);
+                const iso = tfIso(d);
+                const holiday = (typeof KR_HOLIDAYS !== 'undefined' && KR_HOLIDAYS[iso]) || '';
+                const base = holiday ? { open: false, reason: holiday } : { open: true, reason: '' };
+                return { d, iso, holiday, ...base, ...(edits[iso] || {}) };
+            }), [weekStart, edits]);
+
+            const autoAlert = useMemo(() => {
+                const closed = days.filter(x => !x.open);
+                if (!closed.length) return '';
+                const groups = [];
+                closed.forEach(x => {
+                    const key = (x.reason || '').trim();
+                    const g = groups.find(g => g.key === key);
+                    if (g) g.items.push(x); else groups.push({ key, items: [x] });
+                });
+                return groups.map(g => {
+                    const dates = g.items.map((x, i) => {
+                        const prev = g.items[i - 1];
+                        const sameMonth = prev && prev.d.getMonth() === x.d.getMonth();
+                        return `${sameMonth ? '' : (x.d.getMonth() + 1) + '월 '}${x.d.getDate()}일 ${TF_DOW[x.d.getDay()]}요일`;
+                    }).join(', ');
+                    return `${dates}은 ${tfReasonPhrase(g.key)} 무료 개방 이용이 불가합니다.`;
+                }).join('\n');
+            }, [days]);
+            const alertText = alertOverride !== null ? alertOverride : autoAlert;
+
+            const first = days[0].d, last = days[4].d;
+            const rangeText = `${first.getFullYear()}. ${first.getMonth() + 1}. ${first.getDate()} – ${last.getFullYear() !== first.getFullYear() ? last.getFullYear() + '. ' : ''}${last.getMonth() + 1}. ${last.getDate()}`;
+
+            const updateDay = (iso, patch) => setEdits(prev => ({ ...prev, [iso]: { ...(prev[iso] || {}), ...patch } }));
+            const setOpen = (day, open) => {
+                if (open) updateDay(day.iso, { open: true });
+                else updateDay(day.iso, { open: false, reason: day.reason || day.holiday || '대관 행사' });
+            };
+            const moveWeek = (n) => setWeekStart(w => tfAddDays(w, n * 7));
+            const flash = (t) => { setMsg(t); setTimeout(() => setMsg(''), 2500); };
+
+            async function renderBlob() {
+                if (!window.htmlToImage) throw new Error('이미지 변환 도구를 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.');
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+                const fontEmbedCSS = await tfGetFontCss();
+                return window.htmlToImage.toBlob(cardRef.current, { pixelRatio: 2, fontEmbedCSS, backgroundColor: '#f0f2f7' });
+            }
+            async function handleDownload() {
+                setBusy('download');
+                try {
+                    const blob = await renderBlob();
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `TeamFriends_주간운영안내_${tfIso(weekStart)}.png`;
+                    document.body.appendChild(a); a.click(); a.remove();
+                    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+                    flash('PNG 파일을 저장했어요.');
+                } catch (e) { console.error(e); flash(e.message || '이미지 저장에 실패했어요.'); }
+                setBusy('');
+            }
+            async function handleCopy() {
+                setBusy('copy');
+                try {
+                    if (!navigator.clipboard || !window.ClipboardItem) throw new Error('이 브라우저는 이미지 복사를 지원하지 않아요. PNG 저장을 이용해 주세요.');
+                    await navigator.clipboard.write([new ClipboardItem({ 'image/png': renderBlob() })]);
+                    flash('이미지를 클립보드에 복사했어요.');
+                } catch (e) { console.error(e); flash(e.message || '복사에 실패했어요.'); }
+                setBusy('');
+            }
+
+            const thisMonday = tfMondayOf(new Date());
+            const weekLabel = (() => {
+                const diff = Math.round((weekStart - thisMonday) / (7 * 86400000));
+                return diff === 0 ? '이번 주' : diff === 1 ? '다음 주' : diff === -1 ? '지난 주' : diff > 0 ? `${diff}주 뒤` : `${-diff}주 전`;
+            })();
+
+            return (
+                <div className="space-y-4">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 px-1">
+                        <div>
+                            <h2 className="text-xl font-bold text-slate-900">Team Friends 주간 공지 팝업</h2>
+                            <p className="text-xs text-slate-500 mt-1">요일별 운영 여부만 고르면 팝업 이미지가 만들어집니다. 공휴일은 자동으로 미운영 처리돼요.</p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col lg:flex-row gap-5 items-start">
+                        {/* 입력 패널 */}
+                        <div className="w-full lg:w-[380px] shrink-0 bg-white border border-slate-200 rounded-lg shadow-sm p-4 space-y-4">
+                            <div className="sms-field">
+                                <span className="sms-label">운영 주간</span>
+                                <div className="flex items-center gap-2">
+                                    <div className="sms-stepper">
+                                        <button type="button" onClick={() => moveWeek(-1)} title="이전 주" aria-label="이전 주">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                                        </button>
+                                        <span className="sms-stepper-divider" />
+                                        <span className="px-3 text-[12.5px] font-bold text-slate-800 tabular-nums whitespace-nowrap">
+                                            {first.getMonth() + 1}/{first.getDate()} – {last.getMonth() + 1}/{last.getDate()}
+                                        </span>
+                                        <span className="sms-stepper-divider" />
+                                        <button type="button" onClick={() => moveWeek(1)} title="다음 주" aria-label="다음 주">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                                        </button>
+                                    </div>
+                                    <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">{weekLabel}</span>
+                                </div>
+                            </div>
+
+                            <div className="sms-field">
+                                <span className="sms-label">운영 시간</span>
+                                <input className="sms-control" value={timeText} onChange={e => setTimeText(e.target.value)} placeholder="예: 16–18시" />
+                            </div>
+
+                            <div>
+                                <span className="sms-label block mb-2">요일별 운영</span>
+                                <datalist id="tf-reason-list">
+                                    {TF_REASONS.map(r => <option key={r} value={r} />)}
+                                </datalist>
+                                {days.map(day => (
+                                    <div key={day.iso} className="tf-day-row">
+                                        <div className="text-[12.5px] font-bold text-slate-800 tabular-nums">
+                                            {TF_DOW[day.d.getDay()]} {day.d.getMonth() + 1}/{day.d.getDate()}
+                                            {day.holiday && <div className="text-[10.5px] font-bold text-red-500">{day.holiday}</div>}
+                                        </div>
+                                        <div className="flex items-center gap-2 min-w-0">
+                                            <div className="tf-seg shrink-0">
+                                                <button type="button" className={day.open ? 'on-open' : ''} onClick={() => setOpen(day, true)}>운영</button>
+                                                <button type="button" className={!day.open ? 'on-off' : ''} onClick={() => setOpen(day, false)}>미운영</button>
+                                            </div>
+                                            {!day.open && (
+                                                <input
+                                                    className="sms-control"
+                                                    list="tf-reason-list"
+                                                    value={day.reason}
+                                                    onChange={e => updateDay(day.iso, { reason: e.target.value })}
+                                                    placeholder="사유 (예: 대관 행사)"
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="sms-field">
+                                <div className="flex items-center justify-between">
+                                    <span className="sms-label">안내 문구 (미운영일이 있을 때 표시)</span>
+                                    {alertOverride !== null && (
+                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setAlertOverride(null)}>자동 문구로 되돌리기</button>
+                                    )}
+                                </div>
+                                <textarea
+                                    className="sms-control"
+                                    style={{ height: 'auto', minHeight: 56, padding: '8px 10px', lineHeight: 1.5, resize: 'vertical' }}
+                                    rows={Math.max(2, alertText.split('\n').length)}
+                                    value={alertText}
+                                    onChange={e => setAlertOverride(e.target.value)}
+                                    placeholder="미운영일이 없으면 비워 두세요."
+                                />
+                            </div>
+
+                            <div className="sms-field">
+                                <div className="flex items-center justify-between">
+                                    <span className="sms-label">하단 유의사항</span>
+                                    {footText !== TF_DEFAULT_FOOT && (
+                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setFootText(TF_DEFAULT_FOOT)}>기본 문구로</button>
+                                    )}
+                                </div>
+                                <input className="sms-control" value={footText} onChange={e => setFootText(e.target.value)} />
+                            </div>
+                        </div>
+
+                        {/* 미리보기 + 저장 */}
+                        <div className="flex flex-col items-start gap-3 min-w-0 max-w-full">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <button type="button" onClick={handleDownload} disabled={!!busy}
+                                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold py-1.5 px-5 rounded-md text-xs shadow transition">
+                                    {busy === 'download' ? '만드는 중...' : 'PNG 저장'}
+                                </button>
+                                <button type="button" onClick={handleCopy} disabled={!!busy}
+                                    className="bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 border border-slate-300 font-bold py-1.5 px-4 rounded-md text-xs transition">
+                                    {busy === 'copy' ? '복사 중...' : '이미지 복사'}
+                                </button>
+                                <span className="text-[11px] text-slate-400">가로 1120px (2배 해상도)</span>
+                                {msg && <span className="text-xs font-semibold text-emerald-600">{msg}</span>}
+                            </div>
+
+                            <div className="max-w-full overflow-x-auto rounded shadow-xl border border-slate-200">
+                                <div ref={cardRef} className="tf-card">
+                                    <div className="tf-head">
+                                        <div className="tf-head-main">
+                                            <div className="tf-logo"><span className="g">TEAM</span><span className="b">FRIENDS</span></div>
+                                            <p className="tf-title">중·고등학생 무료 개방 주간 운영 안내</p>
+                                        </div>
+                                        <p className="tf-sub">{`동명근린공원 축구장  |  ${rangeText}`}</p>
+                                    </div>
+                                    <div className="tf-body">
+                                        <div className="tf-grid">
+                                            {days.map(day => (
+                                                <div key={day.iso} className={`tf-day${day.open ? '' : ' off'}`}>
+                                                    <div className="bar" />
+                                                    <div className="in">
+                                                        <p className="dow">{TF_DOW[day.d.getDay()]}</p>
+                                                        <p className="date">{`${day.d.getMonth() + 1}.${String(day.d.getDate()).padStart(2, '0')}`}</p>
+                                                        <p className="st">{day.open ? '운영' : '미운영'}</p>
+                                                        <p className="note">{day.open ? timeText : (day.reason || ' ')}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        {alertText.trim() && <div className="tf-alert">{alertText.trim()}</div>}
+                                    </div>
+                                    {footText.trim() && <p className="tf-foot">{footText}</p>}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('popup-root')).render(<PopupGeneratorApp />);
     </script>
 </body>
 </html>
