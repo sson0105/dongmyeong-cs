@@ -601,8 +601,10 @@
         .modal-box p strong { color: var(--cal-ink); flex-shrink: 0; }
 
         .cal-form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-        .cal-form-group label { font-size: 11.5px; font-weight: 700; color: var(--cal-ink-2); }
+        /* 라벨은 회색·덜 굵게, 값은 진하게: 라벨과 입력값이 구분되도록 */
+        .cal-form-group label { font-size: 11.5px; font-weight: 600; color: var(--cal-ink-3); }
         .cal-form-group input, .cal-form-group select {
+            color: var(--cal-ink); font-weight: 500;
             padding: 8px 10px; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12.5px; outline: none;
         }
 
@@ -610,11 +612,11 @@
         .sms-fields { display: flex; flex-wrap: wrap; gap: 10px 12px; }
         .sms-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
         .sms-field-grow { flex: 1 1 120px; }
-        .sms-label { font-size: 11.5px; font-weight: 700; color: var(--cal-ink-2); }
+        .sms-label { font-size: 11.5px; font-weight: 600; color: var(--cal-ink-3); }
         .sms-control {
             height: 32px; padding: 0 10px; background: #ffffff;
             border: 1px solid var(--cal-line); border-radius: 6px;
-            font-size: 12.5px; font-weight: 600; color: var(--cal-ink); outline: none;
+            font-size: 12.5px; font-weight: 500; color: var(--cal-ink); outline: none;
             transition: border-color 0.15s, box-shadow 0.15s; width: 100%;
         }
         .sms-control::placeholder { color: var(--cal-ink-4); font-weight: 500; }
@@ -4890,7 +4892,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 </datalist>
                                 {days.map(day => (
                                     <div key={day.iso} className="tf-day-row">
-                                        <div className="text-[12.5px] font-bold text-slate-800 tabular-nums">
+                                        <div className="text-[12px] font-semibold text-slate-500 tabular-nums">
                                             {TF_DOW[day.d.getDay()]} {day.d.getMonth() + 1}/{day.d.getDate()}
                                             {day.holiday && <div className="text-[10.5px] font-bold text-red-500">{day.holiday}</div>}
                                         </div>
