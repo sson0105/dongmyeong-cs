@@ -15,7 +15,7 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Bowlby+One&display=swap" rel="stylesheet">
     
     <!-- React & Babel for Generator Tab -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -989,11 +989,6 @@
             font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
         }
         /* 팝업 생성기: Team Friends 주간 운영 안내 (피그마 시안F, 560px 폭) */
-        @font-face {
-            font-family: "TF Bowlby One";
-            src: url("https://cdn.jsdelivr.net/npm/@fontsource/bowlby-one@5/files/bowlby-one-latin-400-normal.woff2") format("woff2");
-            font-weight: 400; font-style: normal; font-display: swap;
-        }
         .tf-card, .tf-card * {
             font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
             box-sizing: border-box; margin: 0;
@@ -1005,7 +1000,9 @@
         }
         .tf-head { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
         .tf-head-main { display: flex; flex-direction: column; align-items: center; gap: 12px; white-space: nowrap; }
-        .tf-card .tf-logo { display: flex; gap: 11.6px; font-family: "TF Bowlby One", "Arial Black", sans-serif; font-size: 35.875px; line-height: 1; letter-spacing: -0.36px; }
+        /* 로고 글자(span)까지 Bowlby One 적용: 위의 '.tf-card *' 프리텐다드 규칙보다 우선하도록 자식까지 지정 */
+        .tf-card .tf-logo, .tf-card .tf-logo * { font-family: "Bowlby One", "Arial Black", sans-serif; font-weight: 400; }
+        .tf-card .tf-logo { display: flex; gap: 11.6px; font-size: 35.875px; line-height: 1; letter-spacing: -0.36px; }
         .tf-logo .g { color: #1f7a4d; } .tf-logo .b { color: #2645a8; }
         .tf-title { font-size: 30px; font-weight: 800; line-height: normal; color: #0f1f45; }
         .tf-sub { font-size: 15px; font-weight: 400; opacity: 0.65; white-space: pre; }
@@ -4661,7 +4658,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
         // PNG에 넣을 폰트만 골라서 내장 (Noto Sans KR 같은 큰 웹폰트를 통째로 받지 않도록)
         const TF_FONT_FILES = [
-            { family: 'TF Bowlby One', weight: 400, url: 'https://cdn.jsdelivr.net/npm/@fontsource/bowlby-one@5/files/bowlby-one-latin-400-normal.woff2' },
+            // Bowlby One은 구글 폰트 CSS에서 실제 woff2 주소를 찾아서 받음 (화면 표시와 같은 파일)
+            { family: 'Bowlby One', weight: 400, cssUrl: 'https://fonts.googleapis.com/css2?family=Bowlby+One&display=swap&text=TEAMFRIENDS' },
             { family: 'Pretendard', weight: 400, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Regular.woff2' },
             { family: 'Pretendard', weight: 700, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Bold.woff2' },
             { family: 'Pretendard', weight: 800, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-ExtraBold.woff2' },
@@ -4670,8 +4668,13 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         let tfFontCssPromise = null;
         function tfGetFontCss() {
             if (!tfFontCssPromise) {
+                const resolveUrl = (f) => f.url ? Promise.resolve(f.url) : fetch(f.cssUrl).then(r => r.text()).then(css => {
+                    const m = css.match(/url\((['"]?)([^'")]+)\1\)/);
+                    if (!m) throw new Error('폰트 주소를 찾지 못했어요: ' + f.family);
+                    return m[2];
+                });
                 tfFontCssPromise = Promise.all(TF_FONT_FILES.map(f =>
-                    fetch(f.url).then(r => { if (!r.ok) throw new Error(f.url); return r.blob(); })
+                    resolveUrl(f).then(url => fetch(url)).then(r => { if (!r.ok) throw new Error(f.family); return r.blob(); })
                         .then(blob => new Promise((res, rej) => {
                             const fr = new FileReader();
                             fr.onload = () => res(`@font-face{font-family:"${f.family}";font-weight:${f.weight};font-style:normal;src:url(${fr.result}) format("woff2");}`);
