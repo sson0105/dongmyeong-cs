@@ -992,6 +992,29 @@
         .gen-font, .gen-font * {
             font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
         }
+        /* 상단 탭: 클릭 시 생기는 검은 포커스 테두리 대신, 키보드로 이동할 때만 옅은 파란 링 */
+        .tab-btn:focus { outline: none; }
+        .tab-btn:focus-visible { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(37, 99, 235, 0.45); }
+        #tab-btn-generator.menu-open .gen-menu-caret { transform: rotate(180deg); }
+
+        /* 생성기 도구 드롭다운 */
+        #gen-menu {
+            position: fixed; z-index: 60; min-width: 184px; padding: 4px;
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.06);
+        }
+        .gen-menu-item {
+            display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 10px;
+            border: none; background: transparent; border-radius: 6px; cursor: pointer;
+            font-size: 12.5px; font-weight: 600; color: #475569; text-align: left; white-space: nowrap;
+        }
+        .gen-menu-item svg { width: 15px; height: 15px; flex-shrink: 0; color: #94a3b8; }
+        .gen-menu-item:hover { background: #f1f5f9; color: #0f172a; }
+        .gen-menu-item.active { background: #f1f5f9; color: #0f172a; font-weight: 700; }
+        .gen-menu-item.active svg { color: #0f172a; }
+        .gen-menu-item:focus { outline: none; }
+        .gen-menu-item:focus-visible { box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.45); }
+
         /* 팝업 생성기: Team Friends 주간 운영 안내 (피그마 시안F, 560px 폭) */
         .tf-card, .tf-card * {
             font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
@@ -1091,8 +1114,9 @@
                 <button onclick="switchTab('calendar')" id="tab-btn-calendar" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     우선 대관 캘린더
                 </button>
-                <button onclick="switchTab('generator')" id="tab-btn-generator" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                <button type="button" onclick="toggleGenMenu(event)" id="tab-btn-generator" aria-haspopup="menu" aria-expanded="false" aria-controls="gen-menu" class="tab-btn inline-flex items-center gap-1 px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     생성기
+                    <svg class="gen-menu-caret w-3 h-3 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
                 </button>
                 <button onclick="switchTab('sms')" id="tab-btn-sms" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     안내문자 템플릿
@@ -1102,6 +1126,18 @@
                 </button>
             </div>
         </nav>
+
+        <!-- 생성기 도구 메뉴: 탭 줄이 가로 스크롤 영역이라 잘리지 않도록 화면 기준(fixed)으로 띄움 -->
+        <div id="gen-menu" role="menu" aria-label="생성기 도구" class="no-print hidden">
+            <button type="button" role="menuitemradio" data-gen-tool="calendar" onclick="openGenTool('calendar')" class="gen-menu-item">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M3 10h18M8 3v4M16 3v4"/></svg>
+                <span>대관 캘린더</span>
+            </button>
+            <button type="button" role="menuitemradio" data-gen-tool="popup" onclick="openGenTool('popup')" class="gen-menu-item">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 16l-5-5-9 9"/></svg>
+                <span>Team Friends 팝업</span>
+            </button>
+        </div>
     </header>
 
     <!-- Real-Time Clock Bar -->
@@ -1255,13 +1291,6 @@
 
         <!-- TAB 3: 생성기 (도구 모음) — 새 생성기는 GEN_TOOLS와 아래 gen-pane만 추가하면 됨 -->
         <section id="tab-generator" class="tab-content hidden space-y-4">
-            <div class="no-print flex items-center gap-2 px-1">
-                <span class="text-[11.5px] font-bold text-slate-500">도구</span>
-                <div class="inline-flex p-0.5 bg-slate-100 border border-slate-200 rounded-lg">
-                    <button type="button" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-tool-btn px-3 py-1 rounded-md text-xs font-semibold transition-all">대관 캘린더</button>
-                    <button type="button" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tool-btn px-3 py-1 rounded-md text-xs font-semibold transition-all">Team Friends 팝업</button>
-                </div>
-            </div>
 
             <!-- 도구: 대관 캘린더 (A4 가로 인쇄) -->
             <div id="gen-pane-calendar" class="gen-pane">
@@ -4067,25 +4096,73 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
         document.addEventListener('click', () => closeMonthPicker());
 
-        // 생성기 탭 안의 도구 전환 (마지막에 쓴 도구를 기억)
+        // 생성기 탭: 상단 '생성기' 버튼의 드롭다운에서 도구 선택 (마지막에 쓴 도구를 기억)
+        // 새 생성기 추가 시: GEN_TOOLS에 이름 추가 + #gen-menu 항목 + #gen-pane-<이름> 영역
         const GEN_TOOLS = ['calendar', 'popup'];
         const GEN_TOOL_KEY = 'dm-gen-tool';
+        let currentGenTool = 'calendar';
         function switchGenTool(tool) {
             if (!GEN_TOOLS.includes(tool)) tool = 'calendar';
+            currentGenTool = tool;
             GEN_TOOLS.forEach(t => {
                 const pane = document.getElementById('gen-pane-' + t);
                 if (pane) pane.classList.toggle('hidden', t !== tool);
             });
-            document.querySelectorAll('.gen-tool-btn').forEach(btn => {
-                const on = btn.dataset.genTool === tool;
-                btn.classList.toggle('bg-white', on);
-                btn.classList.toggle('text-slate-900', on);
-                btn.classList.toggle('shadow-sm', on);
-                btn.classList.toggle('text-slate-500', !on);
-                btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+            document.querySelectorAll('#gen-menu .gen-menu-item').forEach(item => {
+                const on = item.dataset.genTool === tool;
+                item.classList.toggle('active', on);
+                item.setAttribute('aria-checked', on ? 'true' : 'false');
             });
             try { localStorage.setItem(GEN_TOOL_KEY, tool); } catch (e) {}
         }
+        function openGenTool(tool) {
+            switchGenTool(tool);
+            switchTab('generator');
+            closeGenMenu();
+        }
+        function positionGenMenu() {
+            const btn = document.getElementById('tab-btn-generator');
+            const menu = document.getElementById('gen-menu');
+            if (!btn || !menu) return;
+            const r = btn.getBoundingClientRect();
+            const left = Math.max(8, Math.min(r.left, window.innerWidth - menu.offsetWidth - 8));
+            menu.style.top = (r.bottom + 6) + 'px';
+            menu.style.left = left + 'px';
+        }
+        function closeGenMenu() {
+            const menu = document.getElementById('gen-menu');
+            const btn = document.getElementById('tab-btn-generator');
+            if (!menu || menu.classList.contains('hidden')) return;
+            menu.classList.add('hidden');
+            if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.classList.remove('menu-open'); }
+        }
+        function toggleGenMenu(e) {
+            if (e) e.stopPropagation();
+            const menu = document.getElementById('gen-menu');
+            const btn = document.getElementById('tab-btn-generator');
+            if (!menu.classList.contains('hidden')) { closeGenMenu(); return; }
+            menu.classList.remove('hidden');
+            positionGenMenu();
+            btn.setAttribute('aria-expanded', 'true');
+            btn.classList.add('menu-open');
+            const active = menu.querySelector('.gen-menu-item.active') || menu.querySelector('.gen-menu-item');
+            if (active && e && e.detail === 0) active.focus(); // 키보드로 열었을 때만 포커스 이동
+        }
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('gen-menu');
+            if (menu && !menu.contains(e.target)) closeGenMenu();
+        });
+        document.addEventListener('keydown', (e) => {
+            const menu = document.getElementById('gen-menu');
+            if (!menu || menu.classList.contains('hidden')) return;
+            const items = Array.from(menu.querySelectorAll('.gen-menu-item'));
+            const idx = items.indexOf(document.activeElement);
+            if (e.key === 'Escape') { closeGenMenu(); document.getElementById('tab-btn-generator').focus(); }
+            else if (e.key === 'ArrowDown') { e.preventDefault(); items[(idx + 1) % items.length].focus(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); items[(idx - 1 + items.length) % items.length].focus(); }
+        });
+        window.addEventListener('resize', closeGenMenu);
+        document.addEventListener('scroll', closeGenMenu, true);
         (function initGenTool() {
             let saved = 'calendar';
             try { saved = localStorage.getItem(GEN_TOOL_KEY) || 'calendar'; } catch (e) {}
