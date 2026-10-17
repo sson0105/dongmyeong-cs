@@ -4657,31 +4657,53 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         // PNG에 넣을 폰트만 골라서 내장 (Noto Sans KR 같은 큰 웹폰트를 통째로 받지 않도록)
-        const TF_FONT_FILES = [
-            // Bowlby One은 구글 폰트 CSS에서 실제 woff2 주소를 찾아서 받음 (화면 표시와 같은 파일)
-            { family: 'Bowlby One', weight: 400, cssUrl: 'https://fonts.googleapis.com/css2?family=Bowlby+One&display=swap&text=TEAMFRIENDS' },
-            { family: 'Pretendard', weight: 400, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Regular.woff2' },
-            { family: 'Pretendard', weight: 700, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Bold.woff2' },
-            { family: 'Pretendard', weight: 800, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-ExtraBold.woff2' },
-            { family: 'Pretendard', weight: 900, url: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Black.woff2' },
-        ];
+        const TF_PRETENDARD_WEIGHTS = [400, 700, 800, 900];
+        // 페이지에 이미 로드된 프리텐다드 스타일시트에서 굵기별 실제 woff2 주소를 읽어옴
+        function tfPretendardFonts() {
+            const found = {};
+            for (const sheet of Array.from(document.styleSheets)) {
+                if (!sheet.href || !/pretendard/i.test(sheet.href)) continue;
+                let rules;
+                try { rules = sheet.cssRules; } catch (e) { continue; }
+                for (const rule of Array.from(rules || [])) {
+                    if (rule.type !== CSSRule.FONT_FACE_RULE) continue;
+                    const w = parseInt(rule.style.getPropertyValue('font-weight'), 10);
+                    if (!TF_PRETENDARD_WEIGHTS.includes(w) || found[w]) continue;
+                    const src = rule.style.getPropertyValue('src');
+                    const m = src.match(/url\((['"]?)([^'")]+\.woff2)\1\)/) || src.match(/url\((['"]?)([^'")]+)\1\)/);
+                    if (m) found[w] = new URL(m[2], sheet.href).href;
+                }
+            }
+            return TF_PRETENDARD_WEIGHTS.filter(w => found[w]).map(w => ({ family: 'Pretendard', weight: w, url: found[w] }));
+        }
         let tfFontCssPromise = null;
         function tfGetFontCss() {
             if (!tfFontCssPromise) {
+                const files = [
+                    // Bowlby One은 구글 폰트 CSS에서 실제 woff2 주소를 찾아서 받음 (화면 표시와 같은 파일)
+                    { family: 'Bowlby One', weight: 400, cssUrl: 'https://fonts.googleapis.com/css2?family=Bowlby+One&display=swap&text=TEAMFRIENDS' },
+                    ...tfPretendardFonts(),
+                ];
                 const resolveUrl = (f) => f.url ? Promise.resolve(f.url) : fetch(f.cssUrl).then(r => r.text()).then(css => {
                     const m = css.match(/url\((['"]?)([^'")]+)\1\)/);
-                    if (!m) throw new Error('폰트 주소를 찾지 못했어요: ' + f.family);
+                    if (!m) throw new Error('폰트 주소 없음: ' + f.family);
                     return m[2];
                 });
-                tfFontCssPromise = Promise.all(TF_FONT_FILES.map(f =>
-                    resolveUrl(f).then(url => fetch(url)).then(r => { if (!r.ok) throw new Error(f.family); return r.blob(); })
-                        .then(blob => new Promise((res, rej) => {
-                            const fr = new FileReader();
-                            fr.onload = () => res(`@font-face{font-family:"${f.family}";font-weight:${f.weight};font-style:normal;src:url(${fr.result}) format("woff2");}`);
-                            fr.onerror = rej;
-                            fr.readAsDataURL(blob);
-                        }))
-                )).then(list => list.join('\n')).catch(err => { tfFontCssPromise = null; throw err; });
+                const toFace = (f) => resolveUrl(f)
+                    .then(url => fetch(url)).then(r => { if (!r.ok) throw new Error(`${f.family} ${f.weight} (${r.status})`); return r.blob(); })
+                    .then(blob => new Promise((res, rej) => {
+                        const fr = new FileReader();
+                        fr.onload = () => res(`@font-face{font-family:"${f.family}";font-weight:${f.weight};font-style:normal;src:url(${fr.result});}`);
+                        fr.onerror = rej;
+                        fr.readAsDataURL(blob);
+                    }));
+                // 폰트 하나가 실패해도 이미지는 만들어지도록: 실패한 폰트만 빼고 진행
+                tfFontCssPromise = Promise.allSettled(files.map(toFace)).then(results => {
+                    const failed = results.filter(r => r.status === 'rejected');
+                    failed.forEach(r => console.warn('[팝업 생성기] 폰트 내장 실패:', r.reason));
+                    if (failed.length) tfFontCssPromise = null; // 다음 시도 때 다시 받아봄
+                    return results.filter(r => r.status === 'fulfilled').map(r => r.value).join('\n');
+                });
             }
             return tfFontCssPromise;
         }
@@ -4694,7 +4716,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const [alertOverride, setAlertOverride] = useState(null); // null이면 자동 문구
             const [footText, setFootText] = useState(TF_DEFAULT_FOOT);
             const [busy, setBusy] = useState('');
-            const [msg, setMsg] = useState('');
+            const [msg, setMsg] = useState(null);
             const cardRef = React.useRef(null);
 
             const days = useMemo(() => [0, 1, 2, 3, 4].map(i => {
@@ -4734,7 +4756,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 else updateDay(day.iso, { open: false, reason: day.reason || day.holiday || '대관 행사' });
             };
             const moveWeek = (n) => setWeekStart(w => tfAddDays(w, n * 7));
-            const flash = (t) => { setMsg(t); setTimeout(() => setMsg(''), 2500); };
+            const flash = (t, isError = false) => { setMsg({ text: t, isError }); setTimeout(() => setMsg(null), isError ? 5000 : 2500); };
 
             async function renderBlob() {
                 if (!window.htmlToImage) throw new Error('이미지 변환 도구를 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.');
@@ -4752,7 +4774,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     document.body.appendChild(a); a.click(); a.remove();
                     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
                     flash('PNG 파일을 저장했어요.');
-                } catch (e) { console.error(e); flash(e.message || '이미지 저장에 실패했어요.'); }
+                } catch (e) { console.error(e); flash('이미지 저장에 실패했어요. ' + (e.message || ''), true); }
                 setBusy('');
             }
             async function handleCopy() {
@@ -4761,7 +4783,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     if (!navigator.clipboard || !window.ClipboardItem) throw new Error('이 브라우저는 이미지 복사를 지원하지 않아요. PNG 저장을 이용해 주세요.');
                     await navigator.clipboard.write([new ClipboardItem({ 'image/png': renderBlob() })]);
                     flash('이미지를 클립보드에 복사했어요.');
-                } catch (e) { console.error(e); flash(e.message || '복사에 실패했어요.'); }
+                } catch (e) { console.error(e); flash('이미지 복사에 실패했어요. ' + (e.message || ''), true); }
                 setBusy('');
             }
 
@@ -4878,7 +4900,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                     {busy === 'copy' ? '복사 중...' : '이미지 복사'}
                                 </button>
                                 <span className="text-[11px] text-slate-400">가로 1120px (2배 해상도)</span>
-                                {msg && <span className="text-xs font-semibold text-emerald-600">{msg}</span>}
+                                {msg && <span className={`text-xs font-semibold ${msg.isError ? 'text-red-600' : 'text-emerald-600'}`}>{msg.text}</span>}
                             </div>
 
                             <div className="max-w-full overflow-x-auto rounded shadow-xl border border-slate-200">
