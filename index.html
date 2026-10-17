@@ -932,6 +932,10 @@
                 overflow: visible !important;
             }
 
+            /* 도구 선택 줄은 인쇄에서 숨기고, 그 아래 간격(space-y)도 없애 달력이 아래로 밀리지 않게 함 */
+            #tab-generator > * { margin-top: 0 !important; }
+            #gen-pane-popup { display: none !important; }
+
             /* 화면용 가운데 정렬(flex)을 풀어서 달력이 왼쪽으로 밀려 잘리지 않게 함 */
             #generator-root, #generator-root > div {
                 display: block !important;
@@ -1088,10 +1092,7 @@
                     우선 대관 캘린더
                 </button>
                 <button onclick="switchTab('generator')" id="tab-btn-generator" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
-                    캘린더 생성기
-                </button>
-                <button onclick="switchTab('popup')" id="tab-btn-popup" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
-                    팝업 생성기
+                    생성기
                 </button>
                 <button onclick="switchTab('sms')" id="tab-btn-sms" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     안내문자 템플릿
@@ -1252,14 +1253,25 @@
             </div>
         </section>
 
-        <!-- TAB 3: CALENDAR GENERATOR TAB (교체 적용 완료) -->
+        <!-- TAB 3: 생성기 (도구 모음) — 새 생성기는 GEN_TOOLS와 아래 gen-pane만 추가하면 됨 -->
         <section id="tab-generator" class="tab-content hidden space-y-4">
-            <div id="generator-root" class="gen-font w-full flex justify-center"></div>
-        </section>
+            <div class="no-print flex items-center gap-2 px-1">
+                <span class="text-[11.5px] font-bold text-slate-500">도구</span>
+                <div class="inline-flex p-0.5 bg-slate-100 border border-slate-200 rounded-lg">
+                    <button type="button" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-tool-btn px-3 py-1 rounded-md text-xs font-semibold transition-all">대관 캘린더</button>
+                    <button type="button" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tool-btn px-3 py-1 rounded-md text-xs font-semibold transition-all">Team Friends 팝업</button>
+                </div>
+            </div>
 
-        <!-- TAB: POPUP GENERATOR (Team Friends 주간 운영 안내) -->
-        <section id="tab-popup" class="tab-content hidden space-y-4">
-            <div id="popup-root"></div>
+            <!-- 도구: 대관 캘린더 (A4 가로 인쇄) -->
+            <div id="gen-pane-calendar" class="gen-pane">
+                <div id="generator-root" class="gen-font w-full flex justify-center"></div>
+            </div>
+
+            <!-- 도구: Team Friends 주간 운영 안내 팝업 (PNG) -->
+            <div id="gen-pane-popup" class="gen-pane hidden">
+                <div id="popup-root"></div>
+            </div>
         </section>
 
         <!-- TAB 4: SMS TEMPLATES -->
@@ -4054,6 +4066,31 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         document.addEventListener('click', () => closeMonthPicker());
+
+        // 생성기 탭 안의 도구 전환 (마지막에 쓴 도구를 기억)
+        const GEN_TOOLS = ['calendar', 'popup'];
+        const GEN_TOOL_KEY = 'dm-gen-tool';
+        function switchGenTool(tool) {
+            if (!GEN_TOOLS.includes(tool)) tool = 'calendar';
+            GEN_TOOLS.forEach(t => {
+                const pane = document.getElementById('gen-pane-' + t);
+                if (pane) pane.classList.toggle('hidden', t !== tool);
+            });
+            document.querySelectorAll('.gen-tool-btn').forEach(btn => {
+                const on = btn.dataset.genTool === tool;
+                btn.classList.toggle('bg-white', on);
+                btn.classList.toggle('text-slate-900', on);
+                btn.classList.toggle('shadow-sm', on);
+                btn.classList.toggle('text-slate-500', !on);
+                btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+            try { localStorage.setItem(GEN_TOOL_KEY, tool); } catch (e) {}
+        }
+        (function initGenTool() {
+            let saved = 'calendar';
+            try { saved = localStorage.getItem(GEN_TOOL_KEY) || 'calendar'; } catch (e) {}
+            switchGenTool(saved);
+        })();
 
         window.onload = function() {
             renderQACards();
