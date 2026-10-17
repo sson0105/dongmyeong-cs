@@ -997,7 +997,7 @@
         .tab-btn:focus-visible { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(37, 99, 235, 0.45); }
         /* 생성기 도구 선택: 페이지 제목처럼 보이는 밑줄 탭 */
         /* 스크롤 영역으로 두지 않음: 밑줄 막대가 구분선에 겹치려고 1px 아래로 나와서, 스크롤 설정이 있으면 윈도우에서 세로 스크롤바가 생김 */
-        .gen-tabs { display: flex; flex-wrap: wrap; column-gap: 24px; border-bottom: 1px solid #e2e8f0; padding: 0 4px; overflow: visible; }
+        .gen-tabs { display: flex; flex-wrap: wrap; column-gap: 24px; border-bottom: 1px solid #e2e8f0; padding: 0; overflow: visible; }
         .gen-tab {
             position: relative; padding: 2px 0 11px;
             border: none; background: transparent; cursor: pointer;
@@ -1106,8 +1106,8 @@
         </div>
 
         <!-- Navigation Tabs -->
-        <nav class="bg-slate-50 border-t border-slate-200 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-7xl mx-auto flex space-x-1 overflow-x-auto custom-scrollbar text-xs font-medium py-1.5">
+        <nav class="bg-slate-50 border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 overflow-x-auto custom-scrollbar text-xs font-medium py-1.5">
                 <button onclick="switchTab('qa')" id="tab-btn-qa" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap bg-slate-900 text-white font-semibold shadow-2xs">
                     Q&A 및 스크립트
                 </button>
@@ -1129,8 +1129,8 @@
     </header>
 
     <!-- Real-Time Clock Bar -->
-    <section class="bg-slate-900 text-white border-b border-slate-800 py-1.5 px-4 sm:px-6 lg:px-8 no-print">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+    <section class="bg-slate-900 text-white border-b border-slate-800 py-1.5 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-2 text-xs">
             <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span class="text-slate-400 font-medium hidden sm:inline">실시간 시각:</span>
