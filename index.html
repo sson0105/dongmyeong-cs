@@ -998,13 +998,19 @@
         /* 생성기 도구 선택: 페이지 제목처럼 보이는 밑줄 탭 */
         .gen-tabs { display: flex; gap: 24px; border-bottom: 1px solid #e2e8f0; padding: 0 4px; overflow-x: auto; }
         .gen-tab {
-            position: relative; padding: 2px 0 10px; margin-bottom: -1px;
-            border: none; border-bottom: 2px solid transparent; background: transparent; cursor: pointer;
+            position: relative; padding: 2px 0 11px;
+            border: none; background: transparent; cursor: pointer;
             font-size: 18px; font-weight: 700; color: #94a3b8; white-space: nowrap;
-            transition: color 0.15s, border-color 0.15s;
+            transition: color 0.15s;
+        }
+        /* 활성 밑줄: 2px의 1.3배(2.6px). 크롬은 border 두께를 정수로 내림해서 border 대신 막대로 그림 */
+        .gen-tab::after {
+            content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2.6px;
+            background: transparent; border-radius: 2px 2px 0 0; transition: background-color 0.15s;
         }
         .gen-tab:hover { color: #475569; }
-        .gen-tab.active { color: #0f172a; border-bottom-color: #0f172a; }
+        .gen-tab.active { color: #0f172a; }
+        .gen-tab.active::after { background: #0f172a; }
         .gen-tab:focus { outline: none; }
         .gen-tab:focus-visible { color: #0f172a; box-shadow: 0 2px 0 0 rgba(37, 99, 235, 0.6); }
 
