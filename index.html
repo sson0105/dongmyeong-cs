@@ -15,7 +15,7 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Bowlby+One&display=swap" rel="stylesheet">
     
     <!-- React & Babel for Generator Tab -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -23,6 +23,8 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- 바이너리 .xls, .xlsx 및 HTML 테이블 동시 지원 SheetJS -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- 팝업 생성기: 화면 요소를 PNG로 저장 -->
+    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
 
     <style>
         body {
@@ -930,6 +932,10 @@
                 overflow: visible !important;
             }
 
+            /* 도구 선택 줄은 인쇄에서 숨기고, 그 아래 간격(space-y)도 없애 달력이 아래로 밀리지 않게 함 */
+            #tab-generator > * { margin-top: 0 !important; }
+            #gen-pane-popup { display: none !important; }
+
             /* 화면용 가운데 정렬(flex)을 풀어서 달력이 왼쪽으로 밀려 잘리지 않게 함 */
             #generator-root, #generator-root > div {
                 display: block !important;
@@ -986,6 +992,72 @@
         .gen-font, .gen-font * {
             font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
         }
+        /* 상단 탭: 클릭 시 생기는 검은 포커스 테두리 대신, 키보드로 이동할 때만 옅은 파란 링 */
+        .tab-btn:focus { outline: none; }
+        .tab-btn:focus-visible { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(37, 99, 235, 0.45); }
+        /* 생성기 도구 선택: 페이지 제목처럼 보이는 밑줄 탭 */
+        /* 스크롤 영역으로 두지 않음: 밑줄 막대가 구분선에 겹치려고 1px 아래로 나와서, 스크롤 설정이 있으면 윈도우에서 세로 스크롤바가 생김 */
+        .gen-tabs { display: flex; flex-wrap: wrap; column-gap: 24px; border-bottom: 1px solid #e2e8f0; padding: 0; overflow: visible; }
+        .gen-tab {
+            position: relative; padding: 2px 0 11px;
+            border: none; background: transparent; cursor: pointer;
+            font-size: 18px; font-weight: 700; color: #94a3b8; white-space: nowrap;
+            transition: color 0.15s;
+        }
+        /* 활성 밑줄: 2px의 1.3배(2.6px). 크롬은 border 두께를 정수로 내림해서 border 대신 막대로 그림 */
+        .gen-tab::after {
+            content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2.6px;
+            background: transparent; border-radius: 2px 2px 0 0; transition: background-color 0.15s;
+        }
+        .gen-tab:hover { color: #475569; }
+        .gen-tab.active { color: #0f172a; }
+        .gen-tab.active::after { background: #0f172a; }
+        .gen-tab:focus { outline: none; }
+        .gen-tab:focus-visible { color: #0f172a; box-shadow: 0 2px 0 0 rgba(37, 99, 235, 0.6); }
+
+        /* 팝업 생성기: Team Friends 주간 운영 안내 (피그마 시안F, 560px 폭) */
+        .tf-card, .tf-card * {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+            box-sizing: border-box; margin: 0;
+        }
+        .tf-card {
+            width: 560px; background: #f0f2f7; color: #0f1f45;
+            padding: 30px 28px 28px; display: flex; flex-direction: column; gap: 22px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .tf-head { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+        .tf-head-main { display: flex; flex-direction: column; align-items: center; gap: 12px; white-space: nowrap; }
+        /* 로고 글자(span)까지 Bowlby One 적용: 위의 '.tf-card *' 프리텐다드 규칙보다 우선하도록 자식까지 지정 */
+        .tf-card .tf-logo, .tf-card .tf-logo * { font-family: "Bowlby One", "Arial Black", sans-serif; font-weight: 400; }
+        .tf-card .tf-logo { display: flex; gap: 11.6px; font-size: 35.875px; line-height: 1; letter-spacing: -0.36px; }
+        .tf-logo .g { color: #1f7a4d; } .tf-logo .b { color: #2645a8; }
+        .tf-title { font-size: 30px; font-weight: 800; line-height: normal; color: #0f1f45; }
+        .tf-sub { font-size: 15px; font-weight: 400; opacity: 0.65; white-space: pre; }
+        .tf-body { display: flex; flex-direction: column; gap: 12px; }
+        .tf-grid { display: flex; gap: 6px; align-items: flex-start; }
+        .tf-day { flex: 1 0 0; min-width: 0; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; background: #fff; border: 1px solid #dbe0eb; }
+        .tf-day .bar { height: 4px; background: #2b5ced; }
+        .tf-day .in { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 0 18px; white-space: nowrap; line-height: normal; }
+        .tf-day .dow { font-size: 14px; font-weight: 700; opacity: 0.55; }
+        .tf-day .date { font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; }
+        .tf-day .st { font-size: 14px; font-weight: 700; color: #2b5ced; }
+        .tf-day .note { font-size: 12px; font-weight: 400; opacity: 0.5; max-width: 100%; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; }
+        /* 미운영 카드는 테두리 없음 (피그마 원본): 테두리가 있으면 남색 바 둘레에 빨간 선이 보임 */
+        .tf-day.off { background: #db333d; border: none; color: #fff; }
+        .tf-day.off .bar { background: #0f1f45; }
+        .tf-day.off .dow, .tf-day.off .note { opacity: 0.8; }
+        .tf-day.off .st { color: #fff; }
+        .tf-alert { background: #fceded; border: 1px solid #ffd5d5; border-radius: 4px; padding: 6px 8px; text-align: center; color: #d94045; font-size: 14px; font-weight: 700; line-height: 1.5; letter-spacing: 0.14px; word-break: keep-all; white-space: pre-line; }
+        .tf-foot { text-align: center; font-size: 13px; opacity: 0.65; line-height: 1.5; word-break: keep-all; }
+
+        .tf-day-row { display: grid; grid-template-columns: 76px 1fr; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid var(--cal-line-2); }
+        .tf-day-row:first-child { border-top: none; padding-top: 0; }
+        .tf-seg { display: inline-flex; height: 32px; border: 1px solid var(--cal-line); border-radius: 6px; overflow: hidden; background: #fff; }
+        .tf-seg button { padding: 0 12px; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); border: none; background: transparent; cursor: pointer; }
+        .tf-seg button + button { border-left: 1px solid var(--cal-line); }
+        .tf-seg button.on-open { background: #2b5ced; color: #fff; }
+        .tf-seg button.on-off { background: #db333d; color: #fff; }
+
         .noon-divider {
             border-bottom: 2.3px dashed #c9c9c9 !important;
             margin-top: 1px !important;
@@ -1034,8 +1106,8 @@
         </div>
 
         <!-- Navigation Tabs -->
-        <nav class="bg-slate-50 border-t border-slate-200 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-7xl mx-auto flex space-x-1 overflow-x-auto custom-scrollbar text-xs font-medium py-1.5">
+        <nav class="bg-slate-50 border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 overflow-x-auto custom-scrollbar text-xs font-medium py-1.5">
                 <button onclick="switchTab('qa')" id="tab-btn-qa" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap bg-slate-900 text-white font-semibold shadow-2xs">
                     Q&A 및 스크립트
                 </button>
@@ -1043,7 +1115,7 @@
                     우선 대관 캘린더
                 </button>
                 <button onclick="switchTab('generator')" id="tab-btn-generator" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
-                    캘린더 생성기
+                    생성기
                 </button>
                 <button onclick="switchTab('sms')" id="tab-btn-sms" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     안내문자 템플릿
@@ -1053,11 +1125,12 @@
                 </button>
             </div>
         </nav>
+
     </header>
 
     <!-- Real-Time Clock Bar -->
-    <section class="bg-slate-900 text-white border-b border-slate-800 py-1.5 px-4 sm:px-6 lg:px-8 no-print">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+    <section class="bg-slate-900 text-white border-b border-slate-800 py-1.5 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-2 text-xs">
             <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span class="text-slate-400 font-medium hidden sm:inline">실시간 시각:</span>
@@ -1204,9 +1277,23 @@
             </div>
         </section>
 
-        <!-- TAB 3: CALENDAR GENERATOR TAB (교체 적용 완료) -->
+        <!-- TAB 3: 생성기 — 위쪽 밑줄 탭에서 도구 선택 (마지막에 쓴 도구를 기억)
+             새 생성기 추가 시: GEN_TOOLS에 이름 추가 + .gen-tab 버튼 + #gen-pane-<이름> 영역 -->
         <section id="tab-generator" class="tab-content hidden space-y-4">
-            <div id="generator-root" class="gen-font w-full flex justify-center"></div>
+            <div class="gen-tabs no-print" role="tablist" aria-label="생성기 도구">
+                <button type="button" role="tab" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-tab">대관 캘린더</button>
+                <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tab">Team Friends 팝업</button>
+            </div>
+
+            <!-- 도구: 대관 캘린더 (A4 가로 인쇄) -->
+            <div id="gen-pane-calendar" class="gen-pane">
+                <div id="generator-root" class="gen-font w-full flex justify-center"></div>
+            </div>
+
+            <!-- 도구: Team Friends 주간 운영 안내 팝업 (PNG) -->
+            <div id="gen-pane-popup" class="gen-pane hidden">
+                <div id="popup-root"></div>
+            </div>
         </section>
 
         <!-- TAB 4: SMS TEMPLATES -->
@@ -3104,6 +3191,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             if (tabId === 'work') {
                 fetchWorkOverrides();
             }
+
         }
 
         function updateLiveClock() {
@@ -4002,6 +4090,28 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
         document.addEventListener('click', () => closeMonthPicker());
 
+        // 생성기 탭: 위쪽 밑줄 탭으로 도구 선택 (마지막에 쓴 도구를 기억)
+        const GEN_TOOLS = ['calendar', 'popup'];
+        const GEN_TOOL_KEY = 'dm-gen-tool';
+        function switchGenTool(tool) {
+            if (!GEN_TOOLS.includes(tool)) tool = 'calendar';
+            GEN_TOOLS.forEach(t => {
+                const pane = document.getElementById('gen-pane-' + t);
+                if (pane) pane.classList.toggle('hidden', t !== tool);
+            });
+            document.querySelectorAll('.gen-tab').forEach(btn => {
+                const on = btn.dataset.genTool === tool;
+                btn.classList.toggle('active', on);
+                btn.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            try { localStorage.setItem(GEN_TOOL_KEY, tool); } catch (e) {}
+        }
+        (function initGenTool() {
+            let saved = 'calendar';
+            try { saved = localStorage.getItem(GEN_TOOL_KEY) || 'calendar'; } catch (e) {}
+            switchGenTool(saved);
+        })();
+
         window.onload = function() {
             renderQACards();
             renderSmsCards();
@@ -4564,6 +4674,323 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         ReactDOM.createRoot(document.getElementById('generator-root')).render(<CalendarGeneratorApp />);
+
+        /* =========================================================
+         * 팝업 생성기: Team Friends 주간 운영 안내 (홈페이지 팝업용 PNG)
+         * 디자인 원본: 피그마 '시안F 스코어보드×캠프 색감' (560px 폭)
+         * ========================================================= */
+        const TF_DOW = ['일', '월', '화', '수', '목', '금', '토'];
+        const TF_REASONS = ['대관 행사', '시설 점검', '우천', '기상 악화'];
+        const TF_DEFAULT_TIME = '16–18시';
+        const TF_DEFAULT_FOOT = '※ 행사 일정에 따라 변경될 수 있으며, 주말·공휴일은 운영하지 않습니다.';
+
+        function tfIso(d) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+        function tfAddDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+        // 다음 주 월요일 (공지는 보통 다음 주 운영을 미리 올리므로)
+        function tfNextMonday(from = new Date()) {
+            const d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+            const diff = ((8 - d.getDay()) % 7) || 7;
+            return tfAddDays(d, diff);
+        }
+        function tfMondayOf(d) {
+            const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            const back = (x.getDay() + 6) % 7;
+            return tfAddDays(x, -back);
+        }
+        // 받침 유무로 '로/으로' 선택 (ㄹ 받침은 '로')
+        function tfRo(word) {
+            const ch = word.trim().slice(-1);
+            const code = ch.charCodeAt(0) - 0xAC00;
+            if (code < 0 || code > 11171) return '로';
+            const jong = code % 28;
+            return jong === 0 || jong === 8 ? '로' : '으로';
+        }
+        function tfReasonPhrase(reason) {
+            const r = (reason || '').trim();
+            if (!r) return '운영 사정으로';
+            if (r === '대관 행사') return '축구장 대관행사로';
+            return r + tfRo(r);
+        }
+
+        // PNG에 넣을 폰트만 골라서 내장 (Noto Sans KR 같은 큰 웹폰트를 통째로 받지 않도록)
+        const TF_PRETENDARD_WEIGHTS = [400, 700, 800, 900];
+        // 페이지에 이미 로드된 프리텐다드 스타일시트에서 굵기별 실제 woff2 주소를 읽어옴
+        function tfPretendardFonts() {
+            const found = {};
+            for (const sheet of Array.from(document.styleSheets)) {
+                if (!sheet.href || !/pretendard/i.test(sheet.href)) continue;
+                let rules;
+                try { rules = sheet.cssRules; } catch (e) { continue; }
+                for (const rule of Array.from(rules || [])) {
+                    if (rule.type !== CSSRule.FONT_FACE_RULE) continue;
+                    const w = parseInt(rule.style.getPropertyValue('font-weight'), 10);
+                    if (!TF_PRETENDARD_WEIGHTS.includes(w) || found[w]) continue;
+                    const src = rule.style.getPropertyValue('src');
+                    const m = src.match(/url\((['"]?)([^'")]+\.woff2)\1\)/) || src.match(/url\((['"]?)([^'")]+)\1\)/);
+                    if (m) found[w] = new URL(m[2], sheet.href).href;
+                }
+            }
+            return TF_PRETENDARD_WEIGHTS.filter(w => found[w]).map(w => ({ family: 'Pretendard', weight: w, url: found[w] }));
+        }
+        let tfFontCssPromise = null;
+        function tfGetFontCss() {
+            if (!tfFontCssPromise) {
+                const files = [
+                    // Bowlby One은 구글 폰트 CSS에서 실제 woff2 주소를 찾아서 받음 (화면 표시와 같은 파일)
+                    { family: 'Bowlby One', weight: 400, cssUrl: 'https://fonts.googleapis.com/css2?family=Bowlby+One&display=swap&text=TEAMFRIENDS' },
+                    ...tfPretendardFonts(),
+                ];
+                const resolveUrl = (f) => f.url ? Promise.resolve(f.url) : fetch(f.cssUrl).then(r => r.text()).then(css => {
+                    const m = css.match(/url\((['"]?)([^'")]+)\1\)/);
+                    if (!m) throw new Error('폰트 주소 없음: ' + f.family);
+                    return m[2];
+                });
+                const toFace = (f) => resolveUrl(f)
+                    .then(url => fetch(url)).then(r => { if (!r.ok) throw new Error(`${f.family} ${f.weight} (${r.status})`); return r.blob(); })
+                    .then(blob => new Promise((res, rej) => {
+                        const fr = new FileReader();
+                        fr.onload = () => res(`@font-face{font-family:"${f.family}";font-weight:${f.weight};font-style:normal;src:url(${fr.result});}`);
+                        fr.onerror = rej;
+                        fr.readAsDataURL(blob);
+                    }));
+                // 폰트 하나가 실패해도 이미지는 만들어지도록: 실패한 폰트만 빼고 진행
+                tfFontCssPromise = Promise.allSettled(files.map(toFace)).then(results => {
+                    const failed = results.filter(r => r.status === 'rejected');
+                    failed.forEach(r => console.warn('[팝업 생성기] 폰트 내장 실패:', r.reason));
+                    if (failed.length) tfFontCssPromise = null; // 다음 시도 때 다시 받아봄
+                    return results.filter(r => r.status === 'fulfilled').map(r => r.value).join('\n');
+                });
+            }
+            return tfFontCssPromise;
+        }
+
+        function PopupGeneratorApp() {
+            const [weekStart, setWeekStart] = useState(() => tfNextMonday());
+            // 날짜별 수정 내용 (주를 옮겨도 유지) { 'YYYY-MM-DD': { open, reason } }
+            const [edits, setEdits] = useState({});
+            const [timeText, setTimeText] = useState(TF_DEFAULT_TIME);
+            const [alertOverride, setAlertOverride] = useState(null); // null이면 자동 문구
+            const [footText, setFootText] = useState(TF_DEFAULT_FOOT);
+            const [busy, setBusy] = useState('');
+            const [msg, setMsg] = useState(null);
+            const cardRef = React.useRef(null);
+
+            const days = useMemo(() => [0, 1, 2, 3, 4].map(i => {
+                const d = tfAddDays(weekStart, i);
+                const iso = tfIso(d);
+                const holiday = (typeof KR_HOLIDAYS !== 'undefined' && KR_HOLIDAYS[iso]) || '';
+                const base = holiday ? { open: false, reason: holiday } : { open: true, reason: '' };
+                return { d, iso, holiday, ...base, ...(edits[iso] || {}) };
+            }), [weekStart, edits]);
+
+            const autoAlert = useMemo(() => {
+                const closed = days.filter(x => !x.open);
+                if (!closed.length) return '';
+                const groups = [];
+                closed.forEach(x => {
+                    const key = (x.reason || '').trim();
+                    const g = groups.find(g => g.key === key);
+                    if (g) g.items.push(x); else groups.push({ key, items: [x] });
+                });
+                return groups.map(g => {
+                    const dates = g.items.map((x, i) => {
+                        const prev = g.items[i - 1];
+                        const sameMonth = prev && prev.d.getMonth() === x.d.getMonth();
+                        return `${sameMonth ? '' : (x.d.getMonth() + 1) + '월 '}${x.d.getDate()}일 ${TF_DOW[x.d.getDay()]}요일`;
+                    }).join(', ');
+                    return `${dates}은 ${tfReasonPhrase(g.key)} 무료 개방 이용이 불가합니다.`;
+                }).join('\n');
+            }, [days]);
+            const alertText = alertOverride !== null ? alertOverride : autoAlert;
+
+            const first = days[0].d, last = days[4].d;
+            const rangeText = `${first.getFullYear()}. ${first.getMonth() + 1}. ${first.getDate()} – ${last.getFullYear() !== first.getFullYear() ? last.getFullYear() + '. ' : ''}${last.getMonth() + 1}. ${last.getDate()}`;
+
+            const updateDay = (iso, patch) => setEdits(prev => ({ ...prev, [iso]: { ...(prev[iso] || {}), ...patch } }));
+            const setOpen = (day, open) => {
+                if (open) updateDay(day.iso, { open: true });
+                else updateDay(day.iso, { open: false, reason: day.reason || day.holiday || '대관 행사' });
+            };
+            const moveWeek = (n) => setWeekStart(w => tfAddDays(w, n * 7));
+            const flash = (t, isError = false) => { setMsg({ text: t, isError }); setTimeout(() => setMsg(null), isError ? 5000 : 2500); };
+
+            async function renderBlob() {
+                if (!window.htmlToImage) throw new Error('이미지 변환 도구를 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.');
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+                const fontEmbedCSS = await tfGetFontCss();
+                return window.htmlToImage.toBlob(cardRef.current, { pixelRatio: 2, fontEmbedCSS, backgroundColor: '#f0f2f7' });
+            }
+            async function handleDownload() {
+                setBusy('download');
+                try {
+                    const blob = await renderBlob();
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `TeamFriends_주간운영안내_${tfIso(weekStart)}.png`;
+                    document.body.appendChild(a); a.click(); a.remove();
+                    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+                    flash('PNG 파일을 저장했어요.');
+                } catch (e) { console.error(e); flash('이미지 저장에 실패했어요. ' + (e.message || ''), true); }
+                setBusy('');
+            }
+            async function handleCopy() {
+                setBusy('copy');
+                try {
+                    if (!navigator.clipboard || !window.ClipboardItem) throw new Error('이 브라우저는 이미지 복사를 지원하지 않아요. PNG 저장을 이용해 주세요.');
+                    await navigator.clipboard.write([new ClipboardItem({ 'image/png': renderBlob() })]);
+                    flash('이미지를 클립보드에 복사했어요.');
+                } catch (e) { console.error(e); flash('이미지 복사에 실패했어요. ' + (e.message || ''), true); }
+                setBusy('');
+            }
+
+            const thisMonday = tfMondayOf(new Date());
+            const weekLabel = (() => {
+                const diff = Math.round((weekStart - thisMonday) / (7 * 86400000));
+                return diff === 0 ? '이번 주' : diff === 1 ? '다음 주' : diff === -1 ? '지난 주' : diff > 0 ? `${diff}주 뒤` : `${-diff}주 전`;
+            })();
+
+            return (
+                <div className="space-y-4">
+                    <p className="text-xs text-slate-500 px-1">요일별 운영 여부만 고르면 팝업 이미지가 만들어집니다. 공휴일은 자동으로 미운영 처리돼요.</p>
+
+                    <div className="flex flex-col lg:flex-row gap-5 items-start">
+                        {/* 입력 패널 */}
+                        <div className="w-full lg:w-[380px] shrink-0 bg-white border border-slate-200 rounded-lg shadow-sm p-4 space-y-4">
+                            <div className="sms-field">
+                                <span className="sms-label">운영 주간</span>
+                                <div className="flex items-center gap-2">
+                                    <div className="sms-stepper">
+                                        <button type="button" onClick={() => moveWeek(-1)} title="이전 주" aria-label="이전 주">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                                        </button>
+                                        <span className="sms-stepper-divider" />
+                                        <span className="px-3 text-[12.5px] font-bold text-slate-800 tabular-nums whitespace-nowrap">
+                                            {first.getMonth() + 1}/{first.getDate()} – {last.getMonth() + 1}/{last.getDate()}
+                                        </span>
+                                        <span className="sms-stepper-divider" />
+                                        <button type="button" onClick={() => moveWeek(1)} title="다음 주" aria-label="다음 주">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                                        </button>
+                                    </div>
+                                    <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">{weekLabel}</span>
+                                </div>
+                            </div>
+
+                            <div className="sms-field">
+                                <span className="sms-label">운영 시간</span>
+                                <input className="sms-control" value={timeText} onChange={e => setTimeText(e.target.value)} placeholder="예: 16–18시" />
+                            </div>
+
+                            <div>
+                                <span className="sms-label block mb-2">요일별 운영</span>
+                                <datalist id="tf-reason-list">
+                                    {TF_REASONS.map(r => <option key={r} value={r} />)}
+                                </datalist>
+                                {days.map(day => (
+                                    <div key={day.iso} className="tf-day-row">
+                                        <div className="text-[12.5px] font-bold text-slate-800 tabular-nums">
+                                            {TF_DOW[day.d.getDay()]} {day.d.getMonth() + 1}/{day.d.getDate()}
+                                            {day.holiday && <div className="text-[10.5px] font-bold text-red-500">{day.holiday}</div>}
+                                        </div>
+                                        <div className="flex items-center gap-2 min-w-0">
+                                            <div className="tf-seg shrink-0">
+                                                <button type="button" className={day.open ? 'on-open' : ''} onClick={() => setOpen(day, true)}>운영</button>
+                                                <button type="button" className={!day.open ? 'on-off' : ''} onClick={() => setOpen(day, false)}>미운영</button>
+                                            </div>
+                                            {!day.open && (
+                                                <input
+                                                    className="sms-control"
+                                                    list="tf-reason-list"
+                                                    value={day.reason}
+                                                    onChange={e => updateDay(day.iso, { reason: e.target.value })}
+                                                    placeholder="사유 (예: 대관 행사)"
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="sms-field">
+                                <div className="flex items-center justify-between">
+                                    <span className="sms-label">안내 문구 (미운영일이 있을 때 표시)</span>
+                                    {alertOverride !== null && (
+                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setAlertOverride(null)}>자동 문구로 되돌리기</button>
+                                    )}
+                                </div>
+                                <textarea
+                                    className="sms-control"
+                                    style={{ height: 'auto', minHeight: 56, padding: '8px 10px', lineHeight: 1.5, resize: 'vertical' }}
+                                    rows={Math.max(2, alertText.split('\n').length)}
+                                    value={alertText}
+                                    onChange={e => setAlertOverride(e.target.value)}
+                                    placeholder="미운영일이 없으면 비워 두세요."
+                                />
+                            </div>
+
+                            <div className="sms-field">
+                                <div className="flex items-center justify-between">
+                                    <span className="sms-label">하단 유의사항</span>
+                                    {footText !== TF_DEFAULT_FOOT && (
+                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setFootText(TF_DEFAULT_FOOT)}>기본 문구로</button>
+                                    )}
+                                </div>
+                                <input className="sms-control" value={footText} onChange={e => setFootText(e.target.value)} />
+                            </div>
+                        </div>
+
+                        {/* 미리보기 + 저장 */}
+                        <div className="flex flex-col items-start gap-3 min-w-0 max-w-full">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <button type="button" onClick={handleDownload} disabled={!!busy}
+                                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold py-1.5 px-5 rounded-md text-xs shadow transition">
+                                    {busy === 'download' ? '만드는 중...' : 'PNG 저장'}
+                                </button>
+                                <button type="button" onClick={handleCopy} disabled={!!busy}
+                                    className="bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 border border-slate-300 font-bold py-1.5 px-4 rounded-md text-xs transition">
+                                    {busy === 'copy' ? '복사 중...' : '이미지 복사'}
+                                </button>
+                                <span className="text-[11px] text-slate-400">가로 1120px (2배 해상도)</span>
+                                {msg && <span className={`text-xs font-semibold ${msg.isError ? 'text-red-600' : 'text-emerald-600'}`}>{msg.text}</span>}
+                            </div>
+
+                            <div className="max-w-full overflow-x-auto rounded shadow-xl border border-slate-200">
+                                <div ref={cardRef} className="tf-card">
+                                    <div className="tf-head">
+                                        <div className="tf-head-main">
+                                            <div className="tf-logo"><span className="g">TEAM</span><span className="b">FRIENDS</span></div>
+                                            <p className="tf-title">중·고등학생 무료 개방 주간 운영 안내</p>
+                                        </div>
+                                        <p className="tf-sub">{`동명근린공원 축구장  |  ${rangeText}`}</p>
+                                    </div>
+                                    <div className="tf-body">
+                                        <div className="tf-grid">
+                                            {days.map(day => (
+                                                <div key={day.iso} className={`tf-day${day.open ? '' : ' off'}`}>
+                                                    <div className="bar" />
+                                                    <div className="in">
+                                                        <p className="dow">{TF_DOW[day.d.getDay()]}</p>
+                                                        <p className="date">{`${day.d.getMonth() + 1}.${String(day.d.getDate()).padStart(2, '0')}`}</p>
+                                                        <p className="st">{day.open ? '운영' : '미운영'}</p>
+                                                        <p className="note">{day.open ? timeText : (day.reason || ' ')}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        {alertText.trim() && <div className="tf-alert">{alertText.trim()}</div>}
+                                    </div>
+                                    {footText.trim() && <p className="tf-foot">{footText}</p>}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('popup-root')).render(<PopupGeneratorApp />);
     </script>
 </body>
 </html>
