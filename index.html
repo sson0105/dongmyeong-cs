@@ -1015,7 +1015,8 @@
         .tf-day .date { font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; }
         .tf-day .st { font-size: 14px; font-weight: 700; color: #2b5ced; }
         .tf-day .note { font-size: 12px; font-weight: 400; opacity: 0.5; max-width: 100%; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; }
-        .tf-day.off { background: #db333d; border-color: #db333d; color: #fff; }
+        /* 미운영 카드는 테두리 없음 (피그마 원본): 테두리가 있으면 남색 바 둘레에 빨간 선이 보임 */
+        .tf-day.off { background: #db333d; border: none; color: #fff; }
         .tf-day.off .bar { background: #0f1f45; }
         .tf-day.off .dow, .tf-day.off .note { opacity: 0.8; }
         .tf-day.off .st { color: #fff; }
