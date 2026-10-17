@@ -996,7 +996,8 @@
         .tab-btn:focus { outline: none; }
         .tab-btn:focus-visible { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(37, 99, 235, 0.45); }
         /* 생성기 도구 선택: 페이지 제목처럼 보이는 밑줄 탭 */
-        .gen-tabs { display: flex; gap: 24px; border-bottom: 1px solid #e2e8f0; padding: 0 4px; overflow-x: auto; }
+        /* 스크롤 영역으로 두지 않음: 밑줄 막대가 구분선에 겹치려고 1px 아래로 나와서, 스크롤 설정이 있으면 윈도우에서 세로 스크롤바가 생김 */
+        .gen-tabs { display: flex; flex-wrap: wrap; column-gap: 24px; border-bottom: 1px solid #e2e8f0; padding: 0 4px; overflow: visible; }
         .gen-tab {
             position: relative; padding: 2px 0 11px;
             border: none; background: transparent; cursor: pointer;
