@@ -1050,8 +1050,9 @@
         .tf-alert { background: #fceded; border: 1px solid #ffd5d5; border-radius: 4px; padding: 6px 8px; text-align: center; color: #d94045; font-size: 14px; font-weight: 700; line-height: 1.5; letter-spacing: 0.14px; word-break: keep-all; white-space: pre-line; }
         .tf-foot { text-align: center; font-size: 13px; opacity: 0.65; line-height: 1.5; word-break: keep-all; }
 
-        .tf-day-row { display: grid; grid-template-columns: 76px 1fr; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid var(--cal-line-2); }
-        .tf-day-row:first-child { border-top: none; padding-top: 0; }
+        .tf-day-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 10px; border: 1px solid var(--cal-line-2); border-radius: 8px; background: #fbfcfd; }
+        .tf-seg-full { display: flex; width: 100%; }
+        .tf-seg-full button { flex: 1 1 0; padding: 0 6px; }
         .tf-seg { display: inline-flex; height: 32px; border: 1px solid var(--cal-line); border-radius: 6px; overflow: hidden; background: #fff; }
         .tf-seg button { padding: 0 12px; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); border: none; background: transparent; cursor: pointer; }
         .tf-seg button + button { border-left: 1px solid var(--cal-line); }
@@ -4855,32 +4856,33 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 <div className="space-y-4">
                     <p className="text-xs text-slate-500 px-1">요일별 운영 여부만 고르면 팝업 이미지가 만들어집니다. 공휴일은 자동으로 미운영 처리돼요.</p>
 
-                    <div className="flex flex-col lg:flex-row gap-5 items-start">
-                        {/* 입력 패널 */}
-                        <div className="w-full lg:w-[380px] shrink-0 bg-white border border-slate-200 rounded-lg shadow-sm p-4 space-y-4">
-                            <div className="sms-field">
-                                <span className="sms-label">운영 주간</span>
-                                <div className="flex items-center gap-2">
-                                    <div className="sms-stepper">
-                                        <button type="button" onClick={() => moveWeek(-1)} title="이전 주" aria-label="이전 주">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-                                        </button>
-                                        <span className="sms-stepper-divider" />
-                                        <span className="px-3 text-[12.5px] font-bold text-slate-800 tabular-nums whitespace-nowrap">
-                                            {first.getMonth() + 1}/{first.getDate()} – {last.getMonth() + 1}/{last.getDate()}
-                                        </span>
-                                        <span className="sms-stepper-divider" />
-                                        <button type="button" onClick={() => moveWeek(1)} title="다음 주" aria-label="다음 주">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                                        </button>
+                    <div className="space-y-5">
+                        {/* 입력 패널 (가로로 펼침) */}
+                        <div className="w-full bg-white border border-slate-200 rounded-lg shadow-sm p-4 space-y-4">
+                            <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
+                                <div className="sms-field">
+                                    <span className="sms-label">운영 주간</span>
+                                    <div className="flex items-center gap-2">
+                                        <div className="sms-stepper">
+                                            <button type="button" onClick={() => moveWeek(-1)} title="이전 주" aria-label="이전 주">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                                            </button>
+                                            <span className="sms-stepper-divider" />
+                                            <span className="px-3 text-[12.5px] font-bold text-slate-800 tabular-nums whitespace-nowrap">
+                                                {first.getMonth() + 1}/{first.getDate()} – {last.getMonth() + 1}/{last.getDate()}
+                                            </span>
+                                            <span className="sms-stepper-divider" />
+                                            <button type="button" onClick={() => moveWeek(1)} title="다음 주" aria-label="다음 주">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                                            </button>
+                                        </div>
+                                        <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">{weekLabel}</span>
                                     </div>
-                                    <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">{weekLabel}</span>
                                 </div>
-                            </div>
-
-                            <div className="sms-field">
-                                <span className="sms-label">운영 시간</span>
-                                <input className="sms-control" value={timeText} onChange={e => setTimeText(e.target.value)} placeholder="예: 16–18시" />
+                                <div className="sms-field w-40">
+                                    <span className="sms-label">운영 시간</span>
+                                    <input className="sms-control" value={timeText} onChange={e => setTimeText(e.target.value)} placeholder="예: 16–18시" />
+                                </div>
                             </div>
 
                             <div>
@@ -4888,14 +4890,14 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 <datalist id="tf-reason-list">
                                     {TF_REASONS.map(r => <option key={r} value={r} />)}
                                 </datalist>
-                                {days.map(day => (
-                                    <div key={day.iso} className="tf-day-row">
-                                        <div className="text-[12.5px] font-bold text-slate-800 tabular-nums">
-                                            {TF_DOW[day.d.getDay()]} {day.d.getMonth() + 1}/{day.d.getDate()}
-                                            {day.holiday && <div className="text-[10.5px] font-bold text-red-500">{day.holiday}</div>}
-                                        </div>
-                                        <div className="flex items-center gap-2 min-w-0">
-                                            <div className="tf-seg shrink-0">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 items-start">
+                                    {days.map(day => (
+                                        <div key={day.iso} className="tf-day-col">
+                                            <div className="text-[12.5px] font-bold text-slate-800 tabular-nums flex items-baseline gap-1.5">
+                                                <span>{TF_DOW[day.d.getDay()]} {day.d.getMonth() + 1}/{day.d.getDate()}</span>
+                                                {day.holiday && <span className="text-[10.5px] font-bold text-red-500 truncate">{day.holiday}</span>}
+                                            </div>
+                                            <div className="tf-seg tf-seg-full">
                                                 <button type="button" className={day.open ? 'on-open' : ''} onClick={() => setOpen(day, true)}>운영</button>
                                                 <button type="button" className={!day.open ? 'on-off' : ''} onClick={() => setOpen(day, false)}>미운영</button>
                                             </div>
@@ -4909,35 +4911,36 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                                 />
                                             )}
                                         </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                <div className="sms-field">
+                                    <div className="flex items-center justify-between">
+                                        <span className="sms-label">안내 문구 (미운영일이 있을 때 표시)</span>
+                                        {alertOverride !== null && (
+                                            <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setAlertOverride(null)}>자동 문구로 되돌리기</button>
+                                        )}
                                     </div>
-                                ))}
-                            </div>
-
-                            <div className="sms-field">
-                                <div className="flex items-center justify-between">
-                                    <span className="sms-label">안내 문구 (미운영일이 있을 때 표시)</span>
-                                    {alertOverride !== null && (
-                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setAlertOverride(null)}>자동 문구로 되돌리기</button>
-                                    )}
+                                    <textarea
+                                        className="sms-control"
+                                        style={{ height: 'auto', minHeight: 56, padding: '8px 10px', lineHeight: 1.5, resize: 'vertical' }}
+                                        rows={Math.max(2, alertText.split('\n').length)}
+                                        value={alertText}
+                                        onChange={e => setAlertOverride(e.target.value)}
+                                        placeholder="미운영일이 없으면 비워 두세요."
+                                    />
                                 </div>
-                                <textarea
-                                    className="sms-control"
-                                    style={{ height: 'auto', minHeight: 56, padding: '8px 10px', lineHeight: 1.5, resize: 'vertical' }}
-                                    rows={Math.max(2, alertText.split('\n').length)}
-                                    value={alertText}
-                                    onChange={e => setAlertOverride(e.target.value)}
-                                    placeholder="미운영일이 없으면 비워 두세요."
-                                />
-                            </div>
-
-                            <div className="sms-field">
-                                <div className="flex items-center justify-between">
-                                    <span className="sms-label">하단 유의사항</span>
-                                    {footText !== TF_DEFAULT_FOOT && (
-                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setFootText(TF_DEFAULT_FOOT)}>기본 문구로</button>
-                                    )}
+                                <div className="sms-field">
+                                    <div className="flex items-center justify-between">
+                                        <span className="sms-label">하단 유의사항</span>
+                                        {footText !== TF_DEFAULT_FOOT && (
+                                            <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setFootText(TF_DEFAULT_FOOT)}>기본 문구로</button>
+                                        )}
+                                    </div>
+                                    <input className="sms-control" value={footText} onChange={e => setFootText(e.target.value)} />
                                 </div>
-                                <input className="sms-control" value={footText} onChange={e => setFootText(e.target.value)} />
                             </div>
                         </div>
 
