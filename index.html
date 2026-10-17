@@ -934,7 +934,7 @@
 
             /* 도구 선택 줄은 인쇄에서 숨기고, 그 아래 간격(space-y)도 없애 달력이 아래로 밀리지 않게 함 */
             #tab-generator > * { margin-top: 0 !important; }
-            #gen-pane-popup { display: none !important; }
+            #gen-pane-popup, #gen-pane-hub, #gen-back-bar { display: none !important; }
 
             /* 화면용 가운데 정렬(flex)을 풀어서 달력이 왼쪽으로 밀려 잘리지 않게 함 */
             #generator-root, #generator-root > div {
@@ -995,29 +995,34 @@
         /* 상단 탭: 클릭 시 생기는 검은 포커스 테두리 대신, 키보드로 이동할 때만 옅은 파란 링 */
         .tab-btn:focus { outline: none; }
         .tab-btn:focus-visible { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(37, 99, 235, 0.45); }
-        /* 생성기 도구 선택: 알약형 슬라이드 토글 (사이트 슬레이트 톤) */
-        .gen-switch-wrap { display: flex; justify-content: center; padding-top: 4px; }
-        .gen-switch {
-            position: relative; display: inline-flex; padding: 4px; gap: 0;
-            background: #e9edf3; border: 1px solid #e2e8f0; border-radius: 9999px;
+        /* 생성기 허브: 도구 카드 목록 → 도구 화면 (← 생성기 로 돌아가기) */
+        .gen-hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+        .gen-card {
+            display: flex; align-items: flex-start; gap: 14px; width: 100%; padding: 18px;
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; text-align: left; cursor: pointer;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+            transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
         }
-        .gen-switch-thumb {
-            position: absolute; top: 4px; bottom: 4px; left: 4px; width: 0;
-            background: #ffffff; border-radius: 9999px;
-            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.08);
-            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        .gen-card:hover { border-color: #cbd5e1; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08); transform: translateY(-1px); }
+        .gen-card:focus { outline: none; }
+        .gen-card:focus-visible { border-color: #93c5fd; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
+        .gen-card-icon {
+            width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .gen-switch-thumb.no-anim { transition: none; }
-        .gen-switch-btn {
-            position: relative; z-index: 1; height: 36px; padding: 0 22px;
-            border: none; background: transparent; border-radius: 9999px; cursor: pointer;
-            font-size: 13px; font-weight: 600; color: #64748b; white-space: nowrap;
-            transition: color 0.2s;
+        .gen-card-icon svg { width: 20px; height: 20px; }
+        .gen-card-title { font-size: 14px; font-weight: 800; color: #0f172a; }
+        .gen-card-desc { font-size: 12px; color: #64748b; margin-top: 3px; line-height: 1.5; }
+        .gen-card-arrow { margin-left: auto; align-self: center; color: #cbd5e1; transition: color 0.15s, transform 0.15s; }
+        .gen-card:hover .gen-card-arrow { color: #64748b; transform: translateX(2px); }
+        .gen-back {
+            display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px 5px 6px;
+            border: none; background: transparent; border-radius: 6px; cursor: pointer;
+            font-size: 12.5px; font-weight: 700; color: #475569;
         }
-        .gen-switch-btn:hover { color: #334155; }
-        .gen-switch-btn.active { color: #0f172a; font-weight: 700; }
-        .gen-switch-btn:focus { outline: none; }
-        .gen-switch-btn:focus-visible { box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.45); }
+        .gen-back:hover { background: #f1f5f9; color: #0f172a; }
+        .gen-back:focus { outline: none; }
+        .gen-back:focus-visible { box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.45); }
 
         /* 팝업 생성기: Team Friends 주간 운영 안내 (피그마 시안F, 560px 폭) */
         .tf-card, .tf-card * {
@@ -1118,7 +1123,7 @@
                 <button onclick="switchTab('calendar')" id="tab-btn-calendar" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     우선 대관 캘린더
                 </button>
-                <button onclick="switchTab('generator')" id="tab-btn-generator" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
+                <button onclick="onGeneratorTabClick()" id="tab-btn-generator" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
                     생성기
                 </button>
                 <button onclick="switchTab('sms')" id="tab-btn-sms" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-slate-600 hover:bg-slate-200/60 hover:text-slate-900">
@@ -1281,18 +1286,49 @@
             </div>
         </section>
 
-        <!-- TAB 3: 생성기 (도구 모음) — 새 생성기는 GEN_TOOLS와 아래 gen-pane만 추가하면 됨 -->
+        <!-- TAB 3: 생성기 — 허브(도구 카드 목록)에서 고르면 도구 화면으로 들어감
+             새 생성기 추가 시: GEN_TOOLS에 이름 추가 + 허브에 .gen-card + #gen-pane-<이름> 영역 -->
         <section id="tab-generator" class="tab-content hidden space-y-4">
-            <div class="gen-switch-wrap no-print">
-                <div class="gen-switch" role="tablist" aria-label="생성기 도구">
-                    <span class="gen-switch-thumb no-anim" aria-hidden="true"></span>
-                    <button type="button" role="tab" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-switch-btn">대관 캘린더</button>
-                    <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-switch-btn">Team Friends 팝업</button>
+            <!-- 허브: 도구 카드 목록 -->
+            <div id="gen-pane-hub" class="gen-pane no-print space-y-4">
+                <div class="px-1">
+                    <h2 class="text-xl font-bold text-slate-900">생성기</h2>
+                    <p class="text-xs text-slate-500 mt-1">만들 자료를 고르세요.</p>
+                </div>
+                <div class="gen-hub-grid">
+                    <button type="button" class="gen-card" onclick="openGenTool('calendar')">
+                        <span class="gen-card-icon" style="background:#eff6ff;color:#2563eb;">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M3 10h18M8 3v4M16 3v4"/></svg>
+                        </span>
+                        <span>
+                            <span class="gen-card-title block">대관 캘린더</span>
+                            <span class="gen-card-desc block">대관 엑셀을 올리면 월별 대관 현황표를 만들어요.</span>
+                        </span>
+                        <svg class="gen-card-arrow w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                    <button type="button" class="gen-card" onclick="openGenTool('popup')">
+                        <span class="gen-card-icon" style="background:#ecfdf5;color:#1f7a4d;">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 16l-5-5-9 9"/></svg>
+                        </span>
+                        <span>
+                            <span class="gen-card-title block">Team Friends 팝업</span>
+                            <span class="gen-card-desc block">중·고등학생 무료 개방 주간 운영 안내 이미지를 만들어요.</span>
+                        </span>
+                        <svg class="gen-card-arrow w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg>
+                    </button>
                 </div>
             </div>
 
+            <!-- 도구 화면 위 돌아가기 -->
+            <div id="gen-back-bar" class="no-print hidden">
+                <button type="button" class="gen-back" onclick="showGenHub()">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
+                    생성기
+                </button>
+            </div>
+
             <!-- 도구: 대관 캘린더 (A4 가로 인쇄) -->
-            <div id="gen-pane-calendar" class="gen-pane">
+            <div id="gen-pane-calendar" class="gen-pane hidden">
                 <div id="generator-root" class="gen-font w-full flex justify-center"></div>
             </div>
 
@@ -3197,9 +3233,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             if (tabId === 'work') {
                 fetchWorkOverrides();
             }
-            if (tabId === 'generator' && typeof moveGenThumb === 'function') {
-                moveGenThumb(false);
-            }
+
         }
 
         function updateLiveClock() {
@@ -4098,42 +4132,27 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
         document.addEventListener('click', () => closeMonthPicker());
 
-        // 생성기 탭: 페이지 상단 알약형 토글로 도구 선택 (마지막에 쓴 도구를 기억)
-        // 새 생성기 추가 시: GEN_TOOLS에 이름 추가 + .gen-switch 버튼 + #gen-pane-<이름> 영역
+        // 생성기 탭: 허브(카드 목록) ↔ 도구 화면
         const GEN_TOOLS = ['calendar', 'popup'];
-        const GEN_TOOL_KEY = 'dm-gen-tool';
-        let currentGenTool = 'calendar';
-        // 흰 바탕(thumb)을 선택된 버튼 위치·폭으로 이동
-        function moveGenThumb(animate) {
-            const thumb = document.querySelector('.gen-switch-thumb');
-            const btn = document.querySelector(`.gen-switch-btn[data-gen-tool="${currentGenTool}"]`);
-            if (!thumb || !btn || !btn.offsetWidth) return; // 탭이 숨겨져 있으면 폭이 0 → 탭을 열 때 다시 계산
-            thumb.classList.toggle('no-anim', !animate);
-            thumb.style.width = btn.offsetWidth + 'px';
-            thumb.style.transform = `translateX(${btn.offsetLeft - 4}px)`;
-        }
-        function switchGenTool(tool, animate = true) {
-            if (!GEN_TOOLS.includes(tool)) tool = 'calendar';
-            currentGenTool = tool;
-            GEN_TOOLS.forEach(t => {
-                const pane = document.getElementById('gen-pane-' + t);
-                if (pane) pane.classList.toggle('hidden', t !== tool);
+        let currentGenView = 'hub';
+        function showGenView(view) {
+            currentGenView = view;
+            ['hub', ...GEN_TOOLS].forEach(v => {
+                const pane = document.getElementById('gen-pane-' + v);
+                if (pane) pane.classList.toggle('hidden', v !== view);
             });
-            document.querySelectorAll('.gen-switch-btn').forEach(btn => {
-                const on = btn.dataset.genTool === tool;
-                btn.classList.toggle('active', on);
-                btn.setAttribute('aria-selected', on ? 'true' : 'false');
-            });
-            moveGenThumb(animate);
-            try { localStorage.setItem(GEN_TOOL_KEY, tool); } catch (e) {}
+            const back = document.getElementById('gen-back-bar');
+            if (back) back.classList.toggle('hidden', view === 'hub');
+            window.scrollTo({ top: 0 });
         }
-        window.addEventListener('resize', () => moveGenThumb(false));
-        if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => moveGenThumb(false));
-        (function initGenTool() {
-            let saved = 'calendar';
-            try { saved = localStorage.getItem(GEN_TOOL_KEY) || 'calendar'; } catch (e) {}
-            switchGenTool(saved, false);
-        })();
+        function openGenTool(tool) { showGenView(GEN_TOOLS.includes(tool) ? tool : 'hub'); }
+        function showGenHub() { showGenView('hub'); }
+        // 생성기 탭을 보고 있을 때 탭을 한 번 더 누르면 목록으로 (다른 탭에서 오면 하던 도구 그대로)
+        function onGeneratorTabClick() {
+            const section = document.getElementById('tab-generator');
+            if (section && !section.classList.contains('hidden')) showGenHub();
+            switchTab('generator');
+        }
 
         window.onload = function() {
             renderQACards();
