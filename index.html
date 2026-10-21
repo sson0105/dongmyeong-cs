@@ -1060,6 +1060,47 @@
         .tf-seg button.on-open { background: #2b5ced; color: #fff; }
         .tf-seg button.on-off { background: #db333d; color: #fff; }
 
+        /* 추첨 결과 생성기: 1순위 당첨 공지 이미지 (560px 폭, 2배 해상도 저장) */
+        .lr-card, .lr-card * {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+            box-sizing: border-box; margin: 0;
+        }
+        .lr-card {
+            width: 560px; background: #f0f2f7; color: #0f1f45;
+            padding: 30px 24px 24px; display: flex; flex-direction: column; gap: 18px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .lr-head { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+        .lr-place { font-size: 14px; font-weight: 700; color: #2b5ced; letter-spacing: 0.02em; }
+        .lr-title { font-size: 30px; font-weight: 800; line-height: 1.2; word-break: keep-all; }
+        .lr-sub { font-size: 13px; font-weight: 400; opacity: 0.6; font-variant-numeric: tabular-nums; }
+        .lr-count { display: inline-flex; align-items: baseline; gap: 4px; margin-top: 6px; padding: 5px 12px; border-radius: 999px; background: #fff; border: 1px solid #dbe0eb; font-size: 13px; font-weight: 700; }
+        .lr-count b { font-size: 15px; font-weight: 900; color: #2b5ced; font-variant-numeric: tabular-nums; }
+
+        .lr-list { background: #fff; border: 1px solid #dbe0eb; border-radius: 6px; overflow: hidden; }
+        .lr-day { display: grid; grid-template-columns: 74px 1fr; border-top: 1px solid #e6e9f0; }
+        .lr-day:first-child { border-top: none; }
+        .lr-date { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 10px 0; background: #f7f8fb; border-right: 1px solid #e6e9f0; }
+        .lr-date .d { font-size: 19px; font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
+        .lr-date .w { font-size: 12px; font-weight: 700; opacity: 0.55; }
+        .lr-day.sat .lr-date .d, .lr-day.sat .lr-date .w { color: #2b5ced; opacity: 1; }
+        .lr-day.sun .lr-date .d, .lr-day.sun .lr-date .w { color: #db333d; opacity: 1; }
+        .lr-slots { display: flex; flex-direction: column; justify-content: center; padding: 6px 14px; }
+        .lr-slot { display: grid; grid-template-columns: 38px 96px 1fr auto; align-items: center; column-gap: 8px; min-height: 34px; }
+        .lr-slot + .lr-slot { border-top: 1px dashed #e6e9f0; }
+        .lr-part { justify-self: start; font-size: 12px; font-weight: 800; color: #2b5ced; background: #eaf0fd; border-radius: 3px; padding: 2px 6px; line-height: 1.3; }
+        .lr-time { font-size: 13px; font-weight: 400; opacity: 0.6; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .lr-team { font-size: 16px; font-weight: 800; line-height: 1.3; word-break: keep-all; min-width: 0; }
+        .lr-pay { font-size: 11px; font-weight: 700; border-radius: 3px; padding: 2px 6px; white-space: nowrap; }
+        .lr-pay.done { color: #1f7a4d; background: #e7f5ed; }
+        .lr-pay.wait { color: #a15c00; background: #fff3dc; }
+        .lr-foot { text-align: center; font-size: 13px; opacity: 0.65; line-height: 1.5; word-break: keep-all; white-space: pre-line; }
+
+        .lr-check { display: grid; grid-template-columns: 1fr; gap: 0; max-height: 260px; overflow-y: auto; border: 1px solid var(--cal-line); border-radius: 6px; }
+        .lr-check-row { display: grid; grid-template-columns: 18px 118px 1fr; gap: 8px; align-items: center; padding: 6px 10px; font-size: 12px; border-top: 1px solid var(--cal-line-2); cursor: pointer; }
+        .lr-check-row:first-child { border-top: none; }
+        .lr-check-row.off { opacity: 0.45; text-decoration: line-through; }
+
         .noon-divider {
             border-bottom: 2.3px dashed #c9c9c9 !important;
             margin-top: 1px !important;
@@ -1285,6 +1326,7 @@
             <div class="gen-tabs no-print" role="tablist" aria-label="생성기 도구">
                 <button type="button" role="tab" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-tab">대관 캘린더</button>
                 <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tab">Team Friends 팝업</button>
+                <button type="button" role="tab" data-gen-tool="lottery" onclick="switchGenTool('lottery')" class="gen-tab">추첨 결과</button>
             </div>
 
             <!-- 도구: 대관 캘린더 (A4 가로 인쇄) -->
@@ -1295,6 +1337,11 @@
             <!-- 도구: Team Friends 주간 운영 안내 팝업 (PNG) -->
             <div id="gen-pane-popup" class="gen-pane hidden">
                 <div id="popup-root"></div>
+            </div>
+
+            <!-- 도구: 추첨 결과 공지 (1순위 당첨 팀, PNG) -->
+            <div id="gen-pane-lottery" class="gen-pane hidden">
+                <div id="lottery-root"></div>
             </div>
         </section>
 
@@ -4093,7 +4140,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         document.addEventListener('click', () => closeMonthPicker());
 
         // 생성기 탭: 위쪽 밑줄 탭으로 도구 선택 (마지막에 쓴 도구를 기억)
-        const GEN_TOOLS = ['calendar', 'popup'];
+        const GEN_TOOLS = ['calendar', 'popup', 'lottery'];
         const GEN_TOOL_KEY = 'dm-gen-tool';
         function switchGenTool(tool) {
             if (!GEN_TOOLS.includes(tool)) tool = 'calendar';
@@ -4993,6 +5040,294 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         ReactDOM.createRoot(document.getElementById('popup-root')).render(<PopupGeneratorApp />);
+
+        /* =========================================================
+         * 추첨 결과 생성기: 추첨 신청 현황(날짜/시간대별) 화면을 복사·붙여넣기 하면
+         * 시간대별 1순위 팀만 뽑아 당첨 결과 공지 이미지(PNG)로 만든다.
+         * ========================================================= */
+        const LR_DOW = ['일', '월', '화', '수', '목', '금', '토'];
+        const LR_PARTS = { 8: '1부', 10: '2부', 12: '3부', 14: '4부', 16: '5부', 18: '6부' };
+        const LR_DEFAULT_FOOT = '※ 시간대별 1순위 당첨 팀입니다. 결제 상황에 따라 변경될 수 있습니다.';
+
+        // 붙여넣은 글에서 '날짜 (요일) + 시간대 + 1순위 팀'을 찾아냄
+        function lrParse(raw) {
+            const text = String(raw || '').replace(/\r/g, '').replace(/ /g, ' ');
+            const dateRe = /(\d{4})-(\d{1,2})-(\d{1,2})\s*\(\s*([일월화수목금토])\s*\)/g;
+            const marks = [];
+            let m;
+            while ((m = dateRe.exec(text))) marks.push({ m, start: m.index, end: dateRe.lastIndex });
+
+            const rows = [];
+            const problems = [];
+            marks.forEach((mk, k) => {
+                const seg = text.slice(mk.end, k + 1 < marks.length ? marks[k + 1].start : text.length);
+                const [, y, mo, d] = mk.m;
+                const iso = `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const tm = seg.match(/(\d{1,2}):(\d{2})\s*[~∼〜\-–]\s*(\d{1,2}):(\d{2})/);
+                // '11순위'·'21순위' 안의 '1순위'를 잘못 잡지 않도록 앞 글자가 숫자가 아닐 때만
+                const first = seg.match(/(?:^|[^0-9])1\s*순위\s*([^\t\n]+?)\s*\(([^()\t\n]*)\)/)
+                    || seg.match(/(?:^|[^0-9])1\s*순위\s*([^\t\n]+?)(?=\s*(?:\d+\s*순위|\t|\n|$))/);
+                if (!tm || !first) {
+                    problems.push(`${iso}${tm ? ' ' + tm[0] : ''}`);
+                    return;
+                }
+                const sh = parseInt(tm[1], 10);
+                const start = `${String(sh).padStart(2, '0')}:${tm[2]}`;
+                const end = `${String(parseInt(tm[3], 10)).padStart(2, '0')}:${tm[4]}`;
+                const status = (first[2] || '').trim();
+                rows.push({
+                    key: `${iso} ${start}`,
+                    iso, dow: mk.m[4], start, end,
+                    part: LR_PARTS[sh] || '',
+                    team: first[1].trim(),
+                    status,
+                    paid: /결제\s*완료/.test(status),
+                });
+            });
+
+            // 같은 날짜·시간대가 두 번 붙여넣어진 경우 앞의 것만 사용
+            const seen = new Set();
+            const unique = rows.filter(r => (seen.has(r.key) ? false : (seen.add(r.key), true)));
+            unique.sort((a, b) => a.key.localeCompare(b.key));
+
+            const conf = text.match(/당첨\s*확정[^(\n]*\(\s*(\d{4})-(\d{1,2})-(\d{1,2})\s+(\d{1,2}:\d{2})\s*\)/);
+            const confirmedAt = conf ? `${conf[1]}.${conf[2].padStart(2, '0')}.${conf[3].padStart(2, '0')} ${conf[4]}` : '';
+            return { rows: unique, problems, confirmedAt };
+        }
+
+        function lrMainMonth(rows) {
+            const cnt = {};
+            rows.forEach(r => { const ym = r.iso.slice(0, 7); cnt[ym] = (cnt[ym] || 0) + 1; });
+            const keys = Object.keys(cnt);
+            if (!keys.length) return '';
+            return keys.reduce((a, b) => (cnt[a] >= cnt[b] ? a : b));
+        }
+
+        function LotteryResultApp() {
+            const [raw, setRaw] = useState('');
+            const [excluded, setExcluded] = useState({}); // { key: true } 공지에서 뺄 줄
+            const [titleOverride, setTitleOverride] = useState(null);
+            const [footText, setFootText] = useState(LR_DEFAULT_FOOT);
+            const [showPay, setShowPay] = useState(false);
+            const [busy, setBusy] = useState('');
+            const [msg, setMsg] = useState(null);
+            const cardRef = React.useRef(null);
+
+            const parsed = useMemo(() => lrParse(raw), [raw]);
+            const rows = parsed.rows.filter(r => !excluded[r.key]);
+            const ym = lrMainMonth(parsed.rows);
+            const [yy, mm] = ym ? ym.split('-').map(Number) : [0, 0];
+            const autoTitle = ym ? `${mm}월 축구장 대관 추첨 결과` : '축구장 대관 추첨 결과';
+            const title = titleOverride !== null ? titleOverride : autoTitle;
+            const holidays = (typeof KR_HOLIDAYS !== 'undefined' && KR_HOLIDAYS) || {};
+
+            const days = useMemo(() => {
+                const list = [];
+                rows.forEach(r => {
+                    const last = list[list.length - 1];
+                    if (last && last.iso === r.iso) last.slots.push(r);
+                    else list.push({ iso: r.iso, dow: r.dow, slots: [r] });
+                });
+                return list;
+            }, [rows]);
+
+            const flash = (t, isError = false) => { setMsg({ text: t, isError }); setTimeout(() => setMsg(null), isError ? 5000 : 2500); };
+            const toggle = (key) => setExcluded(prev => ({ ...prev, [key]: !prev[key] }));
+            const handleRaw = (v) => { setRaw(v); setExcluded({}); };
+
+            async function renderBlob() {
+                if (!window.htmlToImage) throw new Error('이미지 변환 도구를 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.');
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+                const fontEmbedCSS = await tfGetFontCss();
+                return window.htmlToImage.toBlob(cardRef.current, { pixelRatio: 2, fontEmbedCSS, backgroundColor: '#f0f2f7' });
+            }
+            async function handleDownload() {
+                setBusy('download');
+                try {
+                    const blob = await renderBlob();
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `축구장_추첨결과_${ym || '공지'}.png`;
+                    document.body.appendChild(a); a.click(); a.remove();
+                    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+                    flash('PNG 파일을 저장했어요.');
+                } catch (e) { console.error(e); flash('이미지 저장에 실패했어요. ' + (e.message || ''), true); }
+                setBusy('');
+            }
+            async function handleCopy() {
+                setBusy('copy');
+                try {
+                    if (!navigator.clipboard || !window.ClipboardItem) throw new Error('이 브라우저는 이미지 복사를 지원하지 않아요. PNG 저장을 이용해 주세요.');
+                    await navigator.clipboard.write([new ClipboardItem({ 'image/png': renderBlob() })]);
+                    flash('이미지를 클립보드에 복사했어요.');
+                } catch (e) { console.error(e); flash('이미지 복사에 실패했어요. ' + (e.message || ''), true); }
+                setBusy('');
+            }
+
+            const hasData = parsed.rows.length > 0;
+
+            return (
+                <div className="space-y-4">
+                    <p className="text-xs text-slate-500 px-1">
+                        추첨 신청 현황의 <b className="text-slate-700">날짜/시간대별 신청현황</b> 표를 통째로 드래그해 복사한 뒤 아래에 붙여넣으면, 시간대별 1순위 팀만 골라 공지 이미지를 만들어요.
+                    </p>
+
+                    <div className="flex flex-col lg:flex-row gap-5 items-start">
+                        {/* 입력 패널 */}
+                        <div className="w-full lg:w-[380px] shrink-0 bg-white border border-slate-200 rounded-lg shadow-sm p-4 space-y-4">
+                            <div className="sms-field">
+                                <div className="flex items-center justify-between">
+                                    <span className="sms-label">추첨 현황 붙여넣기</span>
+                                    {raw && <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => handleRaw('')}>비우기</button>}
+                                </div>
+                                <textarea
+                                    id="lr-raw"
+                                    className="sms-control"
+                                    style={{ height: hasData ? 90 : 180, padding: '8px 10px', lineHeight: 1.5, resize: 'vertical', fontSize: 12 }}
+                                    value={raw}
+                                    onChange={e => handleRaw(e.target.value)}
+                                    placeholder={'추첨 현황 화면에서 표 전체를 드래그해 복사(Ctrl+C)한 뒤\n여기에 붙여넣기(Ctrl+V) 하세요.\n\n예) 1  2026-11-01 (일)  12:00~14:00  2팀  1순위 그린FC (결제완료) ...'}
+                                />
+                                {raw && !hasData && (
+                                    <p className="text-[11.5px] font-semibold text-red-600">날짜·시간대·1순위 팀을 찾지 못했어요. '날짜/시간대별 신청현황' 표를 복사했는지 확인해 주세요.</p>
+                                )}
+                                {parsed.problems.length > 0 && (
+                                    <p className="text-[11.5px] font-semibold text-amber-700">1순위를 찾지 못한 줄 {parsed.problems.length}건: {parsed.problems.join(', ')}</p>
+                                )}
+                            </div>
+
+                            {hasData && (
+                                <>
+                                    <div className="sms-field">
+                                        <span className="sms-label">
+                                            당첨 내역 확인 · {rows.length}건 표시
+                                            {rows.length !== parsed.rows.length && ` (${parsed.rows.length - rows.length}건 제외)`}
+                                        </span>
+                                        <div className="lr-check">
+                                            {parsed.rows.map(r => (
+                                                <label key={r.key} className={`lr-check-row ${excluded[r.key] ? 'off' : ''}`}>
+                                                    <input type="checkbox" checked={!excluded[r.key]} onChange={() => toggle(r.key)} />
+                                                    <span className="tabular-nums text-slate-500 whitespace-nowrap">{r.iso.slice(5).replace('-', '.')}({r.dow}) {r.start}</span>
+                                                    <span className="font-bold text-slate-800 truncate" title={`${r.team} (${r.status || '상태 없음'})`}>
+                                                        {r.team}
+                                                        {r.status && <span className="ml-1 font-medium text-slate-400">{r.status}</span>}
+                                                    </span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                        <span className="text-[11px] text-slate-400">체크를 끄면 공지에서 빠져요.</span>
+                                    </div>
+
+                                    <div className="sms-field">
+                                        <div className="flex items-center justify-between">
+                                            <span className="sms-label">제목</span>
+                                            {titleOverride !== null && (
+                                                <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setTitleOverride(null)}>자동 제목으로</button>
+                                            )}
+                                        </div>
+                                        <input id="lr-title" className="sms-control" value={title} onChange={e => setTitleOverride(e.target.value)} />
+                                    </div>
+
+                                    <label className="flex items-center gap-2 text-[12.5px] font-semibold text-slate-700 cursor-pointer">
+                                        <input id="lr-showpay" type="checkbox" checked={showPay} onChange={e => setShowPay(e.target.checked)} />
+                                        결제 상태 함께 표시 (결제완료 / 결제 대기)
+                                    </label>
+
+                                    <div className="sms-field">
+                                        <div className="flex items-center justify-between">
+                                            <span className="sms-label">하단 안내 문구</span>
+                                            {footText !== LR_DEFAULT_FOOT && (
+                                                <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setFootText(LR_DEFAULT_FOOT)}>기본 문구로</button>
+                                            )}
+                                        </div>
+                                        <textarea
+                                            id="lr-foot"
+                                            className="sms-control"
+                                            style={{ height: 'auto', minHeight: 56, padding: '8px 10px', lineHeight: 1.5, resize: 'vertical' }}
+                                            rows={Math.max(2, footText.split('\n').length)}
+                                            value={footText}
+                                            onChange={e => setFootText(e.target.value)}
+                                            placeholder="비워 두면 표시하지 않아요."
+                                        />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+
+                        {/* 미리보기 + 저장 */}
+                        <div className="flex flex-col items-start gap-3 min-w-0 max-w-full">
+                            {hasData ? (
+                                <>
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <button type="button" onClick={handleDownload} disabled={!!busy || !rows.length}
+                                            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold py-1.5 px-5 rounded-md text-xs shadow transition">
+                                            {busy === 'download' ? '만드는 중...' : 'PNG 저장'}
+                                        </button>
+                                        <button type="button" onClick={handleCopy} disabled={!!busy || !rows.length}
+                                            className="bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 border border-slate-300 font-bold py-1.5 px-4 rounded-md text-xs transition">
+                                            {busy === 'copy' ? '복사 중...' : '이미지 복사'}
+                                        </button>
+                                        <span className="text-[11px] text-slate-400">가로 1120px (2배 해상도)</span>
+                                        {msg && <span className={`text-xs font-semibold ${msg.isError ? 'text-red-600' : 'text-emerald-600'}`}>{msg.text}</span>}
+                                    </div>
+
+                                    <div className="max-w-full overflow-x-auto rounded shadow-xl border border-slate-200">
+                                        <div ref={cardRef} className="lr-card">
+                                            <div className="lr-head">
+                                                <p className="lr-place">동명근린공원 축구장</p>
+                                                <p className="lr-title">{title}</p>
+                                                <p className="lr-sub">
+                                                    {ym ? `${yy}년 ${mm}월 이용분` : ''}
+                                                    {ym && parsed.confirmedAt ? '  ·  ' : ''}
+                                                    {parsed.confirmedAt ? `당첨 확정 ${parsed.confirmedAt}` : ''}
+                                                </p>
+                                                <p className="lr-count">당첨 <b>{rows.length}</b>건</p>
+                                            </div>
+
+                                            <div className="lr-list">
+                                                {days.map(day => {
+                                                    const [, m2, d2] = day.iso.split('-');
+                                                    const tone = holidays[day.iso] || day.dow === '일' ? 'sun' : day.dow === '토' ? 'sat' : '';
+                                                    return (
+                                                        <div key={day.iso} className={`lr-day ${tone}`}>
+                                                            <div className="lr-date">
+                                                                <p className="d">{`${Number(m2)}.${d2}`}</p>
+                                                                <p className="w">{holidays[day.iso] ? `${day.dow} · 휴일` : day.dow}</p>
+                                                            </div>
+                                                            <div className="lr-slots">
+                                                                {day.slots.map(s => (
+                                                                    <div key={s.key} className="lr-slot">
+                                                                        <span className="lr-part">{s.part || '-'}</span>
+                                                                        <span className="lr-time">{`${s.start}–${s.end}`}</span>
+                                                                        <span className="lr-team">{s.team}</span>
+                                                                        {showPay
+                                                                            ? <span className={`lr-pay ${s.paid ? 'done' : 'wait'}`}>{s.paid ? '결제완료' : '결제 대기'}</span>
+                                                                            : <span />}
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            {footText.trim() && <p className="lr-foot">{footText.trim()}</p>}
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="w-full lg:w-[560px] border-2 border-dashed border-slate-300 rounded-lg bg-white/60 p-8 text-center space-y-2">
+                                    <p className="text-sm font-bold text-slate-600">붙여넣으면 여기에 공지 이미지가 나와요</p>
+                                    <p className="text-[12px] text-slate-400">날짜순으로 정리된 1순위 당첨 팀 목록 · PNG 저장 / 이미지 복사</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('lottery-root')).render(<LotteryResultApp />);
     </script>
 </body>
 </html>
