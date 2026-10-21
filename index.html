@@ -1085,7 +1085,9 @@
         .lr-table th + th { border-left: 1px solid #c9cdd4; }
         .lr-table th.team { text-align: center; }
         .lr-table td { padding: 0 10px; height: 46px; border-top: 1px solid #c9cdd4; vertical-align: middle; font-variant-numeric: tabular-nums; }
-        .lr-table td + td { border-left: 1px solid #c9cdd4; }
+        /* 세로선: 날짜 칸이 여러 줄로 합쳐져도 끊기지 않게, 칸마다 직접 지정 */
+        .lr-table td.date { border-right: 1px solid #c9cdd4; }
+        .lr-table td.team, .lr-table td.comp, .lr-table td.pay { border-left: 1px solid #c9cdd4; }
         .lr-table tbody:first-of-type tr:first-child td { border-top: none; }
         .lr-table tbody + tbody tr:first-child td { border-top: 1px solid #8a8f98; }
         .lr-table td.date { width: 118px; text-align: center; white-space: nowrap; font-size: 18px; font-weight: 700; padding: 6px; }
@@ -1101,8 +1103,18 @@
         .lr-table td.pay { width: 92px; text-align: center; padding: 0 6px; font-size: 14px; font-weight: 600; }
         .lr-pay.done { color: #111111; }
         .lr-pay.wait { color: #6b7280; }
-        .lr-table.with-pay td.time { width: 150px; }
-        .lr-table.with-pay .lr-part { margin-right: 6px; }
+        .lr-table th { white-space: nowrap; }
+        /* 결제 칸을 켰을 때: 다른 칸을 조금씩 줄여 팀명이 한 줄에 들어가게 */
+        .lr-table.with-pay th { font-size: 14px; padding: 10px 4px; }
+        .lr-table.with-pay td { padding: 0 6px; }
+        .lr-table.with-pay td.date { width: 100px; font-size: 17px; }
+        .lr-table.with-pay td.date .w { font-size: 15px; }
+        .lr-table.with-pay td.time { width: 140px; }
+        .lr-table.with-pay .lr-part { margin-right: 5px; font-size: 15px; }
+        .lr-table.with-pay .lr-time { font-size: 15px; }
+        .lr-table.with-pay td.team { padding-left: 12px; font-size: 17px; }
+        .lr-table.with-pay td.comp { width: 64px; font-size: 16px; }
+        .lr-table.with-pay td.pay { width: 78px; font-size: 13px; }
 
         .lr-check { display: grid; grid-template-columns: 1fr; gap: 0; max-height: 260px; overflow-y: auto; border: 1px solid var(--cal-line); border-radius: 6px; }
         .lr-check-row { display: grid; grid-template-columns: 18px 118px 1fr; gap: 8px; align-items: center; padding: 6px 10px; font-size: 12px; border-top: 1px solid var(--cal-line-2); cursor: pointer; }
