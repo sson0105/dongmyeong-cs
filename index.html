@@ -55,6 +55,9 @@
             background: #94a3b8;
         }
 
+        /* 화면 글씨 최소 12px: 크기 지정 없는 <small>도 12px 아래로 내려가지 않게 */
+        small { font-size: 12px; }
+
         /* CALENDAR NATIVE STYLES */
         :root {
             --cal-bg: #f8fafc;
@@ -144,7 +147,7 @@
             background: #f1f5f9;
             border: 1px solid var(--cal-line);
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--cal-ink-3);
             transition: all 0.2s ease;
@@ -254,7 +257,7 @@
             width: 26px;
             height: 26px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 12px;
             cursor: pointer;
             color: var(--cal-ink-3);
             display: flex; align-items: center; justify-content: center;
@@ -325,7 +328,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 600;
         }
         .nav-btn.btn-today { font-weight: 700; color: var(--cal-ink); }
@@ -345,7 +348,7 @@
             border: none;
             padding: 0 10px;
             height: 100%;
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--cal-ink-3);
             border-radius: 4px;
@@ -417,7 +420,7 @@
         .wd {
             padding: 9px 12px;
             font-family: 'Manrope', sans-serif;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 800;
             letter-spacing: 0.08em;
             color: var(--cal-ink-3);
@@ -473,7 +476,7 @@
             box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
         }
         .today-tag {
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 800;
             color: var(--cal-today-accent);
             background: #dbeafe;
@@ -484,7 +487,7 @@
 
         .cell.holiday .d-num { color: var(--cal-sun) !important; }
         .holiday-badge {
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 800;
             color: var(--cal-sun);
             background: #fee2e2;
@@ -502,7 +505,7 @@
         .d-num { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 800; color: var(--cal-ink); }
         .cell.sat .d-num { color: var(--cal-sat); }
         .cell.sun .d-num { color: var(--cal-sun); }
-        .d-tag { font-size: 10px; font-weight: 700; color: var(--cal-ink-4); font-family: 'Manrope', sans-serif; }
+        .d-tag { font-size: 12px; font-weight: 700; color: var(--cal-ink-4); font-family: 'Manrope', sans-serif; }
 
         .events { display: flex; flex-direction: column; gap: 4px; flex: 1; min-height: 0; }
         .ev {
@@ -519,7 +522,7 @@
 
         .ev-top-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%; }
         .memo-clip-badge { display: inline-flex; align-items: center; justify-content: center; color: var(--cal-ink-3); opacity: 0.85; }
-        .ev-time { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 10.5px; }
+        .ev-time { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 12px; }
         .ev-title { font-size: 13.0px; font-weight: 700; color: var(--cal-ink); line-height: 1.3; margin-top: 1px; word-break: keep-all; }
 
         .ev.a { background: var(--cal-cat-a-bg); border-left-color: var(--cal-cat-a); }
@@ -537,10 +540,10 @@
             border-bottom: 1px solid var(--cal-line);
             position: sticky; top: 0; z-index: 5;
         }
-        .week-slot-head { padding: 9px 6px; text-align: center; font-size: 11px; font-weight: 800; color: var(--cal-ink-3); border-right: 1px solid var(--cal-line); }
+        .week-slot-head { padding: 9px 6px; text-align: center; font-size: 12px; font-weight: 800; color: var(--cal-ink-3); border-right: 1px solid var(--cal-line); }
         .week-day-col { padding: 8px; text-align: center; border-right: 1px solid var(--cal-line-2); position: relative; }
         .week-day-col:last-child { border-right: none; }
-        .week-day-col .w-dname { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--cal-ink-3); }
+        .week-day-col .w-dname { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--cal-ink-3); }
         .week-day-col .w-dnum { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 800; color: var(--cal-ink); margin-top: 1px; }
         .week-day-col.sat .w-dname, .week-day-col.sat .w-dnum { color: var(--cal-sat); }
         .week-day-col.sun .w-dname, .week-day-col.sun .w-dnum { color: var(--cal-sun); }
@@ -564,8 +567,8 @@
             padding: 8px 6px; background: var(--cal-surface); border-right: 1px solid var(--cal-line);
             text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 2px;
         }
-        .time-col .slot-name { font-size: 11.5px; font-weight: 800; color: var(--cal-ink); }
-        .time-col .slot-hours { font-size: 10px; color: var(--cal-ink-3); font-family: 'Manrope', sans-serif; font-weight: 600; }
+        .time-col .slot-name { font-size: 12px; font-weight: 800; color: var(--cal-ink); }
+        .time-col .slot-hours { font-size: 12px; color: var(--cal-ink-3); font-family: 'Manrope', sans-serif; font-weight: 600; }
         
         .slot-cell { border-right: 1px solid var(--cal-line-2); padding: 5px; display: flex; flex-direction: column; gap: 4px; background: var(--cal-paper); cursor: pointer; }
         .slot-cell:last-child { border-right: none; }
@@ -583,7 +586,7 @@
             font-weight: 800; font-size: 13px; margin-bottom: 5px; color: #fff;
             border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 4px;
         }
-        #tooltip .tt-row { color: #cbd5e1; font-size: 11.5px; margin: 2px 0; }
+        #tooltip .tt-row { color: #cbd5e1; font-size: 12px; margin: 2px 0; }
         #tooltip .tt-row b { color: #f8fafc; font-weight: 700; }
         #tooltip .tt-memo { color: #ff9c6e; font-weight: 600; }
 
@@ -602,7 +605,7 @@
 
         .cal-form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
         /* 라벨은 회색·덜 굵게, 값은 진하게: 라벨과 입력값이 구분되도록 */
-        .cal-form-group label { font-size: 11.5px; font-weight: 600; color: var(--cal-ink-3); }
+        .cal-form-group label { font-size: 12px; font-weight: 600; color: var(--cal-ink-3); }
         .cal-form-group input, .cal-form-group select {
             color: var(--cal-ink); font-weight: 500;
             padding: 8px 10px; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12.5px; outline: none;
@@ -612,7 +615,7 @@
         .sms-fields { display: flex; flex-wrap: wrap; gap: 10px 12px; }
         .sms-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
         .sms-field-grow { flex: 1 1 120px; }
-        .sms-label { font-size: 11.5px; font-weight: 600; color: var(--cal-ink-3); }
+        .sms-label { font-size: 12px; font-weight: 600; color: var(--cal-ink-3); }
         .sms-control {
             height: 32px; padding: 0 10px; background: #ffffff;
             border: 1px solid var(--cal-line); border-radius: 6px;
@@ -660,7 +663,7 @@
         .sms-date-weekdays, .sms-date-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
         .sms-date-weekdays { margin-bottom: 4px; }
         .sms-date-weekdays span {
-            text-align: center; font-size: 11px; font-weight: 700; color: var(--cal-ink-3); padding: 4px 0;
+            text-align: center; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); padding: 4px 0;
         }
         .sms-date-weekdays span:first-child, .sms-date-cell.sun { color: var(--cal-sun); }
         .sms-date-weekdays span:last-child, .sms-date-cell.sat { color: var(--cal-sat); }
@@ -681,7 +684,7 @@
         }
         .sms-date-footer button {
             border: 1px solid var(--cal-line); background: #ffffff; border-radius: 6px; height: 28px; padding: 0 10px;
-            font-size: 11.5px; font-weight: 700; color: var(--cal-ink-2); cursor: pointer;
+            font-size: 12px; font-weight: 700; color: var(--cal-ink-2); cursor: pointer;
         }
         .sms-date-footer button:hover { background: #f1f5f9; color: var(--cal-ink); }
         input.sms-stepper-value { width: 48px; -moz-appearance: textfield; }
@@ -691,19 +694,19 @@
         /* 운영 일지 (근무표 안) */
         .work-day-top { display: flex; align-items: center; flex-wrap: wrap; }
         .work-log-count {
-            margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3);
+            margin-left: auto; font-size: 12px; font-weight: 700; color: var(--cal-ink-3);
             background: #f3f4f6; border-radius: 3px; padding: 0 5px; line-height: 1.6; cursor: pointer;
         }
         .work-log-count:hover { background: var(--cal-line); color: var(--cal-ink); }
         .work-week-table tr.row-log td { vertical-align: top; }
         .work-log-item { text-align: left; background: #f8fafc; border-radius: 4px; padding: 5px 6px; cursor: pointer; }
         .work-log-item:hover { background: #f1f5f9; }
-        .work-log-item-meta { display: flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); margin-bottom: 2px; }
+        .work-log-item-meta { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); margin-bottom: 2px; }
         .work-log-item-text {
-            font-size: 11.5px; line-height: 1.45; color: var(--cal-ink-2);
+            font-size: 12px; line-height: 1.45; color: var(--cal-ink-2);
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-all;
         }
-        .log-cat { font-size: 10.5px; font-weight: 800; border-radius: 3px; padding: 0 5px; line-height: 1.6; background: #f1f5f9; color: var(--cal-ink-2); }
+        .log-cat { font-size: 12px; font-weight: 800; border-radius: 3px; padding: 0 5px; line-height: 1.6; background: #f1f5f9; color: var(--cal-ink-2); }
         .log-cat.safety { background: #fdeeee; color: #b42318; }
         .log-cat.complaint { background: #fff3d6; color: #92600a; }
         .log-cat.facility { background: #e9e8fb; color: #3d3a8c; }
@@ -715,10 +718,10 @@
         .doc-list { padding: 8px; display: flex; flex-direction: column; gap: 2px; }
         .doc-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 8px; }
         .doc-item:hover { background: #f8fafc; }
-        .doc-item-icon { width: 34px; height: 34px; border-radius: 6px; background: #f1f5f9; color: var(--cal-ink-2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 10px; font-weight: 800; }
+        .doc-item-icon { width: 34px; height: 34px; border-radius: 6px; background: #f1f5f9; color: var(--cal-ink-2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; font-weight: 800; }
         .doc-item-text { flex: 1; min-width: 0; }
         .doc-item-name { font-size: 13px; font-weight: 700; color: var(--cal-ink); }
-        .doc-item-desc { font-size: 11.5px; color: var(--cal-ink-3); margin-top: 1px; }
+        .doc-item-desc { font-size: 12px; color: var(--cal-ink-3); margin-top: 1px; }
         .doc-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
         .doc-item-actions a { height: 30px; padding: 0 10px; border-radius: 6px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; text-decoration: none; }
         .doc-btn-ghost { border: 1px solid var(--cal-line); color: var(--cal-ink-2); background: #fff; }
@@ -737,7 +740,7 @@
             color: var(--cal-ink-3); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;
         }
         .lp-icon:hover { background: #f1f5f9; color: var(--cal-ink); }
-        .lp-status { font-size: 11px; font-weight: 700; color: #17663e; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
+        .lp-status { font-size: 12px; font-weight: 700; color: #17663e; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
         .lp-status.show { opacity: 1; }
         .lp-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
         .lp-list .work-log-item-text { -webkit-line-clamp: unset; display: block; font-size: 12.5px; white-space: pre-wrap; }
@@ -769,7 +772,7 @@
         .work-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
         .work-btn-primary {
             height: 32px; padding: 0 12px; border-radius: 6px; border: none; background: var(--cal-ink); color: #fff;
-            font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+            font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
         }
         .work-btn-primary:hover { background: #1e293b; }
         .work-board { border: 1px solid var(--cal-line); border-radius: 8px; overflow: hidden; background: var(--cal-paper); }
@@ -777,7 +780,7 @@
         /* 이름 칩은 회색조로 통일하고, 근무 종류 색은 작은 태그(월간)·행 제목(주간)에만 사용 */
         .work-shift {
             position: relative; display: flex; align-items: center; gap: 5px; border-radius: 4px; padding: 2px 6px;
-            font-size: 11px; font-weight: 700; line-height: 1.5; cursor: pointer;
+            font-size: 12px; font-weight: 700; line-height: 1.5; cursor: pointer;
             background: #f3f4f6; color: var(--cal-ink-2);
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
@@ -787,17 +790,17 @@
         /* 개시 = 따뜻한 톤, 마감 = 차가운 톤 */
         .work-kind-tag {
             display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0;
-            font-size: 10.5px; font-weight: 800; border-radius: 3px; padding: 0 4px;
+            font-size: 12px; font-weight: 800; border-radius: 3px; padding: 0 4px;
         }
         .work-kind-tag.open { background: #fff3d6; color: #92600a; }
         .work-kind-tag.close { background: #e9e8fb; color: #3d3a8c; }
         .work-kind-tag.leave { background: var(--cal-sun-soft); color: var(--cal-sun); }
         /* 시차·대직 표시: 테두리 없이 글씨만 */
-        .work-hourly-badge { margin-left: auto; flex-shrink: 0; font-size: 10.5px; font-weight: 800; color: var(--cal-sun); }
-        .work-time-note { flex-shrink: 0; margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); }
+        .work-hourly-badge { margin-left: auto; flex-shrink: 0; font-size: 12px; font-weight: 800; color: var(--cal-sun); }
+        .work-time-note { flex-shrink: 0; margin-left: auto; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); }
         .work-cover-badge + .work-time-note, .work-time-note + .work-time-note, .work-time-note + .work-hourly-badge { margin-left: 4px; }
         .work-week-table td .work-time-note { margin: 1px 0 0; }
-        .work-cover-badge { flex-shrink: 0; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); }
+        .work-cover-badge { flex-shrink: 0; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); }
         .work-shift .work-cover-badge { margin-left: auto; }
         .work-shift .work-cover-badge + .work-hourly-badge { margin-left: 4px; }
         .work-week-table td .work-hourly-badge, .work-week-table td .work-cover-badge { margin: 1px 0 0; }
@@ -809,7 +812,7 @@
 
         .work-month-head, .work-month-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
         .work-month-head div {
-            padding: 8px; text-align: center; font-size: 11.5px; font-weight: 700; color: var(--cal-ink-3);
+            padding: 8px; text-align: center; font-size: 12px; font-weight: 700; color: var(--cal-ink-3);
             background: var(--cal-surface); border-bottom: 1px solid var(--cal-line);
         }
         .work-month-head div:first-child { color: var(--cal-sun); }
@@ -827,7 +830,7 @@
         .work-day.sun .work-day-num { color: var(--cal-sun); }
         .work-day.sat .work-day-num { color: var(--cal-sat); }
         .work-day.holiday .work-day-num { color: var(--cal-sun); }
-        .work-holiday-name { font-size: 10.5px; font-weight: 700; color: var(--cal-sun); margin-left: 4px; }
+        .work-holiday-name { font-size: 12px; font-weight: 700; color: var(--cal-sun); margin-left: 4px; }
         .work-day.today .work-day-num {
             color: #fff; background: var(--cal-today-accent); border-radius: 999px; width: 22px; height: 22px;
             display: inline-flex; align-items: center; justify-content: center;
@@ -837,14 +840,14 @@
         .work-week-table th, .work-week-table td { border-bottom: 1px solid var(--cal-line-2); border-right: 1px solid var(--cal-line-2); padding: 8px 6px; }
         .work-week-table th:last-child, .work-week-table td:last-child { border-right: none; }
         .work-week-table thead th {
-            background: var(--cal-surface); border-bottom: 1px solid var(--cal-line); font-size: 11.5px; font-weight: 700;
+            background: var(--cal-surface); border-bottom: 1px solid var(--cal-line); font-size: 12px; font-weight: 700;
             color: var(--cal-ink-3); text-align: center;
         }
         .work-week-table thead th .work-week-date { display: block; font-size: 13px; color: var(--cal-ink); font-weight: 800; margin-top: 1px; }
         .work-week-table thead th.sun, .work-week-table thead th.sun .work-week-date { color: var(--cal-sun); }
         .work-week-table thead th.sat, .work-week-table thead th.sat .work-week-date { color: var(--cal-sat); }
         .work-week-table thead th.holiday, .work-week-table thead th.holiday .work-week-date { color: var(--cal-sun); }
-        .work-week-table thead th .work-week-holiday { display: block; font-size: 10.5px; font-weight: 700; color: var(--cal-sun); margin-top: 1px; }
+        .work-week-table thead th .work-week-holiday { display: block; font-size: 12px; font-weight: 700; color: var(--cal-sun); margin-top: 1px; }
         .work-week-table thead th.today { background: var(--cal-today-bg); box-shadow: inset 0 -2px 0 var(--cal-today-accent); }
         .work-week-table td.today { background-image: linear-gradient(var(--cal-today-bg), var(--cal-today-bg)); }
         /* 주간 보기: 근무 종류별로 행 전체에 옅은 색을 깔아 멀리 있는 칸도 같은 줄로 읽히게 */
@@ -853,19 +856,19 @@
         .work-week-table tr.row-open .work-name-chip { background: #faefd6; color: #6b4a08; }
         .work-week-table tr.row-close .work-name-chip { background: #e9e8f8; color: #2f2c73; }
         .work-week-name { width: 96px; text-align: left !important; font-size: 12.5px; font-weight: 800; color: var(--cal-ink); background: #fff; }
-        .work-week-name small { display: block; font-size: 10.5px; font-weight: 600; color: var(--cal-ink-4); margin-top: 1px; }
+        .work-week-name small { display: block; font-size: 12px; font-weight: 600; color: var(--cal-ink-4); margin-top: 1px; }
         .work-week-table td .work-shift { justify-content: center; padding: 6px 4px; flex-direction: column; gap: 0; }
-        .work-week-table td .work-shift small { font-size: 10.5px; font-weight: 600; opacity: 0.85; }
+        .work-week-table td .work-shift small { font-size: 12px; font-weight: 600; opacity: 0.85; }
         .work-name-list { display: flex; flex-direction: column; gap: 4px; }
         .work-week-table td .work-name-chip { flex-direction: column; align-items: center; gap: 1px; padding: 6px 4px; white-space: normal; }
         .work-name-chip-name { font-size: 12.5px; font-weight: 800; }
-        .work-name-chip-time { font-size: 11.5px; font-weight: 800; }
+        .work-name-chip-time { font-size: 12px; font-weight: 800; }
         .work-week-kind { display: inline-flex; align-items: center; gap: 5px; }
         .work-week-kind.open { color: #92600a; }
         .work-week-kind.close { color: #3d3a8c; }
         .work-week-kind.leave { color: var(--cal-sun); }
         .work-week-kind.off { color: var(--cal-ink-3); }
-        .work-empty { display: block; text-align: center; color: var(--cal-ink-4); font-size: 11px; cursor: pointer; padding: 6px 0; border-radius: 4px; }
+        .work-empty { display: block; text-align: center; color: var(--cal-ink-4); font-size: 12px; cursor: pointer; padding: 6px 0; border-radius: 4px; }
         .work-empty:hover { background: var(--cal-line-2); color: var(--cal-ink-2); }
 
         .work-seg { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -884,12 +887,12 @@
 
         .cal-footer {
             display: flex; justify-content: space-between; align-items: center;
-            font-size: 11px; color: var(--cal-ink-4); padding-top: 8px; border-top: 1px solid var(--cal-line);
+            font-size: 12px; color: var(--cal-ink-4); padding-top: 8px; border-top: 1px solid var(--cal-line);
         }
-        .cal-footer-left { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+        .cal-footer-left { display: flex; align-items: center; gap: 8px; font-size: 12px; }
         .btn-footer-refresh {
             background: #ffffff; border: 1px solid var(--cal-line); padding: 4px 9px;
-            border-radius: 4px; font-size: 11px; font-weight: 600; color: var(--cal-ink-2);
+            border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--cal-ink-2);
             cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
         }
         .btn-footer-refresh:hover { background: #f1f5f9; color: var(--cal-ink); }
@@ -1393,7 +1396,7 @@
                 <div>
                     <div class="work-title" id="work-title"></div>
                     <p class="text-xs text-slate-500 mt-1">기본 근무는 자동으로 표시됩니다. 연차·대직 등 바뀌는 날만 등록하고, 그날의 운영 이슈는 일지로 기록하세요.</p>
-                    <p class="text-[11px] mt-1 flex items-center gap-2">
+                    <p class="text-[12px] mt-1 flex items-center gap-2">
                         <span id="work-sync-status" class="text-slate-400"></span>
                         <button type="button" onclick="fetchWorkOverrides()" class="text-slate-500 hover:text-slate-900 underline underline-offset-2">새로고침</button>
                     </p>
@@ -1410,7 +1413,7 @@
                         <button class="btn-view-toggle active" id="work-view-month" onclick="setWorkView('month')">월간</button>
                         <button class="btn-view-toggle" id="work-view-week" onclick="setWorkView('week')">주간</button>
                     </div>
-                    <button class="work-btn-ghost" style="height: 32px; padding: 0 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700;" onclick="openLogModal()">
+                    <button class="work-btn-ghost" style="height: 32px; padding: 0 12px; border-radius: 6px; font-size: 12px; font-weight: 700;" onclick="openLogModal()">
                         + 일지 기록
                     </button>
                     <button class="work-btn-primary" onclick="openWorkModal()">
@@ -1467,7 +1470,7 @@
             <div class="cal-form-group">
                 <label>근무</label>
                 <div class="work-seg" id="work-modal-shift"></div>
-                <span id="work-modal-default" class="text-[11px] text-slate-400"></span>
+                <span id="work-modal-default" class="text-[12px] text-slate-400"></span>
             </div>
             <div class="cal-form-group" id="work-modal-hourly-group">
                 <label>시차 (시간 단위 연차)</label>
@@ -1486,7 +1489,7 @@
             <div class="cal-form-group" id="work-modal-password-group">
                 <label for="work-modal-password">수정 비밀번호</label>
                 <input type="password" id="work-modal-password" placeholder="처음 한 번만 입력하면 이 브라우저에서 기억합니다" autocomplete="off">
-                <span id="work-modal-password-error" class="text-[11px]" style="color: var(--cal-sun);"></span>
+                <span id="work-modal-password-error" class="text-[12px]" style="color: var(--cal-sun);"></span>
             </div>
             <div class="work-modal-actions">
                 <button type="button" id="work-modal-reset" class="work-btn-danger" onclick="resetWorkOverride()">기본 근무로 되돌리기</button>
@@ -1626,7 +1629,7 @@
             </div>
             <div id="holiday-list-box" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--cal-line); border-radius: 6px; padding: 6px 10px; margin-bottom: 12px;"></div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <button type="button" onclick="resetDefaultHolidays()" style="background: none; border: none; color: var(--cal-sun); font-size: 11.5px; cursor: pointer; text-decoration: underline;">기본 복원</button>
+                <button type="button" onclick="resetDefaultHolidays()" style="background: none; border: none; color: var(--cal-sun); font-size: 12px; cursor: pointer; text-decoration: underline;">기본 복원</button>
                 <button type="button" onclick="document.getElementById('holiday-modal').style.display='none'" style="padding: 6px 14px; background: var(--cal-ink-2); color: #fff; border: none; border-radius: 6px; cursor: pointer;">닫기</button>
             </div>
         </div>
@@ -1653,7 +1656,7 @@
                             <h3 class="font-bold text-xs text-white">AI CS 도우미 동명이</h3>
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                         </div>
-                        <p class="text-[10px] text-slate-400">강동구 체육시설 최신 규정 탑재 완료</p>
+                        <p class="text-[12px] text-slate-400">강동구 체육시설 최신 규정 탑재 완료</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
@@ -1674,7 +1677,7 @@
             <div id="apikey-drawer" class="bg-slate-800 text-slate-200 p-2.5 text-xs border-b border-slate-700 space-y-2 hidden">
                 <div class="flex items-center justify-between">
                     <span class="font-bold text-emerald-400">Gemini AI 실시간 응용 답변 설정</span>
-                    <span class="text-[10px] text-slate-400">무료 키 적용</span>
+                    <span class="text-[12px] text-slate-400">무료 키 적용</span>
                 </div>
                 <div class="flex items-center gap-1.5">
                     <input type="password" id="user-api-key-input" placeholder="Google Gemini API Key 입력..." class="flex-1 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
@@ -1682,7 +1685,7 @@
                 </div>
             </div>
 
-            <div class="bg-slate-50 border-b border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto custom-scrollbar text-[11px] whitespace-nowrap">
+            <div class="bg-slate-50 border-b border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto custom-scrollbar text-[12px] whitespace-nowrap">
                 <span class="text-slate-400 font-semibold px-1">추천:</span>
                 <button onclick="sendQuickQuery('추첨 진행 시간과 결제 마감일은 언제인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700">추첨/결제 일정</button>
                 <button onclick="sendQuickQuery('잔여회차 선착순 오픈 시간이 팀별로 다른가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700">잔여타임 선착순</button>
@@ -1691,10 +1694,10 @@
 
             <div id="chat-messages" class="flex-1 p-3.5 overflow-y-auto custom-scrollbar space-y-3 bg-slate-50/50 text-xs">
                 <div class="flex gap-2">
-                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">동명</div>
+                    <div class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[12px] shrink-0">동명</div>
                     <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-800 shadow-2xs space-y-1.5 max-w-[85%]">
                         <p class="leading-relaxed font-medium">안녕하세요! 동명근린공원 축구장 AI CS 도우미 '동명이'입니다. ⚽</p>
-                        <p class="text-[11px] text-slate-500 leading-normal">운영시간, 추첨 일정, 대관 예약 및 규정 등 무엇이든 편하게 물어보세요!</p>
+                        <p class="text-[12px] text-slate-500 leading-normal">운영시간, 추첨 일정, 대관 예약 및 규정 등 무엇이든 편하게 물어보세요!</p>
                     </div>
                 </div>
             </div>
@@ -2010,7 +2013,7 @@
                             <div class="bg-slate-100 text-slate-700 p-3 rounded text-xs leading-relaxed space-y-1.5">
                                 <div class="flex items-center justify-between">
                                     <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 19c0-3.3 2.7-6 6-6h0c3.3 0 6 2.7 6 6"/><path stroke-linecap="round" stroke-linejoin="round" d="M17 7a3 3 0 010 5"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5a5.5 5.5 0 010 9"/></svg>
-                                    <button onclick="copyToClipboard('${item.id}-script', this)" class="flex items-center gap-1 text-[11px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
+                                    <button onclick="copyToClipboard('${item.id}-script', this)" class="flex items-center gap-1 text-[12px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
                                         <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                         <span>복사</span>
                                     </button>
@@ -3068,7 +3071,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     <label for="log-password">수정 비밀번호</label>
                     <input type="password" id="log-password" value="${smsEscape(logTypedPassword)}" placeholder="처음 한 번만 입력하면 이 브라우저에서 기억합니다" autocomplete="off"
                         oninput="logTypedPassword = this.value">
-                    <span class="text-[11px]" style="color: var(--cal-sun);">${logAuthError}</span>
+                    <span class="text-[12px]" style="color: var(--cal-sun);">${logAuthError}</span>
                 </div>`;
             const editing = !!(logEditId && logEditDraft);
 
@@ -3209,10 +3212,10 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     ${t.autoSend ? `<p class="text-xs text-slate-500">대관예약시스템에서 자동으로 발송되는 문자입니다. 참고용으로만 확인하세요.</p>` : ''}
                     <div class="bg-slate-100 text-slate-700 p-3 rounded text-xs leading-relaxed space-y-2 flex-grow">
                         <div class="flex items-center justify-between">
-                            <span id="sms-bytes-${t.id}" class="text-[11px] font-mono text-slate-500">${smsByteInfo(smsPlainText(t))}</span>
+                            <span id="sms-bytes-${t.id}" class="text-[12px] font-mono text-slate-500">${smsByteInfo(smsPlainText(t))}</span>
                             ${t.autoSend
-                                ? `<span class="text-[11px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">자동 발송</span>`
-                                : `<button onclick="copySmsText('${t.id}', this)" class="flex items-center gap-1 text-[11px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
+                                ? `<span class="text-[12px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">자동 발송</span>`
+                                : `<button onclick="copySmsText('${t.id}', this)" class="flex items-center gap-1 text-[12px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
                                 <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                 <span>복사</span>
                             </button>`}
@@ -3421,12 +3424,12 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const loadingId = 'loading-' + Date.now();
             messagesContainer.innerHTML += `
                 <div id="${loadingId}" class="flex gap-2">
-                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">동명</div>
+                    <div class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[12px] shrink-0">동명</div>
                     <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-500 text-xs shadow-2xs flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
                         <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
                         <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                        <span class="text-[11px] text-slate-400 ml-1">답변 분석 중...</span>
+                        <span class="text-[12px] text-slate-400 ml-1">답변 분석 중...</span>
                     </div>
                 </div>
             `;
@@ -3470,7 +3473,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
             messagesContainer.innerHTML += `
                 <div class="flex gap-2">
-                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">동명</div>
+                    <div class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[12px] shrink-0">동명</div>
                     <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-800 text-xs shadow-2xs space-y-2 max-w-[85%]">
                         <div class="whitespace-pre-line leading-relaxed font-medium">${formatBotResponse(aiResponseText)}</div>
                     </div>
@@ -3486,7 +3489,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         function formatBotResponse(str) {
             return str
                 .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
-                .replace(/`([^`]+)`/g, '<code class="bg-slate-100 text-slate-800 px-1 py-0.5 rounded text-[11px] font-mono">$1</code>');
+                .replace(/`([^`]+)`/g, '<code class="bg-slate-100 text-slate-800 px-1 py-0.5 rounded text-[12px] font-mono">$1</code>');
         }
 
         /* -------------------------------------------------------------
@@ -3695,7 +3698,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         async function openHolidayModal() {
             document.getElementById('holiday-modal').style.display = 'flex';
             const box = document.getElementById('holiday-list-box');
-            box.innerHTML = '<div style="color: var(--cal-ink-3); text-align: center; padding: 16px 0; font-size: 11px;">공휴일 목록 동기화 중...</div>';
+            box.innerHTML = '<div style="color: var(--cal-ink-3); text-align: center; padding: 16px 0; font-size: 12px;">공휴일 목록 동기화 중...</div>';
             try { await fetchHolidaysFromServer(); } catch(e){}
             renderHolidayListBox();
         }
@@ -3717,7 +3720,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 row.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 5px 2px; border-bottom: 1px solid var(--cal-line-2); font-size: 12px;';
                 row.innerHTML = `
                     <span><strong style="color: var(--cal-ink); font-family: Manrope;">${dateStr}</strong> <span style="color: var(--cal-sun); font-weight: 600; margin-left: 4px;">${serverHolidays[dateStr]}</span></span>
-                    <button type="button" onclick="deleteCustomHoliday('${dateStr}')" style="background: none; border: none; color: var(--cal-sun); cursor: pointer; font-size: 11px;">삭제</button>
+                    <button type="button" onclick="deleteCustomHoliday('${dateStr}')" style="background: none; border: none; color: var(--cal-sun); cursor: pointer; font-size: 12px;">삭제</button>
                 `;
                 box.appendChild(row);
             });
@@ -4050,7 +4053,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     <div class="${colClass}">
                         <div class="w-dname">${dayNames[idx]}</div>
                         <div class="w-dnum">${d.getMonth()+1}.${d.getDate()}</div>
-                        ${holidayName ? `<div style="font-size:9.5px; font-weight:800; color:var(--cal-sun);">${holidayName}</div>` : ''}
+                        ${holidayName ? `<div style="font-size:12px; font-weight:800; color:var(--cal-sun);">${holidayName}</div>` : ''}
                     </div>
                 `;
             });
@@ -4554,7 +4557,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                     파일 선택
                                 </label>
                                 <span className="text-xs text-slate-500 mt-3 font-medium">또는 파일을 여기에 드래그하여 올려놓으세요</span>
-                                <span className="text-[11px] text-slate-400 mt-1">지자체 .xls(EUC-KR), 일반 .xlsx 파일 및 08:00~10:00 시간대 자동 완벽 지원</span>
+                                <span className="text-[12px] text-slate-400 mt-1">지자체 .xls(EUC-KR), 일반 .xlsx 파일 및 08:00~10:00 시간대 자동 완벽 지원</span>
                             </div>
                         </div>
                     )}
@@ -4943,7 +4946,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                                         </button>
                                     </div>
-                                    <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">{weekLabel}</span>
+                                    <span className="text-[12px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">{weekLabel}</span>
                                 </div>
                             </div>
 
@@ -4961,7 +4964,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                     <div key={day.iso} className="tf-day-row">
                                         <div className="text-[12px] font-semibold text-slate-500 tabular-nums">
                                             {TF_DOW[day.d.getDay()]} {day.d.getMonth() + 1}/{day.d.getDate()}
-                                            {day.holiday && <div className="text-[10.5px] font-bold text-red-500">{day.holiday}</div>}
+                                            {day.holiday && <div className="text-[12px] font-bold text-red-500">{day.holiday}</div>}
                                         </div>
                                         <div className="flex items-center gap-2 min-w-0">
                                             <div className="tf-seg shrink-0">
@@ -4986,7 +4989,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 <div className="flex items-center justify-between">
                                     <span className="sms-label">안내 문구 (미운영일이 있을 때 표시)</span>
                                     {alertOverride !== null && (
-                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setAlertOverride(null)}>자동 문구로 되돌리기</button>
+                                        <button type="button" className="text-[12px] font-bold text-blue-600 hover:underline" onClick={() => setAlertOverride(null)}>자동 문구로 되돌리기</button>
                                     )}
                                 </div>
                                 <textarea
@@ -5003,7 +5006,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 <div className="flex items-center justify-between">
                                     <span className="sms-label">하단 유의사항</span>
                                     {footText !== TF_DEFAULT_FOOT && (
-                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setFootText(TF_DEFAULT_FOOT)}>기본 문구로</button>
+                                        <button type="button" className="text-[12px] font-bold text-blue-600 hover:underline" onClick={() => setFootText(TF_DEFAULT_FOOT)}>기본 문구로</button>
                                     )}
                                 </div>
                                 <input className="sms-control" value={footText} onChange={e => setFootText(e.target.value)} />
@@ -5021,7 +5024,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                     className="bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 border border-slate-300 font-bold py-1.5 px-4 rounded-md text-xs transition">
                                     {busy === 'copy' ? '복사 중...' : '이미지 복사'}
                                 </button>
-                                <span className="text-[11px] text-slate-400">가로 1120px (2배 해상도)</span>
+                                <span className="text-[12px] text-slate-400">가로 1120px (2배 해상도)</span>
                                 {msg && <span className={`text-xs font-semibold ${msg.isError ? 'text-red-600' : 'text-emerald-600'}`}>{msg.text}</span>}
                             </div>
 
@@ -5264,7 +5267,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                         <div className="sms-field">
                             <div className="flex items-center justify-between">
                                 <span className="sms-label">추첨 현황 붙여넣기</span>
-                                {raw && <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => handleRaw('')}>비우기</button>}
+                                {raw && <button type="button" className="text-[12px] font-bold text-blue-600 hover:underline" onClick={() => handleRaw('')}>비우기</button>}
                             </div>
                             <textarea
                                 id="lr-raw"
@@ -5275,10 +5278,10 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 placeholder={'추첨 현황 화면을 Ctrl+A 또는 드래그로 전체 선택해 복사(Ctrl+C)한 뒤\n여기에 붙여넣기(Ctrl+V) 하세요.'}
                             />
                             {raw && !hasData && (
-                                <p className="text-[11.5px] font-semibold text-red-600">날짜·시간대·1순위 팀을 찾지 못했어요. '날짜/시간대별 신청현황' 화면을 복사했는지 확인해 주세요.</p>
+                                <p className="text-[12px] font-semibold text-red-600">날짜·시간대·1순위 팀을 찾지 못했어요. '날짜/시간대별 신청현황' 화면을 복사했는지 확인해 주세요.</p>
                             )}
                             {parsed.problems.length > 0 && (
-                                <p className="text-[11.5px] font-semibold text-amber-700">1순위를 찾지 못한 줄 {parsed.problems.length}건: {parsed.problems.join(', ')}</p>
+                                <p className="text-[12px] font-semibold text-amber-700">1순위를 찾지 못한 줄 {parsed.problems.length}건: {parsed.problems.join(', ')}</p>
                             )}
                         </div>
 
@@ -5301,7 +5304,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                             </label>
                                         ))}
                                     </div>
-                                    <span className="text-[11px] text-slate-400">체크를 끄면 공지에서 빠져요.</span>
+                                    <span className="text-[12px] text-slate-400">체크를 끄면 공지에서 빠져요.</span>
                                 </>
                             ) : (
                                 <div className="flex-1 min-h-[200px] rounded-md border border-dashed border-slate-200 bg-slate-50 flex items-center justify-center text-[12px] text-slate-400">붙여넣으면 1순위 팀 목록이 여기 나와요</div>
@@ -5313,7 +5316,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 <div className="flex items-center justify-between">
                                     <span className="sms-label">제목</span>
                                     {titleOverride !== null && (
-                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setTitleOverride(null)}>자동 제목으로</button>
+                                        <button type="button" className="text-[12px] font-bold text-blue-600 hover:underline" onClick={() => setTitleOverride(null)}>자동 제목으로</button>
                                     )}
                                 </div>
                                 <input id="lr-title" className="sms-control" value={title} onChange={e => setTitleOverride(e.target.value)} />
@@ -5338,7 +5341,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                     className="bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 border border-slate-300 font-bold py-1.5 px-4 rounded-md text-xs transition">
                                     {busy === 'copy' ? '복사 중...' : '이미지 복사'}
                                 </button>
-                                <span className="text-[11px] text-slate-400">가로 2400px (2배 해상도)</span>
+                                <span className="text-[12px] text-slate-400">가로 2400px (2배 해상도)</span>
                                 {msg && <span className={`text-xs font-semibold ${msg.isError ? 'text-red-600' : 'text-emerald-600'}`}>{msg.text}</span>}
                             </div>
 
