@@ -1067,17 +1067,16 @@
         }
         .lr-card {
             width: 1200px; background: #ffffff; color: #111111;
-            padding: 44px 48px 36px; display: flex; flex-direction: column; gap: 0;
+            padding: 44px 48px 44px; display: flex; flex-direction: column; gap: 0;
             -webkit-font-smoothing: antialiased;
         }
         .lr-title { font-size: 34px; font-weight: 800; line-height: 1.25; text-align: center; letter-spacing: -0.01em; word-break: keep-all; padding-bottom: 18px; border-bottom: 2px solid #111111; }
-        .lr-lead { margin-top: 22px !important; font-size: 18px; font-weight: 500; line-height: 1.6; color: #222222; }
-        .lr-overview { margin-top: 10px !important; display: flex; flex-wrap: wrap; column-gap: 36px; row-gap: 4px; }
-        .lr-overview p { font-size: 17px; line-height: 1.6; color: #222222; }
-        .lr-overview .k { font-weight: 700; }
+        .lr-overview { margin-top: 24px !important; display: flex; flex-wrap: wrap; column-gap: 48px; row-gap: 6px; }
+        .lr-overview p { font-size: 22px; line-height: 1.5; color: #111111; }
+        .lr-overview .k { font-weight: 800; }
         .lr-overview .k::before { content: "○ "; font-weight: 400; }
         .lr-overview .k::after { content: " : "; font-weight: 400; }
-        .lr-overview .v { font-variant-numeric: tabular-nums; }
+        .lr-overview .v { font-weight: 500; font-variant-numeric: tabular-nums; }
 
         .lr-cols { margin-top: 22px !important; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
         .lr-cols.one { grid-template-columns: 1fr; }
@@ -1104,8 +1103,6 @@
         .lr-pay.wait { color: #6b7280; }
         .lr-table.with-pay td.time { width: 150px; }
         .lr-table.with-pay .lr-part { margin-right: 6px; }
-        .lr-foot { margin-top: 16px !important; font-size: 15px; line-height: 1.6; color: #333333; word-break: keep-all; white-space: pre-line; }
-        .lr-issuer { margin-top: 26px !important; text-align: center; font-size: 22px; font-weight: 800; letter-spacing: 0.04em; }
 
         .lr-check { display: grid; grid-template-columns: 1fr; gap: 0; max-height: 260px; overflow-y: auto; border: 1px solid var(--cal-line); border-radius: 6px; }
         .lr-check-row { display: grid; grid-template-columns: 18px 118px 1fr; gap: 8px; align-items: center; padding: 6px 10px; font-size: 12px; border-top: 1px solid var(--cal-line-2); cursor: pointer; }
@@ -5058,8 +5055,6 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
          * ========================================================= */
         const LR_DOW = ['일', '월', '화', '수', '목', '금', '토'];
         const LR_PARTS = { 8: '1부', 10: '2부', 12: '3부', 14: '4부', 16: '5부', 18: '6부' };
-        const LR_DEFAULT_FOOT = '※ 본 결과는 시간대별 1순위 당첨 팀이며, 결제 상황에 따라 변경될 수 있습니다.';
-        const LR_DEFAULT_ISSUER = '강동구도시관리공단 동명근린공원 축구장';
         // 공문서 날짜 표기: 2026. 10. 21.(수)
         function lrOfficialDate(y, m, d, withYear = true) {
             const dow = LR_DOW[new Date(y, m - 1, d).getDay()];
@@ -5128,9 +5123,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const [raw, setRaw] = useState('');
             const [excluded, setExcluded] = useState({}); // { key: true } 공지에서 뺄 줄
             const [titleOverride, setTitleOverride] = useState(null);
-            const [footText, setFootText] = useState(LR_DEFAULT_FOOT);
             const [showPay, setShowPay] = useState(false);
-            const [issuer, setIssuer] = useState(LR_DEFAULT_ISSUER);
             const [busy, setBusy] = useState('');
             const [msg, setMsg] = useState(null);
             const cardRef = React.useRef(null);
@@ -5314,34 +5307,6 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 <input id="lr-title" className="sms-control" value={title} onChange={e => setTitleOverride(e.target.value)} />
                             </div>
 
-                            <div className="sms-field">
-                                <div className="flex items-center justify-between">
-                                    <span className="sms-label">하단 안내 문구</span>
-                                    {footText !== LR_DEFAULT_FOOT && (
-                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setFootText(LR_DEFAULT_FOOT)}>기본 문구로</button>
-                                    )}
-                                </div>
-                                <textarea
-                                    id="lr-foot"
-                                    className="sms-control"
-                                    style={{ height: 'auto', minHeight: 56, padding: '8px 10px', lineHeight: 1.5, resize: 'vertical' }}
-                                    rows={Math.max(2, footText.split('\n').length)}
-                                    value={footText}
-                                    onChange={e => setFootText(e.target.value)}
-                                    placeholder="비워 두면 표시하지 않아요."
-                                />
-                            </div>
-
-                            <div className="sms-field">
-                                <div className="flex items-center justify-between">
-                                    <span className="sms-label">발신 명의</span>
-                                    {issuer !== LR_DEFAULT_ISSUER && (
-                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setIssuer(LR_DEFAULT_ISSUER)}>기본값으로</button>
-                                    )}
-                                </div>
-                                <input id="lr-issuer" className="sms-control" value={issuer} onChange={e => setIssuer(e.target.value)} />
-                            </div>
-
                             <label className="flex items-center gap-2 text-[12.5px] font-semibold text-slate-700 cursor-pointer">
                                 <input id="lr-showpay" type="checkbox" checked={showPay} onChange={e => setShowPay(e.target.checked)} />
                                 결제 상태 칸 추가 (결제완료 / 결제 대기)
@@ -5368,9 +5333,6 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                             <div className="max-w-full overflow-x-auto rounded shadow-xl border border-slate-200">
                                 <div ref={cardRef} className="lr-card">
                                     <p className="lr-title">{title}</p>
-                                    <p className="lr-lead">
-                                        {ym ? `${yy}년 ${mm}월 동명근린공원 축구장 대관 추첨 결과를 아래와 같이 안내드립니다.` : '동명근린공원 축구장 대관 추첨 결과를 아래와 같이 안내드립니다.'}
-                                    </p>
                                     <div className="lr-overview">
                                         {confirmedText && <p><span className="k">추첨 일시</span><span className="v">{confirmedText}</span></p>}
                                         <p>
@@ -5385,15 +5347,13 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                         {columns.map(renderTable)}
                                     </div>
 
-                                    {footText.trim() && <p className="lr-foot">{footText.trim()}</p>}
-                                    {issuer.trim() && <p className="lr-issuer">{issuer.trim()}</p>}
                                 </div>
                             </div>
                         </div>
                     ) : (
                         <div className="border-2 border-dashed border-slate-300 rounded-lg bg-white/60 p-10 text-center space-y-2">
                             <p className="text-sm font-bold text-slate-600">붙여넣으면 여기에 공지 이미지가 나와요</p>
-                            <p className="text-[12px] text-slate-400">공문 형식: 제목 · 안내 문장 · 추첨 개요 · 일자/시간대/당첨 팀/경쟁률 표 · 발신 명의 (가로형 PNG)</p>
+                            <p className="text-[12px] text-slate-400">공문 형식: 제목 · 추첨 개요 · 일자/시간대/당첨 팀/경쟁률 표 (가로형 PNG)</p>
                         </div>
                     )}
                 </div>
