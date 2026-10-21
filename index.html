@@ -1060,60 +1060,52 @@
         .tf-seg button.on-open { background: #2b5ced; color: #fff; }
         .tf-seg button.on-off { background: #db333d; color: #fff; }
 
-        /* 추첨 결과 생성기: 1순위 당첨 공지 이미지 (가로 1200px, 표 2단, 2배 해상도 저장) */
+        /* 추첨 결과 생성기: 1순위 당첨 결과 안내 (공문서 형식, 가로 1200px, 표 2단, 2배 해상도 저장) */
         .lr-card, .lr-card * {
-            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
             box-sizing: border-box; margin: 0;
         }
         .lr-card {
-            width: 1200px; background: #f0f2f7; color: #0f1f45;
-            padding: 32px 36px 26px; display: flex; flex-direction: column; gap: 22px;
+            width: 1200px; background: #ffffff; color: #111111;
+            padding: 44px 48px 36px; display: flex; flex-direction: column; gap: 0;
             -webkit-font-smoothing: antialiased;
         }
-        .lr-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 18px; border-bottom: 3px solid #0f1f45; }
-        .lr-head-main { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-        .lr-place { font-size: 16px; font-weight: 700; color: #2b5ced; letter-spacing: 0.02em; }
-        .lr-title { font-size: 38px; font-weight: 900; line-height: 1.15; letter-spacing: -0.01em; word-break: keep-all; }
-        .lr-sub { font-size: 15px; font-weight: 400; opacity: 0.6; font-variant-numeric: tabular-nums; }
-        .lr-stats { display: flex; gap: 10px; flex-shrink: 0; }
-        .lr-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 96px; padding: 10px 16px; border-radius: 8px; background: #fff; border: 1px solid #dbe0eb; }
-        .lr-stat .k { font-size: 13px; font-weight: 700; opacity: 0.6; }
-        .lr-stat .v { font-size: 26px; font-weight: 900; line-height: 1.1; color: #0f1f45; font-variant-numeric: tabular-nums; }
-        .lr-stat .v small { font-size: 15px; font-weight: 700; margin-left: 1px; }
-        .lr-stat.hot .v { color: #db333d; }
+        .lr-title { font-size: 34px; font-weight: 800; line-height: 1.25; text-align: center; letter-spacing: -0.01em; word-break: keep-all; padding-bottom: 18px; border-bottom: 2px solid #111111; }
+        .lr-lead { margin-top: 22px !important; font-size: 18px; font-weight: 500; line-height: 1.6; color: #222222; }
+        .lr-overview { margin-top: 10px !important; display: flex; flex-wrap: wrap; column-gap: 36px; row-gap: 4px; }
+        .lr-overview p { font-size: 17px; line-height: 1.6; color: #222222; }
+        .lr-overview .k { font-weight: 700; }
+        .lr-overview .k::before { content: "○ "; font-weight: 400; }
+        .lr-overview .k::after { content: " : "; font-weight: 400; }
+        .lr-overview .v { font-variant-numeric: tabular-nums; }
 
-        .lr-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+        .lr-cols { margin-top: 22px !important; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
         .lr-cols.one { grid-template-columns: 1fr; }
-        .lr-table { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; border: 1px solid #d5dbe7; border-radius: 8px; overflow: hidden; }
-        .lr-table th { background: #0f1f45; color: #fff; font-size: 14px; font-weight: 700; padding: 10px 8px; text-align: center; letter-spacing: 0.03em; }
-        .lr-table th.team { text-align: left; padding-left: 16px; }
-        .lr-table td { padding: 0 10px; height: 50px; border-top: 1px solid #e3e7ef; vertical-align: middle; }
+        .lr-table { width: 100%; border-collapse: collapse; border-top: 2px solid #111111; border-bottom: 1.5px solid #111111; }
+        .lr-table th { background: #eef0f3; color: #111111; font-size: 15px; font-weight: 700; padding: 10px 8px; text-align: center; border-bottom: 1px solid #8a8f98; }
+        .lr-table th + th { border-left: 1px solid #c9cdd4; }
+        .lr-table th.team { text-align: center; }
+        .lr-table td { padding: 0 10px; height: 46px; border-top: 1px solid #c9cdd4; vertical-align: middle; font-variant-numeric: tabular-nums; }
+        .lr-table td + td { border-left: 1px solid #c9cdd4; }
         .lr-table tbody:first-of-type tr:first-child td { border-top: none; }
-        .lr-table tbody tr + tr td { border-top: 1px dashed #e3e7ef; }
-        .lr-table tbody tr + tr td.date { border-top: none; }
-        .lr-table tbody + tbody tr:first-child td { border-top: 1.5px solid #cfd6e3; }
-        .lr-table td.date { width: 112px; text-align: center; white-space: nowrap; background: #f6f7fa; border-right: 1px solid #e3e7ef; padding: 8px 6px; }
-        .lr-table td.date .d { font-size: 22px; font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
-        .lr-table td.date .w { margin-left: 4px; font-size: 15px; font-weight: 700; opacity: 0.55; }
-        .lr-table tbody.sat td.date .d, .lr-table tbody.sat td.date .w { color: #2b5ced; opacity: 1; }
-        .lr-table tbody.sun td.date .d, .lr-table tbody.sun td.date .w { color: #db333d; opacity: 1; }
-        .lr-table td.time { width: 164px; white-space: nowrap; }
-        .lr-part { display: inline-block; margin-right: 9px; font-size: 14px; font-weight: 800; color: #2b5ced; background: #eaf0fd; border-radius: 4px; padding: 3px 7px; line-height: 1.2; }
-        .lr-time { font-size: 16px; font-weight: 500; opacity: 0.7; font-variant-numeric: tabular-nums; }
-        .lr-table td.team { padding-left: 16px; font-size: 20px; font-weight: 800; line-height: 1.25; word-break: keep-all; }
-        .lr-table td.comp { width: 76px; text-align: center; font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
-        .lr-table td.comp.solo { font-weight: 500; color: #a7b0c0; }
-        .lr-table td.comp.multi { color: #2b5ced; }
-        .lr-table td.comp.hot { color: #db333d; }
-        .lr-table td.pay { width: 86px; text-align: center; padding: 0 6px; }
-        .lr-pay { font-size: 12.5px; font-weight: 700; border-radius: 4px; padding: 3px 7px; white-space: nowrap; }
-        .lr-pay.done { color: #1f7a4d; background: #e7f5ed; }
-        .lr-pay.wait { color: #a15c00; background: #fff3dc; }
+        .lr-table tbody + tbody tr:first-child td { border-top: 1px solid #8a8f98; }
+        .lr-table td.date { width: 118px; text-align: center; white-space: nowrap; font-size: 18px; font-weight: 700; padding: 6px; }
+        .lr-table td.date .w { margin-left: 1px; font-size: 16px; font-weight: 700; }
+        .lr-table tbody.sat td.date { color: #1d4ed8; }
+        .lr-table tbody.sun td.date { color: #c81e1e; }
+        .lr-table td.time { width: 160px; white-space: nowrap; text-align: center; }
+        .lr-part { font-size: 16px; font-weight: 700; margin-right: 8px; }
+        .lr-time { font-size: 16px; font-weight: 400; color: #333333; }
+        .lr-table td.team { padding-left: 16px; font-size: 19px; font-weight: 700; line-height: 1.3; word-break: keep-all; }
+        .lr-table td.comp { width: 82px; text-align: center; font-size: 17px; font-weight: 700; white-space: nowrap; }
+        .lr-table td.comp.solo { font-weight: 400; color: #6b7280; }
+        .lr-table td.pay { width: 92px; text-align: center; padding: 0 6px; font-size: 14px; font-weight: 600; }
+        .lr-pay.done { color: #111111; }
+        .lr-pay.wait { color: #6b7280; }
         .lr-table.with-pay td.time { width: 150px; }
         .lr-table.with-pay .lr-part { margin-right: 6px; }
-        .lr-foot { display: flex; justify-content: space-between; gap: 16px; font-size: 14px; opacity: 0.65; line-height: 1.5; word-break: keep-all; white-space: pre-line; }
-        .lr-legend { display: flex; gap: 14px; flex-shrink: 0; font-weight: 700; }
-        .lr-legend .multi { color: #2b5ced; } .lr-legend .hot { color: #db333d; }
+        .lr-foot { margin-top: 16px !important; font-size: 15px; line-height: 1.6; color: #333333; word-break: keep-all; white-space: pre-line; }
+        .lr-issuer { margin-top: 26px !important; text-align: center; font-size: 22px; font-weight: 800; letter-spacing: 0.04em; }
 
         .lr-check { display: grid; grid-template-columns: 1fr; gap: 0; max-height: 260px; overflow-y: auto; border: 1px solid var(--cal-line); border-radius: 6px; }
         .lr-check-row { display: grid; grid-template-columns: 18px 118px 1fr; gap: 8px; align-items: center; padding: 6px 10px; font-size: 12px; border-top: 1px solid var(--cal-line-2); cursor: pointer; }
@@ -1360,7 +1352,7 @@
 
             <!-- 도구: 추첨 결과 공지 (1순위 당첨 팀, PNG) -->
             <div id="gen-pane-lottery" class="gen-pane hidden">
-                <div id="lottery-root"></div>
+                <div id="lottery-root" class="gen-font"></div>
             </div>
         </section>
 
@@ -5066,7 +5058,13 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
          * ========================================================= */
         const LR_DOW = ['일', '월', '화', '수', '목', '금', '토'];
         const LR_PARTS = { 8: '1부', 10: '2부', 12: '3부', 14: '4부', 16: '5부', 18: '6부' };
-        const LR_DEFAULT_FOOT = '※ 시간대별 1순위 당첨 팀입니다. 결제 상황에 따라 변경될 수 있습니다.';
+        const LR_DEFAULT_FOOT = '※ 본 결과는 시간대별 1순위 당첨 팀이며, 결제 상황에 따라 변경될 수 있습니다.';
+        const LR_DEFAULT_ISSUER = '강동구도시관리공단 동명근린공원 축구장';
+        // 공문서 날짜 표기: 2026. 10. 21.(수)
+        function lrOfficialDate(y, m, d, withYear = true) {
+            const dow = LR_DOW[new Date(y, m - 1, d).getDay()];
+            return `${withYear ? y + '. ' : ''}${m}. ${d}.(${dow})`;
+        }
 
         // 붙여넣은 글에서 '날짜 (요일) + 시간대 + 1순위 팀'을 찾아냄
         function lrParse(raw) {
@@ -5132,6 +5130,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const [titleOverride, setTitleOverride] = useState(null);
             const [footText, setFootText] = useState(LR_DEFAULT_FOOT);
             const [showPay, setShowPay] = useState(false);
+            const [issuer, setIssuer] = useState(LR_DEFAULT_ISSUER);
             const [busy, setBusy] = useState('');
             const [msg, setMsg] = useState(null);
             const cardRef = React.useRef(null);
@@ -5140,7 +5139,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const rows = parsed.rows.filter(r => !excluded[r.key]);
             const ym = lrMainMonth(parsed.rows);
             const [yy, mm] = ym ? ym.split('-').map(Number) : [0, 0];
-            const autoTitle = ym ? `${mm}월 축구장 대관 추첨 결과` : '축구장 대관 추첨 결과';
+            const autoTitle = ym ? `${yy}년 ${mm}월 축구장 대관 추첨 결과 안내` : '축구장 대관 추첨 결과 안내';
             const title = titleOverride !== null ? titleOverride : autoTitle;
             const holidays = (typeof KR_HOLIDAYS !== 'undefined' && KR_HOLIDAYS) || {};
 
@@ -5162,7 +5161,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 if (!window.htmlToImage) throw new Error('이미지 변환 도구를 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.');
                 if (document.fonts && document.fonts.ready) await document.fonts.ready;
                 const fontEmbedCSS = await tfGetFontCss();
-                return window.htmlToImage.toBlob(cardRef.current, { pixelRatio: 2, fontEmbedCSS, backgroundColor: '#f0f2f7' });
+                return window.htmlToImage.toBlob(cardRef.current, { pixelRatio: 2, fontEmbedCSS, backgroundColor: '#ffffff' });
             }
             async function handleDownload() {
                 setBusy('download');
@@ -5187,6 +5186,10 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 setBusy('');
             }
 
+            const confirmedText = (() => {
+                const c = (parsed.confirmedAt || '').match(/^(\d{4})\.(\d{2})\.(\d{2}) (\d{1,2}:\d{2})$/);
+                return c ? `${lrOfficialDate(Number(c[1]), Number(c[2]), Number(c[3]))} ${c[4]}` : '';
+            })();
             const hasData = parsed.rows.length > 0;
             const maxComp = rows.reduce((mx, r) => Math.max(mx, r.applicants || 0), 0);
 
@@ -5207,9 +5210,9 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 <table key={idx} className={`lr-table ${showPay ? 'with-pay' : ''}`}>
                     <thead>
                         <tr>
-                            <th>날짜</th>
-                            <th>시간</th>
-                            <th className="team">당첨 팀</th>
+                            <th>일자</th>
+                            <th>시간대</th>
+                            <th className="team">당첨 팀(1순위)</th>
                             <th>경쟁률</th>
                             {showPay && <th>결제</th>}
                         </tr>
@@ -5226,13 +5229,12 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                         <tr key={s.key}>
                                             {k === 0 && (
                                                 <td className="date" rowSpan={day.slots.length}>
-                                                    <span className="d">{`${Number(m2)}.${d2}`}</span>
-                                                    <span className="w">{holidays[day.iso] ? `(${day.dow}·휴일)` : `(${day.dow})`}</span>
+                                                    {`${Number(m2)}. ${Number(d2)}.`}<span className="w">{holidays[day.iso] ? `(${day.dow}·휴일)` : `(${day.dow})`}</span>
                                                 </td>
                                             )}
                                             <td className="time">
                                                 <span className="lr-part">{s.part || '-'}</span>
-                                                <span className="lr-time">{`${s.start}–${s.end}`}</span>
+                                                <span className="lr-time">{`${s.start}~${s.end}`}</span>
                                             </td>
                                             <td className="team">{s.team}</td>
                                             <td className={`comp ${lv}`}>{n ? `${n}:1` : '-'}</td>
@@ -5330,6 +5332,16 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 />
                             </div>
 
+                            <div className="sms-field">
+                                <div className="flex items-center justify-between">
+                                    <span className="sms-label">발신 명의</span>
+                                    {issuer !== LR_DEFAULT_ISSUER && (
+                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setIssuer(LR_DEFAULT_ISSUER)}>기본값으로</button>
+                                    )}
+                                </div>
+                                <input id="lr-issuer" className="sms-control" value={issuer} onChange={e => setIssuer(e.target.value)} />
+                            </div>
+
                             <label className="flex items-center gap-2 text-[12.5px] font-semibold text-slate-700 cursor-pointer">
                                 <input id="lr-showpay" type="checkbox" checked={showPay} onChange={e => setShowPay(e.target.checked)} />
                                 결제 상태 칸 추가 (결제완료 / 결제 대기)
@@ -5355,38 +5367,33 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
                             <div className="max-w-full overflow-x-auto rounded shadow-xl border border-slate-200">
                                 <div ref={cardRef} className="lr-card">
-                                    <div className="lr-head">
-                                        <div className="lr-head-main">
-                                            <p className="lr-place">동명근린공원 축구장</p>
-                                            <p className="lr-title">{title}</p>
-                                            <p className="lr-sub">
-                                                {ym ? `${yy}년 ${mm}월 이용분` : ''}
-                                                {ym && parsed.confirmedAt ? '  ·  ' : ''}
-                                                {parsed.confirmedAt ? `당첨 확정 ${parsed.confirmedAt}` : ''}
-                                            </p>
-                                        </div>
-                                        <div className="lr-stats">
-                                            <div className="lr-stat"><span className="k">당첨</span><span className="v">{rows.length}<small>건</small></span></div>
-                                            {parsed.totalApplied > 0 && <div className="lr-stat"><span className="k">총 신청</span><span className="v">{parsed.totalApplied}<small>건</small></span></div>}
-                                            {maxComp > 1 && <div className={`lr-stat ${maxComp >= 10 ? 'hot' : ''}`}><span className="k">최고 경쟁률</span><span className="v">{maxComp}:1</span></div>}
-                                        </div>
+                                    <p className="lr-title">{title}</p>
+                                    <p className="lr-lead">
+                                        {ym ? `${yy}년 ${mm}월 동명근린공원 축구장 대관 추첨 결과를 아래와 같이 안내드립니다.` : '동명근린공원 축구장 대관 추첨 결과를 아래와 같이 안내드립니다.'}
+                                    </p>
+                                    <div className="lr-overview">
+                                        {confirmedText && <p><span className="k">추첨 일시</span><span className="v">{confirmedText}</span></p>}
+                                        <p>
+                                            <span className="k">신청 현황</span>
+                                            <span className="v">
+                                                {parsed.totalApplied > 0 ? `총 신청 ${parsed.totalApplied}건, ` : ''}당첨 {rows.length}건{maxComp > 1 ? ` (최고 경쟁률 ${maxComp}:1)` : ''}
+                                            </span>
+                                        </p>
                                     </div>
 
                                     <div className={`lr-cols ${columns.length === 1 ? 'one' : ''}`}>
                                         {columns.map(renderTable)}
                                     </div>
 
-                                    <div className="lr-foot">
-                                        <span>{footText.trim()}</span>
-                                        <span className="lr-legend">경쟁률 <span className="multi">2팀 이상</span><span className="hot">10팀 이상</span></span>
-                                    </div>
+                                    {footText.trim() && <p className="lr-foot">{footText.trim()}</p>}
+                                    {issuer.trim() && <p className="lr-issuer">{issuer.trim()}</p>}
                                 </div>
                             </div>
                         </div>
                     ) : (
                         <div className="border-2 border-dashed border-slate-300 rounded-lg bg-white/60 p-10 text-center space-y-2">
                             <p className="text-sm font-bold text-slate-600">붙여넣으면 여기에 공지 이미지가 나와요</p>
-                            <p className="text-[12px] text-slate-400">날짜·시간·1순위 당첨 팀·경쟁률 표 (가로형) · PNG 저장 / 이미지 복사</p>
+                            <p className="text-[12px] text-slate-400">공문 형식: 제목 · 안내 문장 · 추첨 개요 · 일자/시간대/당첨 팀/경쟁률 표 · 발신 명의 (가로형 PNG)</p>
                         </div>
                     )}
                 </div>
