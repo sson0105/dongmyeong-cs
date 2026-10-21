@@ -1092,12 +1092,12 @@
         .lr-table tbody tr + tr td { border-top: 1px dashed #e3e7ef; }
         .lr-table tbody tr + tr td.date { border-top: none; }
         .lr-table tbody + tbody tr:first-child td { border-top: 1.5px solid #cfd6e3; }
-        .lr-table td.date { width: 76px; text-align: center; background: #f6f7fa; border-right: 1px solid #e3e7ef; padding: 8px 0; }
-        .lr-table td.date .d { display: block; font-size: 23px; font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
-        .lr-table td.date .w { display: block; margin-top: 2px; font-size: 13px; font-weight: 700; opacity: 0.55; }
+        .lr-table td.date { width: 112px; text-align: center; white-space: nowrap; background: #f6f7fa; border-right: 1px solid #e3e7ef; padding: 8px 6px; }
+        .lr-table td.date .d { font-size: 22px; font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
+        .lr-table td.date .w { margin-left: 4px; font-size: 15px; font-weight: 700; opacity: 0.55; }
         .lr-table tbody.sat td.date .d, .lr-table tbody.sat td.date .w { color: #2b5ced; opacity: 1; }
         .lr-table tbody.sun td.date .d, .lr-table tbody.sun td.date .w { color: #db333d; opacity: 1; }
-        .lr-table td.time { width: 168px; white-space: nowrap; }
+        .lr-table td.time { width: 164px; white-space: nowrap; }
         .lr-part { display: inline-block; margin-right: 9px; font-size: 14px; font-weight: 800; color: #2b5ced; background: #eaf0fd; border-radius: 4px; padding: 3px 7px; line-height: 1.2; }
         .lr-time { font-size: 16px; font-weight: 500; opacity: 0.7; font-variant-numeric: tabular-nums; }
         .lr-table td.team { padding-left: 16px; font-size: 20px; font-weight: 800; line-height: 1.25; word-break: keep-all; }
@@ -5227,7 +5227,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                             {k === 0 && (
                                                 <td className="date" rowSpan={day.slots.length}>
                                                     <span className="d">{`${Number(m2)}.${d2}`}</span>
-                                                    <span className="w">{holidays[day.iso] ? `${day.dow}·휴일` : day.dow}</span>
+                                                    <span className="w">{holidays[day.iso] ? `(${day.dow}·휴일)` : `(${day.dow})`}</span>
                                                 </td>
                                             )}
                                             <td className="time">
