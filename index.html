@@ -1002,11 +1002,11 @@
         .tab-btn:focus-visible { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(37, 99, 235, 0.45); }
         /* 생성기 도구 선택: 페이지 제목처럼 보이는 밑줄 탭 */
         /* 스크롤 영역으로 두지 않음: 밑줄 막대가 구분선에 겹치려고 1px 아래로 나와서, 스크롤 설정이 있으면 윈도우에서 세로 스크롤바가 생김 */
-        .gen-tabs { display: flex; flex-wrap: wrap; column-gap: 24px; border-bottom: 1px solid #e2e8f0; padding: 0; overflow: visible; }
+        .gen-tabs { display: flex; flex-wrap: wrap; column-gap: 20px; border-bottom: 1px solid #e2e8f0; padding: 0; overflow: visible; }
         .gen-tab {
-            position: relative; padding: 2px 0 11px;
+            position: relative; padding: 2px 0 9px;
             border: none; background: transparent; cursor: pointer;
-            font-size: 18px; font-weight: 700; color: #94a3b8; white-space: nowrap;
+            font-size: 15px; font-weight: 700; color: #94a3b8; white-space: nowrap;
             transition: color 0.15s;
         }
         /* 활성 밑줄: 2px의 1.3배(2.6px). 크롬은 border 두께를 정수로 내림해서 border 대신 막대로 그림 */
@@ -1348,8 +1348,8 @@
         <section id="tab-generator" class="tab-content hidden space-y-4">
             <div class="gen-tabs no-print" role="tablist" aria-label="생성기 도구">
                 <button type="button" role="tab" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-tab">대관 캘린더</button>
-                <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tab">Team Friends 팝업</button>
                 <button type="button" role="tab" data-gen-tool="lottery" onclick="switchGenTool('lottery')" class="gen-tab">추첨 결과</button>
+                <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tab">Team Friends 팝업</button>
             </div>
 
             <!-- 도구: 대관 캘린더 (A4 가로 인쇄) -->
@@ -4163,7 +4163,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         document.addEventListener('click', () => closeMonthPicker());
 
         // 생성기 탭: 위쪽 밑줄 탭으로 도구 선택 (마지막에 쓴 도구를 기억)
-        const GEN_TOOLS = ['calendar', 'popup', 'lottery'];
+        const GEN_TOOLS = ['calendar', 'lottery', 'popup'];
         const GEN_TOOL_KEY = 'dm-gen-tool';
         function switchGenTool(tool) {
             if (!GEN_TOOLS.includes(tool)) tool = 'calendar';
