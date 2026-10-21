@@ -1000,25 +1000,27 @@
         /* 상단 탭: 클릭 시 생기는 검은 포커스 테두리 대신, 키보드로 이동할 때만 옅은 파란 링 */
         .tab-btn:focus { outline: none; }
         .tab-btn:focus-visible { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(37, 99, 235, 0.45); }
-        /* 생성기 도구 선택: 페이지 제목처럼 보이는 밑줄 탭 */
-        /* 스크롤 영역으로 두지 않음: 밑줄 막대가 구분선에 겹치려고 1px 아래로 나와서, 스크롤 설정이 있으면 윈도우에서 세로 스크롤바가 생김 */
-        .gen-tabs { display: flex; flex-wrap: wrap; column-gap: 20px; border-bottom: 1px solid #e2e8f0; padding: 0; overflow: visible; }
+        /* 생성기 도구 선택: 아이콘 + 이름 카드형 탭 */
+        .gen-tabs { display: flex; flex-wrap: wrap; gap: 12px; padding: 4px 0 8px; }
         .gen-tab {
-            position: relative; padding: 2px 0 9px;
-            border: none; background: transparent; cursor: pointer;
-            font-size: 15px; font-weight: 700; color: #94a3b8; white-space: nowrap;
-            transition: color 0.15s;
+            display: inline-flex; align-items: center; gap: 12px;
+            min-width: 144px; padding: 10px 20px 10px 12px;
+            background: #ffffff; border: 1px solid #d5dbe5; border-radius: 10px; cursor: pointer;
+            font-size: 15px; font-weight: 500; color: #475569; white-space: nowrap;
+            transition: border-color 0.15s, box-shadow 0.15s, color 0.15s;
         }
-        /* 활성 밑줄: 2px의 1.3배(2.6px). 크롬은 border 두께를 정수로 내림해서 border 대신 막대로 그림 */
-        .gen-tab::after {
-            content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2.6px;
-            background: transparent; border-radius: 2px 2px 0 0; transition: background-color 0.15s;
+        .gen-tab-icon {
+            width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: #f1f3f6; color: #94a3b8; transition: background-color 0.15s, color 0.15s;
         }
-        .gen-tab:hover { color: #475569; }
-        .gen-tab.active { color: #0f172a; }
-        .gen-tab.active::after { background: #0f172a; }
+        .gen-tab-icon svg { width: 18px; height: 18px; }
+        .gen-tab:hover { border-color: #b6c0cf; color: #1e293b; }
+        .gen-tab:hover .gen-tab-icon { color: #64748b; }
+        .gen-tab.active { border-color: #1d4ed8; color: #1d4ed8; font-weight: 700; box-shadow: 0 2px 8px rgba(29, 78, 216, 0.12); }
+        .gen-tab.active .gen-tab-icon { background: #e8eefc; color: #1d4ed8; }
         .gen-tab:focus { outline: none; }
-        .gen-tab:focus-visible { color: #0f172a; box-shadow: 0 2px 0 0 rgba(37, 99, 235, 0.6); }
+        .gen-tab:focus-visible { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.35); }
 
         /* 팝업 생성기: Team Friends 주간 운영 안내 (피그마 시안F, 560px 폭) */
         .tf-card, .tf-card * {
@@ -1347,9 +1349,9 @@
              새 생성기 추가 시: GEN_TOOLS에 이름 추가 + .gen-tab 버튼 + #gen-pane-<이름> 영역 -->
         <section id="tab-generator" class="tab-content hidden space-y-4">
             <div class="gen-tabs no-print" role="tablist" aria-label="생성기 도구">
-                <button type="button" role="tab" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-tab">대관 캘린더</button>
-                <button type="button" role="tab" data-gen-tool="lottery" onclick="switchGenTool('lottery')" class="gen-tab">추첨 결과</button>
-                <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tab">Team Friends 팝업</button>
+                <button type="button" role="tab" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-tab"><span class="gen-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M7.5 13.5h2M11 13.5h2M14.5 13.5h2M7.5 17h2M11 17h2"/></svg></span><span>대관 캘린더</span></button>
+                <button type="button" role="tab" data-gen-tool="lottery" onclick="switchGenTool('lottery')" class="gen-tab"><span class="gen-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a2 2 0 0 0 0 0v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3"/><path d="M12 13v4M8.5 20.5h7M10 17h4l.5 3.5h-5L10 17z"/></svg></span><span>추첨 결과</span></button>
+                <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tab"><span class="gen-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="15" rx="2"/><path d="M3 8.5h18M6 6.3h.01M8.5 6.3h.01M7 12.5h10M7 15.5h6"/></svg></span><span>팀 프렌즈 팝업</span></button>
             </div>
 
             <!-- 도구: 대관 캘린더 (A4 가로 인쇄) -->
