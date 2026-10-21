@@ -55,6 +55,9 @@
             background: #94a3b8;
         }
 
+        /* 화면 글씨 최소 12px: 크기 지정 없는 <small>도 12px 아래로 내려가지 않게 */
+        small { font-size: 12px; }
+
         /* CALENDAR NATIVE STYLES */
         :root {
             --cal-bg: #f8fafc;
@@ -144,7 +147,7 @@
             background: #f1f5f9;
             border: 1px solid var(--cal-line);
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--cal-ink-3);
             transition: all 0.2s ease;
@@ -254,7 +257,7 @@
             width: 26px;
             height: 26px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 12px;
             cursor: pointer;
             color: var(--cal-ink-3);
             display: flex; align-items: center; justify-content: center;
@@ -325,7 +328,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 600;
         }
         .nav-btn.btn-today { font-weight: 700; color: var(--cal-ink); }
@@ -345,7 +348,7 @@
             border: none;
             padding: 0 10px;
             height: 100%;
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--cal-ink-3);
             border-radius: 4px;
@@ -417,7 +420,7 @@
         .wd {
             padding: 9px 12px;
             font-family: 'Manrope', sans-serif;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 800;
             letter-spacing: 0.08em;
             color: var(--cal-ink-3);
@@ -473,7 +476,7 @@
             box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
         }
         .today-tag {
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 800;
             color: var(--cal-today-accent);
             background: #dbeafe;
@@ -484,7 +487,7 @@
 
         .cell.holiday .d-num { color: var(--cal-sun) !important; }
         .holiday-badge {
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 800;
             color: var(--cal-sun);
             background: #fee2e2;
@@ -502,7 +505,7 @@
         .d-num { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 800; color: var(--cal-ink); }
         .cell.sat .d-num { color: var(--cal-sat); }
         .cell.sun .d-num { color: var(--cal-sun); }
-        .d-tag { font-size: 10px; font-weight: 700; color: var(--cal-ink-4); font-family: 'Manrope', sans-serif; }
+        .d-tag { font-size: 12px; font-weight: 700; color: var(--cal-ink-4); font-family: 'Manrope', sans-serif; }
 
         .events { display: flex; flex-direction: column; gap: 4px; flex: 1; min-height: 0; }
         .ev {
@@ -519,7 +522,7 @@
 
         .ev-top-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%; }
         .memo-clip-badge { display: inline-flex; align-items: center; justify-content: center; color: var(--cal-ink-3); opacity: 0.85; }
-        .ev-time { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 10.5px; }
+        .ev-time { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 12px; }
         .ev-title { font-size: 13.0px; font-weight: 700; color: var(--cal-ink); line-height: 1.3; margin-top: 1px; word-break: keep-all; }
 
         .ev.a { background: var(--cal-cat-a-bg); border-left-color: var(--cal-cat-a); }
@@ -537,10 +540,10 @@
             border-bottom: 1px solid var(--cal-line);
             position: sticky; top: 0; z-index: 5;
         }
-        .week-slot-head { padding: 9px 6px; text-align: center; font-size: 11px; font-weight: 800; color: var(--cal-ink-3); border-right: 1px solid var(--cal-line); }
+        .week-slot-head { padding: 9px 6px; text-align: center; font-size: 12px; font-weight: 800; color: var(--cal-ink-3); border-right: 1px solid var(--cal-line); }
         .week-day-col { padding: 8px; text-align: center; border-right: 1px solid var(--cal-line-2); position: relative; }
         .week-day-col:last-child { border-right: none; }
-        .week-day-col .w-dname { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--cal-ink-3); }
+        .week-day-col .w-dname { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--cal-ink-3); }
         .week-day-col .w-dnum { font-family: 'Manrope', sans-serif; font-size: 13.5px; font-weight: 800; color: var(--cal-ink); margin-top: 1px; }
         .week-day-col.sat .w-dname, .week-day-col.sat .w-dnum { color: var(--cal-sat); }
         .week-day-col.sun .w-dname, .week-day-col.sun .w-dnum { color: var(--cal-sun); }
@@ -564,8 +567,8 @@
             padding: 8px 6px; background: var(--cal-surface); border-right: 1px solid var(--cal-line);
             text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 2px;
         }
-        .time-col .slot-name { font-size: 11.5px; font-weight: 800; color: var(--cal-ink); }
-        .time-col .slot-hours { font-size: 10px; color: var(--cal-ink-3); font-family: 'Manrope', sans-serif; font-weight: 600; }
+        .time-col .slot-name { font-size: 12px; font-weight: 800; color: var(--cal-ink); }
+        .time-col .slot-hours { font-size: 12px; color: var(--cal-ink-3); font-family: 'Manrope', sans-serif; font-weight: 600; }
         
         .slot-cell { border-right: 1px solid var(--cal-line-2); padding: 5px; display: flex; flex-direction: column; gap: 4px; background: var(--cal-paper); cursor: pointer; }
         .slot-cell:last-child { border-right: none; }
@@ -583,7 +586,7 @@
             font-weight: 800; font-size: 13px; margin-bottom: 5px; color: #fff;
             border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 4px;
         }
-        #tooltip .tt-row { color: #cbd5e1; font-size: 11.5px; margin: 2px 0; }
+        #tooltip .tt-row { color: #cbd5e1; font-size: 12px; margin: 2px 0; }
         #tooltip .tt-row b { color: #f8fafc; font-weight: 700; }
         #tooltip .tt-memo { color: #ff9c6e; font-weight: 600; }
 
@@ -602,7 +605,7 @@
 
         .cal-form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
         /* 라벨은 회색·덜 굵게, 값은 진하게: 라벨과 입력값이 구분되도록 */
-        .cal-form-group label { font-size: 11.5px; font-weight: 600; color: var(--cal-ink-3); }
+        .cal-form-group label { font-size: 12px; font-weight: 600; color: var(--cal-ink-3); }
         .cal-form-group input, .cal-form-group select {
             color: var(--cal-ink); font-weight: 500;
             padding: 8px 10px; border: 1px solid var(--cal-line); border-radius: 6px; font-size: 12.5px; outline: none;
@@ -612,7 +615,7 @@
         .sms-fields { display: flex; flex-wrap: wrap; gap: 10px 12px; }
         .sms-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
         .sms-field-grow { flex: 1 1 120px; }
-        .sms-label { font-size: 11.5px; font-weight: 600; color: var(--cal-ink-3); }
+        .sms-label { font-size: 12px; font-weight: 600; color: var(--cal-ink-3); }
         .sms-control {
             height: 32px; padding: 0 10px; background: #ffffff;
             border: 1px solid var(--cal-line); border-radius: 6px;
@@ -660,7 +663,7 @@
         .sms-date-weekdays, .sms-date-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
         .sms-date-weekdays { margin-bottom: 4px; }
         .sms-date-weekdays span {
-            text-align: center; font-size: 11px; font-weight: 700; color: var(--cal-ink-3); padding: 4px 0;
+            text-align: center; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); padding: 4px 0;
         }
         .sms-date-weekdays span:first-child, .sms-date-cell.sun { color: var(--cal-sun); }
         .sms-date-weekdays span:last-child, .sms-date-cell.sat { color: var(--cal-sat); }
@@ -681,7 +684,7 @@
         }
         .sms-date-footer button {
             border: 1px solid var(--cal-line); background: #ffffff; border-radius: 6px; height: 28px; padding: 0 10px;
-            font-size: 11.5px; font-weight: 700; color: var(--cal-ink-2); cursor: pointer;
+            font-size: 12px; font-weight: 700; color: var(--cal-ink-2); cursor: pointer;
         }
         .sms-date-footer button:hover { background: #f1f5f9; color: var(--cal-ink); }
         input.sms-stepper-value { width: 48px; -moz-appearance: textfield; }
@@ -691,19 +694,19 @@
         /* 운영 일지 (근무표 안) */
         .work-day-top { display: flex; align-items: center; flex-wrap: wrap; }
         .work-log-count {
-            margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3);
+            margin-left: auto; font-size: 12px; font-weight: 700; color: var(--cal-ink-3);
             background: #f3f4f6; border-radius: 3px; padding: 0 5px; line-height: 1.6; cursor: pointer;
         }
         .work-log-count:hover { background: var(--cal-line); color: var(--cal-ink); }
         .work-week-table tr.row-log td { vertical-align: top; }
         .work-log-item { text-align: left; background: #f8fafc; border-radius: 4px; padding: 5px 6px; cursor: pointer; }
         .work-log-item:hover { background: #f1f5f9; }
-        .work-log-item-meta { display: flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); margin-bottom: 2px; }
+        .work-log-item-meta { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); margin-bottom: 2px; }
         .work-log-item-text {
-            font-size: 11.5px; line-height: 1.45; color: var(--cal-ink-2);
+            font-size: 12px; line-height: 1.45; color: var(--cal-ink-2);
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-all;
         }
-        .log-cat { font-size: 10.5px; font-weight: 800; border-radius: 3px; padding: 0 5px; line-height: 1.6; background: #f1f5f9; color: var(--cal-ink-2); }
+        .log-cat { font-size: 12px; font-weight: 800; border-radius: 3px; padding: 0 5px; line-height: 1.6; background: #f1f5f9; color: var(--cal-ink-2); }
         .log-cat.safety { background: #fdeeee; color: #b42318; }
         .log-cat.complaint { background: #fff3d6; color: #92600a; }
         .log-cat.facility { background: #e9e8fb; color: #3d3a8c; }
@@ -715,10 +718,10 @@
         .doc-list { padding: 8px; display: flex; flex-direction: column; gap: 2px; }
         .doc-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 8px; }
         .doc-item:hover { background: #f8fafc; }
-        .doc-item-icon { width: 34px; height: 34px; border-radius: 6px; background: #f1f5f9; color: var(--cal-ink-2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 10px; font-weight: 800; }
+        .doc-item-icon { width: 34px; height: 34px; border-radius: 6px; background: #f1f5f9; color: var(--cal-ink-2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; font-weight: 800; }
         .doc-item-text { flex: 1; min-width: 0; }
         .doc-item-name { font-size: 13px; font-weight: 700; color: var(--cal-ink); }
-        .doc-item-desc { font-size: 11.5px; color: var(--cal-ink-3); margin-top: 1px; }
+        .doc-item-desc { font-size: 12px; color: var(--cal-ink-3); margin-top: 1px; }
         .doc-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
         .doc-item-actions a { height: 30px; padding: 0 10px; border-radius: 6px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; text-decoration: none; }
         .doc-btn-ghost { border: 1px solid var(--cal-line); color: var(--cal-ink-2); background: #fff; }
@@ -737,7 +740,7 @@
             color: var(--cal-ink-3); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;
         }
         .lp-icon:hover { background: #f1f5f9; color: var(--cal-ink); }
-        .lp-status { font-size: 11px; font-weight: 700; color: #17663e; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
+        .lp-status { font-size: 12px; font-weight: 700; color: #17663e; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
         .lp-status.show { opacity: 1; }
         .lp-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
         .lp-list .work-log-item-text { -webkit-line-clamp: unset; display: block; font-size: 12.5px; white-space: pre-wrap; }
@@ -769,7 +772,7 @@
         .work-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
         .work-btn-primary {
             height: 32px; padding: 0 12px; border-radius: 6px; border: none; background: var(--cal-ink); color: #fff;
-            font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+            font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
         }
         .work-btn-primary:hover { background: #1e293b; }
         .work-board { border: 1px solid var(--cal-line); border-radius: 8px; overflow: hidden; background: var(--cal-paper); }
@@ -777,7 +780,7 @@
         /* 이름 칩은 회색조로 통일하고, 근무 종류 색은 작은 태그(월간)·행 제목(주간)에만 사용 */
         .work-shift {
             position: relative; display: flex; align-items: center; gap: 5px; border-radius: 4px; padding: 2px 6px;
-            font-size: 11px; font-weight: 700; line-height: 1.5; cursor: pointer;
+            font-size: 12px; font-weight: 700; line-height: 1.5; cursor: pointer;
             background: #f3f4f6; color: var(--cal-ink-2);
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
@@ -787,17 +790,17 @@
         /* 개시 = 따뜻한 톤, 마감 = 차가운 톤 */
         .work-kind-tag {
             display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0;
-            font-size: 10.5px; font-weight: 800; border-radius: 3px; padding: 0 4px;
+            font-size: 12px; font-weight: 800; border-radius: 3px; padding: 0 4px;
         }
         .work-kind-tag.open { background: #fff3d6; color: #92600a; }
         .work-kind-tag.close { background: #e9e8fb; color: #3d3a8c; }
         .work-kind-tag.leave { background: var(--cal-sun-soft); color: var(--cal-sun); }
         /* 시차·대직 표시: 테두리 없이 글씨만 */
-        .work-hourly-badge { margin-left: auto; flex-shrink: 0; font-size: 10.5px; font-weight: 800; color: var(--cal-sun); }
-        .work-time-note { flex-shrink: 0; margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); }
+        .work-hourly-badge { margin-left: auto; flex-shrink: 0; font-size: 12px; font-weight: 800; color: var(--cal-sun); }
+        .work-time-note { flex-shrink: 0; margin-left: auto; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); }
         .work-cover-badge + .work-time-note, .work-time-note + .work-time-note, .work-time-note + .work-hourly-badge { margin-left: 4px; }
         .work-week-table td .work-time-note { margin: 1px 0 0; }
-        .work-cover-badge { flex-shrink: 0; font-size: 10.5px; font-weight: 700; color: var(--cal-ink-3); }
+        .work-cover-badge { flex-shrink: 0; font-size: 12px; font-weight: 700; color: var(--cal-ink-3); }
         .work-shift .work-cover-badge { margin-left: auto; }
         .work-shift .work-cover-badge + .work-hourly-badge { margin-left: 4px; }
         .work-week-table td .work-hourly-badge, .work-week-table td .work-cover-badge { margin: 1px 0 0; }
@@ -809,7 +812,7 @@
 
         .work-month-head, .work-month-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
         .work-month-head div {
-            padding: 8px; text-align: center; font-size: 11.5px; font-weight: 700; color: var(--cal-ink-3);
+            padding: 8px; text-align: center; font-size: 12px; font-weight: 700; color: var(--cal-ink-3);
             background: var(--cal-surface); border-bottom: 1px solid var(--cal-line);
         }
         .work-month-head div:first-child { color: var(--cal-sun); }
@@ -827,7 +830,7 @@
         .work-day.sun .work-day-num { color: var(--cal-sun); }
         .work-day.sat .work-day-num { color: var(--cal-sat); }
         .work-day.holiday .work-day-num { color: var(--cal-sun); }
-        .work-holiday-name { font-size: 10.5px; font-weight: 700; color: var(--cal-sun); margin-left: 4px; }
+        .work-holiday-name { font-size: 12px; font-weight: 700; color: var(--cal-sun); margin-left: 4px; }
         .work-day.today .work-day-num {
             color: #fff; background: var(--cal-today-accent); border-radius: 999px; width: 22px; height: 22px;
             display: inline-flex; align-items: center; justify-content: center;
@@ -837,14 +840,14 @@
         .work-week-table th, .work-week-table td { border-bottom: 1px solid var(--cal-line-2); border-right: 1px solid var(--cal-line-2); padding: 8px 6px; }
         .work-week-table th:last-child, .work-week-table td:last-child { border-right: none; }
         .work-week-table thead th {
-            background: var(--cal-surface); border-bottom: 1px solid var(--cal-line); font-size: 11.5px; font-weight: 700;
+            background: var(--cal-surface); border-bottom: 1px solid var(--cal-line); font-size: 12px; font-weight: 700;
             color: var(--cal-ink-3); text-align: center;
         }
         .work-week-table thead th .work-week-date { display: block; font-size: 13px; color: var(--cal-ink); font-weight: 800; margin-top: 1px; }
         .work-week-table thead th.sun, .work-week-table thead th.sun .work-week-date { color: var(--cal-sun); }
         .work-week-table thead th.sat, .work-week-table thead th.sat .work-week-date { color: var(--cal-sat); }
         .work-week-table thead th.holiday, .work-week-table thead th.holiday .work-week-date { color: var(--cal-sun); }
-        .work-week-table thead th .work-week-holiday { display: block; font-size: 10.5px; font-weight: 700; color: var(--cal-sun); margin-top: 1px; }
+        .work-week-table thead th .work-week-holiday { display: block; font-size: 12px; font-weight: 700; color: var(--cal-sun); margin-top: 1px; }
         .work-week-table thead th.today { background: var(--cal-today-bg); box-shadow: inset 0 -2px 0 var(--cal-today-accent); }
         .work-week-table td.today { background-image: linear-gradient(var(--cal-today-bg), var(--cal-today-bg)); }
         /* 주간 보기: 근무 종류별로 행 전체에 옅은 색을 깔아 멀리 있는 칸도 같은 줄로 읽히게 */
@@ -853,19 +856,19 @@
         .work-week-table tr.row-open .work-name-chip { background: #faefd6; color: #6b4a08; }
         .work-week-table tr.row-close .work-name-chip { background: #e9e8f8; color: #2f2c73; }
         .work-week-name { width: 96px; text-align: left !important; font-size: 12.5px; font-weight: 800; color: var(--cal-ink); background: #fff; }
-        .work-week-name small { display: block; font-size: 10.5px; font-weight: 600; color: var(--cal-ink-4); margin-top: 1px; }
+        .work-week-name small { display: block; font-size: 12px; font-weight: 600; color: var(--cal-ink-4); margin-top: 1px; }
         .work-week-table td .work-shift { justify-content: center; padding: 6px 4px; flex-direction: column; gap: 0; }
-        .work-week-table td .work-shift small { font-size: 10.5px; font-weight: 600; opacity: 0.85; }
+        .work-week-table td .work-shift small { font-size: 12px; font-weight: 600; opacity: 0.85; }
         .work-name-list { display: flex; flex-direction: column; gap: 4px; }
         .work-week-table td .work-name-chip { flex-direction: column; align-items: center; gap: 1px; padding: 6px 4px; white-space: normal; }
         .work-name-chip-name { font-size: 12.5px; font-weight: 800; }
-        .work-name-chip-time { font-size: 11.5px; font-weight: 800; }
+        .work-name-chip-time { font-size: 12px; font-weight: 800; }
         .work-week-kind { display: inline-flex; align-items: center; gap: 5px; }
         .work-week-kind.open { color: #92600a; }
         .work-week-kind.close { color: #3d3a8c; }
         .work-week-kind.leave { color: var(--cal-sun); }
         .work-week-kind.off { color: var(--cal-ink-3); }
-        .work-empty { display: block; text-align: center; color: var(--cal-ink-4); font-size: 11px; cursor: pointer; padding: 6px 0; border-radius: 4px; }
+        .work-empty { display: block; text-align: center; color: var(--cal-ink-4); font-size: 12px; cursor: pointer; padding: 6px 0; border-radius: 4px; }
         .work-empty:hover { background: var(--cal-line-2); color: var(--cal-ink-2); }
 
         .work-seg { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -884,12 +887,12 @@
 
         .cal-footer {
             display: flex; justify-content: space-between; align-items: center;
-            font-size: 11px; color: var(--cal-ink-4); padding-top: 8px; border-top: 1px solid var(--cal-line);
+            font-size: 12px; color: var(--cal-ink-4); padding-top: 8px; border-top: 1px solid var(--cal-line);
         }
-        .cal-footer-left { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+        .cal-footer-left { display: flex; align-items: center; gap: 8px; font-size: 12px; }
         .btn-footer-refresh {
             background: #ffffff; border: 1px solid var(--cal-line); padding: 4px 9px;
-            border-radius: 4px; font-size: 11px; font-weight: 600; color: var(--cal-ink-2);
+            border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--cal-ink-2);
             cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
         }
         .btn-footer-refresh:hover { background: #f1f5f9; color: var(--cal-ink); }
@@ -997,25 +1000,28 @@
         /* 상단 탭: 클릭 시 생기는 검은 포커스 테두리 대신, 키보드로 이동할 때만 옅은 파란 링 */
         .tab-btn:focus { outline: none; }
         .tab-btn:focus-visible { box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(37, 99, 235, 0.45); }
-        /* 생성기 도구 선택: 페이지 제목처럼 보이는 밑줄 탭 */
-        /* 스크롤 영역으로 두지 않음: 밑줄 막대가 구분선에 겹치려고 1px 아래로 나와서, 스크롤 설정이 있으면 윈도우에서 세로 스크롤바가 생김 */
-        .gen-tabs { display: flex; flex-wrap: wrap; column-gap: 24px; border-bottom: 1px solid #e2e8f0; padding: 0; overflow: visible; }
+        /* 생성기 도구 선택: 아이콘 + 이름 카드형 탭 */
+        .gen-tabs { display: flex; flex-wrap: wrap; gap: 12px; padding: 4px 0 8px; }
         .gen-tab {
-            position: relative; padding: 2px 0 11px;
-            border: none; background: transparent; cursor: pointer;
-            font-size: 18px; font-weight: 700; color: #94a3b8; white-space: nowrap;
-            transition: color 0.15s;
+            display: inline-flex; align-items: center; gap: 12px;
+            min-width: 144px; padding: 10px 20px 10px 12px;
+            background: #ffffff; border: 1px solid #d5dbe5; border-radius: 10px; cursor: pointer;
+            font-size: 15px; font-weight: 500; color: #475569; white-space: nowrap;
+            transition: border-color 0.15s, box-shadow 0.15s, color 0.15s;
         }
-        /* 활성 밑줄: 2px의 1.3배(2.6px). 크롬은 border 두께를 정수로 내림해서 border 대신 막대로 그림 */
-        .gen-tab::after {
-            content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2.6px;
-            background: transparent; border-radius: 2px 2px 0 0; transition: background-color 0.15s;
+        .gen-tab-icon {
+            width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: #f1f3f6; color: #94a3b8; transition: background-color 0.15s, color 0.15s;
         }
-        .gen-tab:hover { color: #475569; }
-        .gen-tab.active { color: #0f172a; }
-        .gen-tab.active::after { background: #0f172a; }
+        .gen-tab-icon svg { width: 18px; height: 18px; }
+        .gen-tab:hover { border-color: #b6c0cf; color: #1e293b; }
+        .gen-tab:hover .gen-tab-icon { color: #64748b; }
+        /* 선택된 탭: 상단 메뉴·헤더 버튼과 같은 네이비(#0f172a) */
+        .gen-tab.active { border-color: #0f172a; color: #0f172a; font-weight: 700; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12); }
+        .gen-tab.active .gen-tab-icon { background: #0f172a; color: #ffffff; }
         .gen-tab:focus { outline: none; }
-        .gen-tab:focus-visible { color: #0f172a; box-shadow: 0 2px 0 0 rgba(37, 99, 235, 0.6); }
+        .gen-tab:focus-visible { box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.25); }
 
         /* 팝업 생성기: Team Friends 주간 운영 안내 (피그마 시안F, 560px 폭) */
         .tf-card, .tf-card * {
@@ -1059,6 +1065,67 @@
         .tf-seg button + button { border-left: 1px solid var(--cal-line); }
         .tf-seg button.on-open { background: #2b5ced; color: #fff; }
         .tf-seg button.on-off { background: #db333d; color: #fff; }
+
+        /* 추첨 결과 생성기: 1순위 당첨 결과 안내 (공문서 형식, 가로 1200px, 표 2단, 2배 해상도 저장) */
+        .lr-card, .lr-card * {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
+            box-sizing: border-box; margin: 0;
+        }
+        .lr-card {
+            width: 1200px; background: #ffffff; color: #111111;
+            padding: 44px 48px 44px; display: flex; flex-direction: column; gap: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .lr-title { font-size: 34px; font-weight: 800; line-height: 1.25; text-align: center; letter-spacing: -0.01em; word-break: keep-all; padding-bottom: 18px; border-bottom: 2px solid #111111; }
+        .lr-overview { margin-top: 24px !important; display: flex; flex-wrap: wrap; column-gap: 48px; row-gap: 6px; }
+        .lr-overview p { font-size: 22px; line-height: 1.5; color: #111111; }
+        .lr-overview .k { font-weight: 800; }
+        .lr-overview .k::before { content: "○ "; font-weight: 400; }
+        .lr-overview .k::after { content: " : "; font-weight: 400; }
+        .lr-overview .v { font-weight: 500; font-variant-numeric: tabular-nums; }
+
+        .lr-cols { margin-top: 22px !important; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+        .lr-cols.one { grid-template-columns: 1fr; }
+        .lr-table { width: 100%; border-collapse: collapse; border-top: 2px solid #111111; border-bottom: 1.5px solid #111111; }
+        .lr-table th { background: #eef0f3; color: #111111; font-size: 15px; font-weight: 700; padding: 10px 8px; text-align: center; border-bottom: 1px solid #8a8f98; }
+        .lr-table th + th { border-left: 1px solid #c9cdd4; }
+        .lr-table th.team { text-align: center; }
+        .lr-table td { padding: 0 10px; height: 46px; border-top: 1px solid #c9cdd4; vertical-align: middle; font-variant-numeric: tabular-nums; }
+        /* 세로선: 날짜 칸이 여러 줄로 합쳐져도 끊기지 않게, 칸마다 직접 지정 */
+        .lr-table td.date { border-right: 1px solid #c9cdd4; }
+        .lr-table td.team, .lr-table td.comp, .lr-table td.pay { border-left: 1px solid #c9cdd4; }
+        .lr-table tbody:first-of-type tr:first-child td { border-top: none; }
+        .lr-table tbody + tbody tr:first-child td { border-top: 1px solid #8a8f98; }
+        .lr-table td.date { width: 118px; text-align: center; white-space: nowrap; font-size: 18px; font-weight: 700; padding: 6px; }
+        .lr-table td.date .w { margin-left: 1px; font-size: 16px; font-weight: 700; }
+        .lr-table tbody.sat td.date { color: #1d4ed8; }
+        .lr-table tbody.sun td.date { color: #c81e1e; }
+        .lr-table td.time { width: 160px; white-space: nowrap; text-align: center; }
+        .lr-part { font-size: 16px; font-weight: 700; margin-right: 8px; }
+        .lr-time { font-size: 16px; font-weight: 400; color: #333333; }
+        .lr-table td.team { padding-left: 16px; font-size: 19px; font-weight: 700; line-height: 1.3; word-break: keep-all; }
+        .lr-table td.comp { width: 82px; text-align: center; font-size: 17px; font-weight: 700; white-space: nowrap; }
+        .lr-table td.comp.solo { font-weight: 400; color: #6b7280; }
+        .lr-table td.pay { width: 92px; text-align: center; padding: 0 6px; font-size: 14px; font-weight: 600; }
+        .lr-pay.done { color: #111111; }
+        .lr-pay.wait { color: #6b7280; }
+        .lr-table th { white-space: nowrap; }
+        /* 결제 칸을 켰을 때: 다른 칸을 조금씩 줄여 팀명이 한 줄에 들어가게 */
+        .lr-table.with-pay th { font-size: 14px; padding: 10px 4px; }
+        .lr-table.with-pay td { padding: 0 6px; }
+        .lr-table.with-pay td.date { width: 100px; font-size: 17px; }
+        .lr-table.with-pay td.date .w { font-size: 15px; }
+        .lr-table.with-pay td.time { width: 140px; }
+        .lr-table.with-pay .lr-part { margin-right: 5px; font-size: 15px; }
+        .lr-table.with-pay .lr-time { font-size: 15px; }
+        .lr-table.with-pay td.team { padding-left: 12px; font-size: 17px; }
+        .lr-table.with-pay td.comp { width: 64px; font-size: 16px; }
+        .lr-table.with-pay td.pay { width: 78px; font-size: 13px; }
+
+        .lr-check { display: grid; grid-template-columns: 1fr; gap: 0; max-height: 260px; overflow-y: auto; border: 1px solid var(--cal-line); border-radius: 6px; }
+        .lr-check-row { display: grid; grid-template-columns: 18px 118px 1fr; gap: 8px; align-items: center; padding: 6px 10px; font-size: 12px; border-top: 1px solid var(--cal-line-2); cursor: pointer; }
+        .lr-check-row:first-child { border-top: none; }
+        .lr-check-row.off { opacity: 0.45; text-decoration: line-through; }
 
         .noon-divider {
             border-bottom: 2.3px dashed #c9c9c9 !important;
@@ -1109,7 +1176,7 @@
 
         <!-- Navigation Tabs -->
         <nav class="bg-slate-50 border-t border-slate-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 overflow-x-auto custom-scrollbar text-xs font-medium py-1.5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 overflow-x-auto custom-scrollbar text-[15px] font-medium py-1.5">
                 <button onclick="switchTab('qa')" id="tab-btn-qa" class="tab-btn px-3 py-1.5 rounded-md transition-all whitespace-nowrap bg-slate-900 text-white font-semibold shadow-2xs">
                     Q&A 및 스크립트
                 </button>
@@ -1283,8 +1350,9 @@
              새 생성기 추가 시: GEN_TOOLS에 이름 추가 + .gen-tab 버튼 + #gen-pane-<이름> 영역 -->
         <section id="tab-generator" class="tab-content hidden space-y-4">
             <div class="gen-tabs no-print" role="tablist" aria-label="생성기 도구">
-                <button type="button" role="tab" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-tab">대관 캘린더</button>
-                <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tab">Team Friends 팝업</button>
+                <button type="button" role="tab" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-tab"><span class="gen-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M7.5 13.5h2M11 13.5h2M14.5 13.5h2M7.5 17h2M11 17h2"/></svg></span><span>대관 캘린더</span></button>
+                <button type="button" role="tab" data-gen-tool="lottery" onclick="switchGenTool('lottery')" class="gen-tab"><span class="gen-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a2 2 0 0 0 0 0v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3"/><path d="M12 13v4M8.5 20.5h7M10 17h4l.5 3.5h-5L10 17z"/></svg></span><span>추첨 결과</span></button>
+                <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tab"><span class="gen-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="15" rx="2"/><path d="M3 8.5h18M6 6.3h.01M8.5 6.3h.01M7 12.5h10M7 15.5h6"/></svg></span><span>팀 프렌즈 팝업</span></button>
             </div>
 
             <!-- 도구: 대관 캘린더 (A4 가로 인쇄) -->
@@ -1295,6 +1363,11 @@
             <!-- 도구: Team Friends 주간 운영 안내 팝업 (PNG) -->
             <div id="gen-pane-popup" class="gen-pane hidden">
                 <div id="popup-root"></div>
+            </div>
+
+            <!-- 도구: 추첨 결과 공지 (1순위 당첨 팀, PNG) -->
+            <div id="gen-pane-lottery" class="gen-pane hidden">
+                <div id="lottery-root" class="gen-font"></div>
             </div>
         </section>
 
@@ -1326,7 +1399,7 @@
                 <div>
                     <div class="work-title" id="work-title"></div>
                     <p class="text-xs text-slate-500 mt-1">기본 근무는 자동으로 표시됩니다. 연차·대직 등 바뀌는 날만 등록하고, 그날의 운영 이슈는 일지로 기록하세요.</p>
-                    <p class="text-[11px] mt-1 flex items-center gap-2">
+                    <p class="text-[12px] mt-1 flex items-center gap-2">
                         <span id="work-sync-status" class="text-slate-400"></span>
                         <button type="button" onclick="fetchWorkOverrides()" class="text-slate-500 hover:text-slate-900 underline underline-offset-2">새로고침</button>
                     </p>
@@ -1343,7 +1416,7 @@
                         <button class="btn-view-toggle active" id="work-view-month" onclick="setWorkView('month')">월간</button>
                         <button class="btn-view-toggle" id="work-view-week" onclick="setWorkView('week')">주간</button>
                     </div>
-                    <button class="work-btn-ghost" style="height: 32px; padding: 0 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700;" onclick="openLogModal()">
+                    <button class="work-btn-ghost" style="height: 32px; padding: 0 12px; border-radius: 6px; font-size: 12px; font-weight: 700;" onclick="openLogModal()">
                         + 일지 기록
                     </button>
                     <button class="work-btn-primary" onclick="openWorkModal()">
@@ -1400,7 +1473,7 @@
             <div class="cal-form-group">
                 <label>근무</label>
                 <div class="work-seg" id="work-modal-shift"></div>
-                <span id="work-modal-default" class="text-[11px] text-slate-400"></span>
+                <span id="work-modal-default" class="text-[12px] text-slate-400"></span>
             </div>
             <div class="cal-form-group" id="work-modal-hourly-group">
                 <label>시차 (시간 단위 연차)</label>
@@ -1419,7 +1492,7 @@
             <div class="cal-form-group" id="work-modal-password-group">
                 <label for="work-modal-password">수정 비밀번호</label>
                 <input type="password" id="work-modal-password" placeholder="처음 한 번만 입력하면 이 브라우저에서 기억합니다" autocomplete="off">
-                <span id="work-modal-password-error" class="text-[11px]" style="color: var(--cal-sun);"></span>
+                <span id="work-modal-password-error" class="text-[12px]" style="color: var(--cal-sun);"></span>
             </div>
             <div class="work-modal-actions">
                 <button type="button" id="work-modal-reset" class="work-btn-danger" onclick="resetWorkOverride()">기본 근무로 되돌리기</button>
@@ -1559,7 +1632,7 @@
             </div>
             <div id="holiday-list-box" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--cal-line); border-radius: 6px; padding: 6px 10px; margin-bottom: 12px;"></div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <button type="button" onclick="resetDefaultHolidays()" style="background: none; border: none; color: var(--cal-sun); font-size: 11.5px; cursor: pointer; text-decoration: underline;">기본 복원</button>
+                <button type="button" onclick="resetDefaultHolidays()" style="background: none; border: none; color: var(--cal-sun); font-size: 12px; cursor: pointer; text-decoration: underline;">기본 복원</button>
                 <button type="button" onclick="document.getElementById('holiday-modal').style.display='none'" style="padding: 6px 14px; background: var(--cal-ink-2); color: #fff; border: none; border-radius: 6px; cursor: pointer;">닫기</button>
             </div>
         </div>
@@ -1586,7 +1659,7 @@
                             <h3 class="font-bold text-xs text-white">AI CS 도우미 동명이</h3>
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                         </div>
-                        <p class="text-[10px] text-slate-400">강동구 체육시설 최신 규정 탑재 완료</p>
+                        <p class="text-[12px] text-slate-400">강동구 체육시설 최신 규정 탑재 완료</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
@@ -1607,7 +1680,7 @@
             <div id="apikey-drawer" class="bg-slate-800 text-slate-200 p-2.5 text-xs border-b border-slate-700 space-y-2 hidden">
                 <div class="flex items-center justify-between">
                     <span class="font-bold text-emerald-400">Gemini AI 실시간 응용 답변 설정</span>
-                    <span class="text-[10px] text-slate-400">무료 키 적용</span>
+                    <span class="text-[12px] text-slate-400">무료 키 적용</span>
                 </div>
                 <div class="flex items-center gap-1.5">
                     <input type="password" id="user-api-key-input" placeholder="Google Gemini API Key 입력..." class="flex-1 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
@@ -1615,7 +1688,7 @@
                 </div>
             </div>
 
-            <div class="bg-slate-50 border-b border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto custom-scrollbar text-[11px] whitespace-nowrap">
+            <div class="bg-slate-50 border-b border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto custom-scrollbar text-[12px] whitespace-nowrap">
                 <span class="text-slate-400 font-semibold px-1">추천:</span>
                 <button onclick="sendQuickQuery('추첨 진행 시간과 결제 마감일은 언제인가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700">추첨/결제 일정</button>
                 <button onclick="sendQuickQuery('잔여회차 선착순 오픈 시간이 팀별로 다른가요?')" class="bg-white hover:bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700">잔여타임 선착순</button>
@@ -1624,10 +1697,10 @@
 
             <div id="chat-messages" class="flex-1 p-3.5 overflow-y-auto custom-scrollbar space-y-3 bg-slate-50/50 text-xs">
                 <div class="flex gap-2">
-                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">동명</div>
+                    <div class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[12px] shrink-0">동명</div>
                     <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-800 shadow-2xs space-y-1.5 max-w-[85%]">
                         <p class="leading-relaxed font-medium">안녕하세요! 동명근린공원 축구장 AI CS 도우미 '동명이'입니다. ⚽</p>
-                        <p class="text-[11px] text-slate-500 leading-normal">운영시간, 추첨 일정, 대관 예약 및 규정 등 무엇이든 편하게 물어보세요!</p>
+                        <p class="text-[12px] text-slate-500 leading-normal">운영시간, 추첨 일정, 대관 예약 및 규정 등 무엇이든 편하게 물어보세요!</p>
                     </div>
                 </div>
             </div>
@@ -1943,7 +2016,7 @@
                             <div class="bg-slate-100 text-slate-700 p-3 rounded text-xs leading-relaxed space-y-1.5">
                                 <div class="flex items-center justify-between">
                                     <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 19c0-3.3 2.7-6 6-6h0c3.3 0 6 2.7 6 6"/><path stroke-linecap="round" stroke-linejoin="round" d="M17 7a3 3 0 010 5"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5a5.5 5.5 0 010 9"/></svg>
-                                    <button onclick="copyToClipboard('${item.id}-script', this)" class="flex items-center gap-1 text-[11px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
+                                    <button onclick="copyToClipboard('${item.id}-script', this)" class="flex items-center gap-1 text-[12px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
                                         <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                         <span>복사</span>
                                     </button>
@@ -3001,7 +3074,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     <label for="log-password">수정 비밀번호</label>
                     <input type="password" id="log-password" value="${smsEscape(logTypedPassword)}" placeholder="처음 한 번만 입력하면 이 브라우저에서 기억합니다" autocomplete="off"
                         oninput="logTypedPassword = this.value">
-                    <span class="text-[11px]" style="color: var(--cal-sun);">${logAuthError}</span>
+                    <span class="text-[12px]" style="color: var(--cal-sun);">${logAuthError}</span>
                 </div>`;
             const editing = !!(logEditId && logEditDraft);
 
@@ -3142,10 +3215,10 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     ${t.autoSend ? `<p class="text-xs text-slate-500">대관예약시스템에서 자동으로 발송되는 문자입니다. 참고용으로만 확인하세요.</p>` : ''}
                     <div class="bg-slate-100 text-slate-700 p-3 rounded text-xs leading-relaxed space-y-2 flex-grow">
                         <div class="flex items-center justify-between">
-                            <span id="sms-bytes-${t.id}" class="text-[11px] font-mono text-slate-500">${smsByteInfo(smsPlainText(t))}</span>
+                            <span id="sms-bytes-${t.id}" class="text-[12px] font-mono text-slate-500">${smsByteInfo(smsPlainText(t))}</span>
                             ${t.autoSend
-                                ? `<span class="text-[11px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">자동 발송</span>`
-                                : `<button onclick="copySmsText('${t.id}', this)" class="flex items-center gap-1 text-[11px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
+                                ? `<span class="text-[12px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">자동 발송</span>`
+                                : `<button onclick="copySmsText('${t.id}', this)" class="flex items-center gap-1 text-[12px] text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-200/80 px-2 py-0.5 rounded border border-slate-200 transition-all shadow-2xs font-medium">
                                 <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                 <span>복사</span>
                             </button>`}
@@ -3354,12 +3427,12 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             const loadingId = 'loading-' + Date.now();
             messagesContainer.innerHTML += `
                 <div id="${loadingId}" class="flex gap-2">
-                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">동명</div>
+                    <div class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[12px] shrink-0">동명</div>
                     <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-500 text-xs shadow-2xs flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
                         <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
                         <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                        <span class="text-[11px] text-slate-400 ml-1">답변 분석 중...</span>
+                        <span class="text-[12px] text-slate-400 ml-1">답변 분석 중...</span>
                     </div>
                 </div>
             `;
@@ -3403,7 +3476,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
 
             messagesContainer.innerHTML += `
                 <div class="flex gap-2">
-                    <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">동명</div>
+                    <div class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[12px] shrink-0">동명</div>
                     <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 text-slate-800 text-xs shadow-2xs space-y-2 max-w-[85%]">
                         <div class="whitespace-pre-line leading-relaxed font-medium">${formatBotResponse(aiResponseText)}</div>
                     </div>
@@ -3419,7 +3492,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         function formatBotResponse(str) {
             return str
                 .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
-                .replace(/`([^`]+)`/g, '<code class="bg-slate-100 text-slate-800 px-1 py-0.5 rounded text-[11px] font-mono">$1</code>');
+                .replace(/`([^`]+)`/g, '<code class="bg-slate-100 text-slate-800 px-1 py-0.5 rounded text-[12px] font-mono">$1</code>');
         }
 
         /* -------------------------------------------------------------
@@ -3628,7 +3701,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         async function openHolidayModal() {
             document.getElementById('holiday-modal').style.display = 'flex';
             const box = document.getElementById('holiday-list-box');
-            box.innerHTML = '<div style="color: var(--cal-ink-3); text-align: center; padding: 16px 0; font-size: 11px;">공휴일 목록 동기화 중...</div>';
+            box.innerHTML = '<div style="color: var(--cal-ink-3); text-align: center; padding: 16px 0; font-size: 12px;">공휴일 목록 동기화 중...</div>';
             try { await fetchHolidaysFromServer(); } catch(e){}
             renderHolidayListBox();
         }
@@ -3650,7 +3723,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 row.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 5px 2px; border-bottom: 1px solid var(--cal-line-2); font-size: 12px;';
                 row.innerHTML = `
                     <span><strong style="color: var(--cal-ink); font-family: Manrope;">${dateStr}</strong> <span style="color: var(--cal-sun); font-weight: 600; margin-left: 4px;">${serverHolidays[dateStr]}</span></span>
-                    <button type="button" onclick="deleteCustomHoliday('${dateStr}')" style="background: none; border: none; color: var(--cal-sun); cursor: pointer; font-size: 11px;">삭제</button>
+                    <button type="button" onclick="deleteCustomHoliday('${dateStr}')" style="background: none; border: none; color: var(--cal-sun); cursor: pointer; font-size: 12px;">삭제</button>
                 `;
                 box.appendChild(row);
             });
@@ -3983,7 +4056,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                     <div class="${colClass}">
                         <div class="w-dname">${dayNames[idx]}</div>
                         <div class="w-dnum">${d.getMonth()+1}.${d.getDate()}</div>
-                        ${holidayName ? `<div style="font-size:9.5px; font-weight:800; color:var(--cal-sun);">${holidayName}</div>` : ''}
+                        ${holidayName ? `<div style="font-size:12px; font-weight:800; color:var(--cal-sun);">${holidayName}</div>` : ''}
                     </div>
                 `;
             });
@@ -4093,7 +4166,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         document.addEventListener('click', () => closeMonthPicker());
 
         // 생성기 탭: 위쪽 밑줄 탭으로 도구 선택 (마지막에 쓴 도구를 기억)
-        const GEN_TOOLS = ['calendar', 'popup'];
+        const GEN_TOOLS = ['calendar', 'lottery', 'popup'];
         const GEN_TOOL_KEY = 'dm-gen-tool';
         function switchGenTool(tool) {
             if (!GEN_TOOLS.includes(tool)) tool = 'calendar';
@@ -4487,7 +4560,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                     파일 선택
                                 </label>
                                 <span className="text-xs text-slate-500 mt-3 font-medium">또는 파일을 여기에 드래그하여 올려놓으세요</span>
-                                <span className="text-[11px] text-slate-400 mt-1">지자체 .xls(EUC-KR), 일반 .xlsx 파일 및 08:00~10:00 시간대 자동 완벽 지원</span>
+                                <span className="text-[12px] text-slate-400 mt-1">지자체 .xls(EUC-KR), 일반 .xlsx 파일 및 08:00~10:00 시간대 자동 완벽 지원</span>
                             </div>
                         </div>
                     )}
@@ -4876,7 +4949,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                                         </button>
                                     </div>
-                                    <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">{weekLabel}</span>
+                                    <span className="text-[12px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">{weekLabel}</span>
                                 </div>
                             </div>
 
@@ -4894,7 +4967,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                     <div key={day.iso} className="tf-day-row">
                                         <div className="text-[12px] font-semibold text-slate-500 tabular-nums">
                                             {TF_DOW[day.d.getDay()]} {day.d.getMonth() + 1}/{day.d.getDate()}
-                                            {day.holiday && <div className="text-[10.5px] font-bold text-red-500">{day.holiday}</div>}
+                                            {day.holiday && <div className="text-[12px] font-bold text-red-500">{day.holiday}</div>}
                                         </div>
                                         <div className="flex items-center gap-2 min-w-0">
                                             <div className="tf-seg shrink-0">
@@ -4919,7 +4992,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 <div className="flex items-center justify-between">
                                     <span className="sms-label">안내 문구 (미운영일이 있을 때 표시)</span>
                                     {alertOverride !== null && (
-                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setAlertOverride(null)}>자동 문구로 되돌리기</button>
+                                        <button type="button" className="text-[12px] font-bold text-blue-600 hover:underline" onClick={() => setAlertOverride(null)}>자동 문구로 되돌리기</button>
                                     )}
                                 </div>
                                 <textarea
@@ -4936,7 +5009,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 <div className="flex items-center justify-between">
                                     <span className="sms-label">하단 유의사항</span>
                                     {footText !== TF_DEFAULT_FOOT && (
-                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => setFootText(TF_DEFAULT_FOOT)}>기본 문구로</button>
+                                        <button type="button" className="text-[12px] font-bold text-blue-600 hover:underline" onClick={() => setFootText(TF_DEFAULT_FOOT)}>기본 문구로</button>
                                     )}
                                 </div>
                                 <input className="sms-control" value={footText} onChange={e => setFootText(e.target.value)} />
@@ -4954,7 +5027,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                     className="bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 border border-slate-300 font-bold py-1.5 px-4 rounded-md text-xs transition">
                                     {busy === 'copy' ? '복사 중...' : '이미지 복사'}
                                 </button>
-                                <span className="text-[11px] text-slate-400">가로 1120px (2배 해상도)</span>
+                                <span className="text-[12px] text-slate-400">가로 1120px (2배 해상도)</span>
                                 {msg && <span className={`text-xs font-semibold ${msg.isError ? 'text-red-600' : 'text-emerald-600'}`}>{msg.text}</span>}
                             </div>
 
@@ -4993,6 +5066,319 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         ReactDOM.createRoot(document.getElementById('popup-root')).render(<PopupGeneratorApp />);
+
+        /* =========================================================
+         * 추첨 결과 생성기: 추첨 신청 현황(날짜/시간대별) 화면을 복사·붙여넣기 하면
+         * 시간대별 1순위 팀만 뽑아 당첨 결과 공지 이미지(PNG)로 만든다.
+         * ========================================================= */
+        const LR_DOW = ['일', '월', '화', '수', '목', '금', '토'];
+        const LR_PARTS = { 8: '1부', 10: '2부', 12: '3부', 14: '4부', 16: '5부', 18: '6부' };
+        // 공문서 날짜 표기: 2026. 10. 21.(수)
+        function lrOfficialDate(y, m, d, withYear = true) {
+            const dow = LR_DOW[new Date(y, m - 1, d).getDay()];
+            return `${withYear ? y + '. ' : ''}${m}. ${d}.(${dow})`;
+        }
+
+        // 붙여넣은 글에서 '날짜 (요일) + 시간대 + 1순위 팀'을 찾아냄
+        function lrParse(raw) {
+            const text = String(raw || '').replace(/\r/g, '').replace(/ /g, ' ');
+            const dateRe = /(\d{4})-(\d{1,2})-(\d{1,2})\s*\(\s*([일월화수목금토])\s*\)/g;
+            const marks = [];
+            let m;
+            while ((m = dateRe.exec(text))) marks.push({ m, start: m.index, end: dateRe.lastIndex });
+
+            const rows = [];
+            const problems = [];
+            marks.forEach((mk, k) => {
+                const seg = text.slice(mk.end, k + 1 < marks.length ? marks[k + 1].start : text.length);
+                const [, y, mo, d] = mk.m;
+                const iso = `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const tm = seg.match(/(\d{1,2}):(\d{2})\s*[~∼〜\-–]\s*(\d{1,2}):(\d{2})/);
+                // '11순위'·'21순위' 안의 '1순위'를 잘못 잡지 않도록 앞 글자가 숫자가 아닐 때만
+                const first = seg.match(/(?:^|[^0-9])1\s*순위\s*([^\t\n]+?)\s*\(([^()\t\n]*)\)/)
+                    || seg.match(/(?:^|[^0-9])1\s*순위\s*([^\t\n]+?)(?=\s*(?:\d+\s*순위|\t|\n|$))/);
+                if (!tm || !first) {
+                    problems.push(`${iso}${tm ? ' ' + tm[0] : ''}`);
+                    return;
+                }
+                const sh = parseInt(tm[1], 10);
+                const start = `${String(sh).padStart(2, '0')}:${tm[2]}`;
+                const end = `${String(parseInt(tm[3], 10)).padStart(2, '0')}:${tm[4]}`;
+                const status = (first[2] || '').trim();
+                // 시간대 뒤 '12팀' = 이 시간대 신청 팀 수 (경쟁률)
+                const cm = seg.slice(seg.indexOf(tm[0]) + tm[0].length).match(/^\s*(\d+)\s*팀/);
+                rows.push({
+                    key: `${iso} ${start}`,
+                    iso, dow: mk.m[4], start, end,
+                    part: LR_PARTS[sh] || '',
+                    team: first[1].trim(),
+                    status,
+                    paid: /결제\s*완료/.test(status),
+                    applicants: cm ? parseInt(cm[1], 10) : 0,
+                });
+            });
+
+            // 같은 날짜·시간대가 두 번 붙여넣어진 경우 앞의 것만 사용
+            const seen = new Set();
+            const unique = rows.filter(r => (seen.has(r.key) ? false : (seen.add(r.key), true)));
+            unique.sort((a, b) => a.key.localeCompare(b.key));
+
+            const conf = text.match(/당첨\s*확정[^(\n]*\(\s*(\d{4})-(\d{1,2})-(\d{1,2})\s+(\d{1,2}:\d{2})\s*\)/);
+            const confirmedAt = conf ? `${conf[1]}.${conf[2].padStart(2, '0')}.${conf[3].padStart(2, '0')} ${conf[4]}` : '';
+            const tot = text.match(/총\s*신청\s*(\d+)\s*건/);
+            return { rows: unique, problems, confirmedAt, totalApplied: tot ? parseInt(tot[1], 10) : 0 };
+        }
+
+        function lrMainMonth(rows) {
+            const cnt = {};
+            rows.forEach(r => { const ym = r.iso.slice(0, 7); cnt[ym] = (cnt[ym] || 0) + 1; });
+            const keys = Object.keys(cnt);
+            if (!keys.length) return '';
+            return keys.reduce((a, b) => (cnt[a] >= cnt[b] ? a : b));
+        }
+
+        function LotteryResultApp() {
+            const [raw, setRaw] = useState('');
+            const [excluded, setExcluded] = useState({}); // { key: true } 공지에서 뺄 줄
+            const [titleOverride, setTitleOverride] = useState(null);
+            const [showPay, setShowPay] = useState(false);
+            const [busy, setBusy] = useState('');
+            const [msg, setMsg] = useState(null);
+            const cardRef = React.useRef(null);
+
+            const parsed = useMemo(() => lrParse(raw), [raw]);
+            const rows = parsed.rows.filter(r => !excluded[r.key]);
+            const ym = lrMainMonth(parsed.rows);
+            const [yy, mm] = ym ? ym.split('-').map(Number) : [0, 0];
+            const autoTitle = ym ? `${yy}년 ${mm}월 축구장 대관 추첨 결과 안내` : '축구장 대관 추첨 결과 안내';
+            const title = titleOverride !== null ? titleOverride : autoTitle;
+            const holidays = (typeof KR_HOLIDAYS !== 'undefined' && KR_HOLIDAYS) || {};
+
+            const days = useMemo(() => {
+                const list = [];
+                rows.forEach(r => {
+                    const last = list[list.length - 1];
+                    if (last && last.iso === r.iso) last.slots.push(r);
+                    else list.push({ iso: r.iso, dow: r.dow, slots: [r] });
+                });
+                return list;
+            }, [rows]);
+
+            const flash = (t, isError = false) => { setMsg({ text: t, isError }); setTimeout(() => setMsg(null), isError ? 5000 : 2500); };
+            const toggle = (key) => setExcluded(prev => ({ ...prev, [key]: !prev[key] }));
+            const handleRaw = (v) => { setRaw(v); setExcluded({}); };
+
+            async function renderBlob() {
+                if (!window.htmlToImage) throw new Error('이미지 변환 도구를 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.');
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+                const fontEmbedCSS = await tfGetFontCss();
+                return window.htmlToImage.toBlob(cardRef.current, { pixelRatio: 2, fontEmbedCSS, backgroundColor: '#ffffff' });
+            }
+            async function handleDownload() {
+                setBusy('download');
+                try {
+                    const blob = await renderBlob();
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `축구장_추첨결과_${ym || '공지'}.png`;
+                    document.body.appendChild(a); a.click(); a.remove();
+                    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+                    flash('PNG 파일을 저장했어요.');
+                } catch (e) { console.error(e); flash('이미지 저장에 실패했어요. ' + (e.message || ''), true); }
+                setBusy('');
+            }
+            async function handleCopy() {
+                setBusy('copy');
+                try {
+                    if (!navigator.clipboard || !window.ClipboardItem) throw new Error('이 브라우저는 이미지 복사를 지원하지 않아요. PNG 저장을 이용해 주세요.');
+                    await navigator.clipboard.write([new ClipboardItem({ 'image/png': renderBlob() })]);
+                    flash('이미지를 클립보드에 복사했어요.');
+                } catch (e) { console.error(e); flash('이미지 복사에 실패했어요. ' + (e.message || ''), true); }
+                setBusy('');
+            }
+
+            const confirmedText = (() => {
+                const c = (parsed.confirmedAt || '').match(/^(\d{4})\.(\d{2})\.(\d{2}) (\d{1,2}:\d{2})$/);
+                return c ? `${lrOfficialDate(Number(c[1]), Number(c[2]), Number(c[3]))} ${c[4]}` : '';
+            })();
+            const hasData = parsed.rows.length > 0;
+            const maxComp = rows.reduce((mx, r) => Math.max(mx, r.applicants || 0), 0);
+
+            // 표를 좌우 2단으로: 날짜가 중간에 끊기지 않게, 줄 수가 가장 비슷해지는 지점에서 나눔 (8줄 이하면 1단)
+            const columns = useMemo(() => {
+                const total = rows.length;
+                if (total <= 8 || days.length < 2) return [days];
+                let acc = 0, best = 1, bestDiff = Infinity;
+                for (let i = 1; i < days.length; i++) {
+                    acc += days[i - 1].slots.length;
+                    const diff = Math.abs(acc - (total - acc)) + (acc < total - acc ? 0.5 : 0);
+                    if (diff < bestDiff) { bestDiff = diff; best = i; }
+                }
+                return [days.slice(0, best), days.slice(best)];
+            }, [days, rows.length]);
+
+            const renderTable = (list, idx) => (
+                <table key={idx} className={`lr-table ${showPay ? 'with-pay' : ''}`}>
+                    <thead>
+                        <tr>
+                            <th>일자</th>
+                            <th>시간대</th>
+                            <th className="team">당첨 팀(1순위)</th>
+                            <th>경쟁률</th>
+                            {showPay && <th>결제</th>}
+                        </tr>
+                    </thead>
+                    {list.map(day => {
+                        const [, m2, d2] = day.iso.split('-');
+                        const tone = holidays[day.iso] || day.dow === '일' ? 'sun' : day.dow === '토' ? 'sat' : '';
+                        return (
+                            <tbody key={day.iso} className={tone}>
+                                {day.slots.map((s, k) => {
+                                    const n = s.applicants;
+                                    const lv = n >= 10 ? 'hot' : n >= 2 ? 'multi' : 'solo';
+                                    return (
+                                        <tr key={s.key}>
+                                            {k === 0 && (
+                                                <td className="date" rowSpan={day.slots.length}>
+                                                    {`${Number(m2)}. ${Number(d2)}.`}<span className="w">{holidays[day.iso] ? `(${day.dow}·휴일)` : `(${day.dow})`}</span>
+                                                </td>
+                                            )}
+                                            <td className="time">
+                                                <span className="lr-part">{s.part || '-'}</span>
+                                                <span className="lr-time">{`${s.start}~${s.end}`}</span>
+                                            </td>
+                                            <td className="team">{s.team}</td>
+                                            <td className={`comp ${lv}`}>{n ? `${n}:1` : '-'}</td>
+                                            {showPay && <td className="pay"><span className={`lr-pay ${s.paid ? 'done' : 'wait'}`}>{s.paid ? '결제완료' : '결제 대기'}</span></td>}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        );
+                    })}
+                </table>
+            );
+
+            return (
+                <div className="space-y-4">
+                    <p className="text-xs text-slate-500 px-1">
+                        추첨 신청 현황의 <b className="text-slate-700">날짜/시간대별 신청현황</b> 화면을 통째로 드래그해 복사한 뒤 붙여넣으면, 시간대별 1순위 팀과 경쟁률을 표로 만들어요.
+                    </p>
+
+                    {/* 입력 패널: 위쪽에 가로로 (아래 미리보기를 화면 폭 그대로 보이게) */}
+                    <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-4 grid gap-4 lg:grid-cols-3">
+                        <div className="sms-field">
+                            <div className="flex items-center justify-between">
+                                <span className="sms-label">추첨 현황 붙여넣기</span>
+                                {raw && <button type="button" className="text-[12px] font-bold text-blue-600 hover:underline" onClick={() => handleRaw('')}>비우기</button>}
+                            </div>
+                            <textarea
+                                id="lr-raw"
+                                className="sms-control"
+                                style={{ height: 200, padding: '8px 10px', lineHeight: 1.5, resize: 'vertical', fontSize: 12 }}
+                                value={raw}
+                                onChange={e => handleRaw(e.target.value)}
+                                placeholder={'추첨 현황 화면을 Ctrl+A 또는 드래그로 전체 선택해 복사(Ctrl+C)한 뒤\n여기에 붙여넣기(Ctrl+V) 하세요.'}
+                            />
+                            {raw && !hasData && (
+                                <p className="text-[12px] font-semibold text-red-600">날짜·시간대·1순위 팀을 찾지 못했어요. '날짜/시간대별 신청현황' 화면을 복사했는지 확인해 주세요.</p>
+                            )}
+                            {parsed.problems.length > 0 && (
+                                <p className="text-[12px] font-semibold text-amber-700">1순위를 찾지 못한 줄 {parsed.problems.length}건: {parsed.problems.join(', ')}</p>
+                            )}
+                        </div>
+
+                        <div className="sms-field">
+                            <span className="sms-label">
+                                당첨 내역 확인{hasData ? ` · ${rows.length}건 표시` : ''}
+                                {hasData && rows.length !== parsed.rows.length && ` (${parsed.rows.length - rows.length}건 제외)`}
+                            </span>
+                            {hasData ? (
+                                <>
+                                    <div className="lr-check" style={{ maxHeight: 200 }}>
+                                        {parsed.rows.map(r => (
+                                            <label key={r.key} className={`lr-check-row ${excluded[r.key] ? 'off' : ''}`}>
+                                                <input type="checkbox" checked={!excluded[r.key]} onChange={() => toggle(r.key)} />
+                                                <span className="tabular-nums text-slate-500 whitespace-nowrap">{r.iso.slice(5).replace('-', '.')}({r.dow}) {r.start}</span>
+                                                <span className="font-bold text-slate-800 truncate" title={`${r.team} (${r.status || '상태 없음'})`}>
+                                                    {r.team}
+                                                    <span className="ml-1 font-medium text-slate-400">{r.applicants ? `${r.applicants}:1` : ''}</span>
+                                                </span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    <span className="text-[12px] text-slate-400">체크를 끄면 공지에서 빠져요.</span>
+                                </>
+                            ) : (
+                                <div className="flex-1 min-h-[200px] rounded-md border border-dashed border-slate-200 bg-slate-50 flex items-center justify-center text-[12px] text-slate-400">붙여넣으면 1순위 팀 목록이 여기 나와요</div>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col gap-3">
+                            <div className="sms-field">
+                                <div className="flex items-center justify-between">
+                                    <span className="sms-label">제목</span>
+                                    {titleOverride !== null && (
+                                        <button type="button" className="text-[12px] font-bold text-blue-600 hover:underline" onClick={() => setTitleOverride(null)}>자동 제목으로</button>
+                                    )}
+                                </div>
+                                <input id="lr-title" className="sms-control" value={title} onChange={e => setTitleOverride(e.target.value)} />
+                            </div>
+
+                            <label className="flex items-center gap-2 text-[12.5px] font-semibold text-slate-700 cursor-pointer">
+                                <input id="lr-showpay" type="checkbox" checked={showPay} onChange={e => setShowPay(e.target.checked)} />
+                                결제 상태 칸 추가 (결제완료 / 결제 대기)
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* 미리보기 + 저장 */}
+                    {hasData ? (
+                        <div className="flex flex-col items-start gap-3">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <button type="button" onClick={handleDownload} disabled={!!busy || !rows.length}
+                                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold py-1.5 px-5 rounded-md text-xs shadow transition">
+                                    {busy === 'download' ? '만드는 중...' : 'PNG 저장'}
+                                </button>
+                                <button type="button" onClick={handleCopy} disabled={!!busy || !rows.length}
+                                    className="bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 border border-slate-300 font-bold py-1.5 px-4 rounded-md text-xs transition">
+                                    {busy === 'copy' ? '복사 중...' : '이미지 복사'}
+                                </button>
+                                <span className="text-[12px] text-slate-400">가로 2400px (2배 해상도)</span>
+                                {msg && <span className={`text-xs font-semibold ${msg.isError ? 'text-red-600' : 'text-emerald-600'}`}>{msg.text}</span>}
+                            </div>
+
+                            <div className="max-w-full overflow-x-auto rounded shadow-xl border border-slate-200">
+                                <div ref={cardRef} className="lr-card">
+                                    <p className="lr-title">{title}</p>
+                                    <div className="lr-overview">
+                                        {confirmedText && <p><span className="k">추첨 일시</span><span className="v">{confirmedText}</span></p>}
+                                        <p>
+                                            <span className="k">신청 현황</span>
+                                            <span className="v">
+                                                {parsed.totalApplied > 0 ? `총 신청 ${parsed.totalApplied}건, ` : ''}당첨 {rows.length}건{maxComp > 1 ? ` (최고 경쟁률 ${maxComp}:1)` : ''}
+                                            </span>
+                                        </p>
+                                    </div>
+
+                                    <div className={`lr-cols ${columns.length === 1 ? 'one' : ''}`}>
+                                        {columns.map(renderTable)}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="border-2 border-dashed border-slate-300 rounded-lg bg-white/60 p-10 text-center space-y-2">
+                            <p className="text-sm font-bold text-slate-600">붙여넣으면 여기에 공지 이미지가 나와요</p>
+                            <p className="text-[12px] text-slate-400">공문 형식: 제목 · 추첨 개요 · 일자/시간대/당첨 팀/경쟁률 표 (가로형 PNG)</p>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('lottery-root')).render(<LotteryResultApp />);
     </script>
 </body>
 </html>
