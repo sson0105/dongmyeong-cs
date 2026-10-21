@@ -1097,23 +1097,9 @@
         .lr-foot { text-align: center; font-size: 13px; opacity: 0.65; line-height: 1.5; word-break: keep-all; white-space: pre-line; }
 
         .lr-check { display: grid; grid-template-columns: 1fr; gap: 0; max-height: 260px; overflow-y: auto; border: 1px solid var(--cal-line); border-radius: 6px; }
-        .lr-check-row { display: grid; grid-template-columns: 18px 112px 1fr; gap: 8px; align-items: center; padding: 4px 8px 4px 10px; font-size: 12px; border-top: 1px solid var(--cal-line-2); }
-        .lr-team-input { min-width: 0; width: 100%; height: 26px; padding: 0 6px; border: 1px solid transparent; border-radius: 4px; background: transparent; font-size: 12.5px; font-weight: 700; color: var(--cal-ink); outline: none; }
-        .lr-team-input:hover { border-color: var(--cal-line); background: #fff; }
-        .lr-team-input:focus { border-color: var(--cal-today-border); background: #fff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-        .lr-check-row.off .lr-team-input { text-decoration: line-through; }
-        .lr-drop { position: relative; min-height: 120px; border: 2px dashed #cbd5e1; border-radius: 8px; background: #f8fafc; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; outline: none; transition: border-color 0.15s, background 0.15s; }
-        .lr-drop:hover, .lr-drop:focus { border-color: #93c5fd; background: #f0f6ff; }
-        .lr-drop:focus { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
-        .lr-drop.is-over { border-color: #2563eb; background: #eaf2ff; }
-        .lr-drop.has-shot { border-style: solid; background: #fff; align-items: flex-start; }
-        .lr-shot { display: block; width: 100%; max-height: 220px; object-fit: contain; object-position: top left; }
-        .lr-reading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255, 255, 255, 0.86); font-size: 12px; font-weight: 700; color: #334155; }
-        .lr-spin { width: 14px; height: 14px; border: 2px solid #cbd5e1; border-top-color: #2563eb; border-radius: 50%; animation: lr-spin 0.8s linear infinite; }
-        @keyframes lr-spin { to { transform: rotate(360deg); } }
-        @media (prefers-reduced-motion: reduce) { .lr-spin { animation-duration: 2.4s; } }
+        .lr-check-row { display: grid; grid-template-columns: 18px 118px 1fr; gap: 8px; align-items: center; padding: 6px 10px; font-size: 12px; border-top: 1px solid var(--cal-line-2); cursor: pointer; }
         .lr-check-row:first-child { border-top: none; }
-        .lr-check-row.off { opacity: 0.45; }
+        .lr-check-row.off { opacity: 0.45; text-decoration: line-through; }
 
         .noon-divider {
             border-bottom: 2.3px dashed #c9c9c9 !important;
@@ -5117,80 +5103,19 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             return keys.reduce((a, b) => (cnt[a] >= cnt[b] ? a : b));
         }
 
-        // 서버(Gemini)가 캡처에서 읽어 온 결과를 텍스트 붙여넣기와 같은 모양으로 맞춤
-        function lrFromOcr(data) {
-            const pad = (v) => String(v).padStart(2, '0');
-            const rows = [];
-            (data && Array.isArray(data.rows) ? data.rows : []).forEach(r => {
-                const dm = String(r.date || '').match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-                const sm = String(r.start || '').match(/^(\d{1,2}):(\d{2})$/);
-                if (!dm || !sm || !r.team) return;
-                const iso = `${dm[1]}-${pad(dm[2])}-${pad(dm[3])}`;
-                const sh = parseInt(sm[1], 10);
-                const em = String(r.end || '').match(/^(\d{1,2}):(\d{2})$/);
-                const start = `${pad(sh)}:${sm[2]}`;
-                const end = em ? `${pad(em[1])}:${em[2]}` : `${pad(sh + 2)}:${sm[2]}`;
-                const dt = new Date(Number(dm[1]), Number(dm[2]) - 1, Number(dm[3]));
-                const status = String(r.status || '').trim();
-                rows.push({
-                    key: `${iso} ${start}`, iso, dow: LR_DOW[dt.getDay()], start, end,
-                    part: LR_PARTS[sh] || '', team: String(r.team).trim(), status,
-                    paid: /결제\s*완료/.test(status),
-                });
-            });
-            const seen = new Set();
-            const unique = rows.filter(r => (seen.has(r.key) ? false : (seen.add(r.key), true)));
-            unique.sort((a, b) => a.key.localeCompare(b.key));
-            const cm = String((data && data.confirmedAt) || '').match(/(\d{4})-(\d{1,2})-(\d{1,2})\s+(\d{1,2}:\d{2})/);
-            return { rows: unique, problems: [], confirmedAt: cm ? `${cm[1]}.${pad(cm[2])}.${pad(cm[3])} ${cm[4]}` : '' };
-        }
-
-        // 캡처 이미지를 서버로 보낼 크기로 정리 (글자가 뭉개지지 않게 가로 2400px까지만 줄이고, 너무 크면 JPEG로)
-        function lrPrepareImage(blob) {
-            return new Promise((resolve, reject) => {
-                const url = URL.createObjectURL(blob);
-                const img = new Image();
-                img.onload = () => {
-                    const scale = Math.min(1, 2400 / img.naturalWidth);
-                    const c = document.createElement('canvas');
-                    c.width = Math.round(img.naturalWidth * scale);
-                    c.height = Math.round(img.naturalHeight * scale);
-                    const ctx = c.getContext('2d');
-                    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
-                    ctx.drawImage(img, 0, 0, c.width, c.height);
-                    URL.revokeObjectURL(url);
-                    let dataUrl = c.toDataURL('image/png');
-                    let mimeType = 'image/png';
-                    if (dataUrl.length > 3400000) { dataUrl = c.toDataURL('image/jpeg', 0.9); mimeType = 'image/jpeg'; }
-                    if (dataUrl.length > 3400000) { reject(new Error('이미지가 너무 커요. 표 부분만 캡처해 주세요.')); return; }
-                    resolve({ image: dataUrl.split(',')[1], mimeType, preview: dataUrl });
-                };
-                img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('이미지를 열지 못했어요.')); };
-                img.src = url;
-            });
-        }
-
         function LotteryResultApp() {
-            const EMPTY = { rows: [], problems: [], confirmedAt: '' };
-            const [source, setSource] = useState(EMPTY);
-            const [edits, setEdits] = useState({}); // { key: { team?, off? } } 확인 목록에서 고친 내용
-            const [shot, setShot] = useState('');   // 붙여넣은 캡처 미리보기
-            const [reading, setReading] = useState(false);
-            const [readErr, setReadErr] = useState('');
+            const [raw, setRaw] = useState('');
+            const [excluded, setExcluded] = useState({}); // { key: true } 공지에서 뺄 줄
             const [titleOverride, setTitleOverride] = useState(null);
             const [footText, setFootText] = useState(LR_DEFAULT_FOOT);
             const [showPay, setShowPay] = useState(false);
             const [busy, setBusy] = useState('');
             const [msg, setMsg] = useState(null);
-            const [dragOver, setDragOver] = useState(false);
             const cardRef = React.useRef(null);
-            const paneRef = React.useRef(null);
-            const fileRef = React.useRef(null);
-            const reqId = React.useRef(0);
 
-            const allRows = source.rows.map(r => ({ ...r, team: (edits[r.key] && edits[r.key].team != null) ? edits[r.key].team : r.team, off: !!(edits[r.key] && edits[r.key].off) }));
-            const rows = allRows.filter(r => !r.off && r.team.trim());
-            const ym = lrMainMonth(source.rows);
+            const parsed = useMemo(() => lrParse(raw), [raw]);
+            const rows = parsed.rows.filter(r => !excluded[r.key]);
+            const ym = lrMainMonth(parsed.rows);
             const [yy, mm] = ym ? ym.split('-').map(Number) : [0, 0];
             const autoTitle = ym ? `${mm}월 축구장 대관 추첨 결과` : '축구장 대관 추첨 결과';
             const title = titleOverride !== null ? titleOverride : autoTitle;
@@ -5207,63 +5132,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             }, [rows]);
 
             const flash = (t, isError = false) => { setMsg({ text: t, isError }); setTimeout(() => setMsg(null), isError ? 5000 : 2500); };
-            const setEdit = (key, patch) => setEdits(prev => ({ ...prev, [key]: { ...(prev[key] || {}), ...patch } }));
-            const resetAll = () => { reqId.current++; setSource(EMPTY); setEdits({}); setShot(''); setReadErr(''); setReading(false); };
-
-            async function readImage(blob) {
-                const id = ++reqId.current;
-                setReadErr(''); setReading(true); setSource(EMPTY); setEdits({});
-                try {
-                    const prep = await lrPrepareImage(blob);
-                    if (id !== reqId.current) return;
-                    setShot(prep.preview);
-                    const res = await fetch('/api/lottery-ocr', {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ image: prep.image, mimeType: prep.mimeType }),
-                    });
-                    let data = {};
-                    try { data = await res.json(); } catch (e) {}
-                    if (id !== reqId.current) return;
-                    if (!res.ok) throw new Error(data.error || `서버 오류 (${res.status})`);
-                    const out = lrFromOcr(data);
-                    if (!out.rows.length) throw new Error('캡처에서 1순위 팀을 찾지 못했어요. 날짜/시간대별 신청현황 표가 보이게 캡처해 주세요.');
-                    setSource(out);
-                } catch (e) {
-                    if (id !== reqId.current) return;
-                    console.error(e);
-                    setReadErr(e.message || '캡처를 읽지 못했어요.');
-                } finally {
-                    if (id === reqId.current) setReading(false);
-                }
-            }
-            function readText(text) {
-                reqId.current++;
-                setShot(''); setReadErr(''); setReading(false); setEdits({});
-                const out = lrParse(text);
-                setSource(out);
-                if (!out.rows.length) setReadErr('붙여넣은 글에서 날짜·시간대·1순위 팀을 찾지 못했어요.');
-            }
-            function handleClipboard(cd) {
-                if (!cd) return false;
-                const item = Array.from(cd.items || []).find(it => it.kind === 'file' && it.type.startsWith('image/'));
-                const file = item ? item.getAsFile() : Array.from(cd.files || []).find(f => f.type.startsWith('image/'));
-                if (file) { readImage(file); return true; }
-                const text = cd.getData && cd.getData('text/plain');
-                if (text && text.trim()) { readText(text); return true; }
-                return false;
-            }
-
-            // 이 도구가 보이는 동안에는 어디서든 Ctrl+V로 캡처를 붙여넣을 수 있게 (입력칸에 쓰는 중일 때는 제외)
-            useEffect(() => {
-                const onPaste = (e) => {
-                    if (!paneRef.current || paneRef.current.offsetParent === null) return;
-                    const t = e.target;
-                    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
-                    if (handleClipboard(e.clipboardData)) e.preventDefault();
-                };
-                document.addEventListener('paste', onPaste);
-                return () => document.removeEventListener('paste', onPaste);
-            });
+            const toggle = (key) => setExcluded(prev => ({ ...prev, [key]: !prev[key] }));
+            const handleRaw = (v) => { setRaw(v); setExcluded({}); };
 
             async function renderBlob() {
                 if (!window.htmlToImage) throw new Error('이미지 변환 도구를 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.');
@@ -5294,13 +5164,12 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 setBusy('');
             }
 
-            const hasData = source.rows.length > 0;
-            const offCount = allRows.length - rows.length;
+            const hasData = parsed.rows.length > 0;
 
             return (
-                <div ref={paneRef} className="space-y-4">
+                <div className="space-y-4">
                     <p className="text-xs text-slate-500 px-1">
-                        추첨 신청 현황의 <b className="text-slate-700">날짜/시간대별 신청현황</b> 화면을 캡처해서 <b className="text-slate-700">Ctrl+V</b>로 붙여넣으면, 시간대별 1순위 팀만 골라 공지 이미지를 만들어요.
+                        추첨 신청 현황의 <b className="text-slate-700">날짜/시간대별 신청현황</b> 표를 통째로 드래그해 복사한 뒤 아래에 붙여넣으면, 시간대별 1순위 팀만 골라 공지 이미지를 만들어요.
                     </p>
 
                     <div className="flex flex-col lg:flex-row gap-5 items-start">
@@ -5308,46 +5177,22 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                         <div className="w-full lg:w-[380px] shrink-0 bg-white border border-slate-200 rounded-lg shadow-sm p-4 space-y-4">
                             <div className="sms-field">
                                 <div className="flex items-center justify-between">
-                                    <span className="sms-label">추첨 현황 캡처</span>
-                                    {(hasData || shot || readErr) && !reading && (
-                                        <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={resetAll}>비우기</button>
-                                    )}
+                                    <span className="sms-label">추첨 현황 붙여넣기</span>
+                                    {raw && <button type="button" className="text-[11px] font-bold text-blue-600 hover:underline" onClick={() => handleRaw('')}>비우기</button>}
                                 </div>
-                                <div
-                                    id="lr-drop"
-                                    tabIndex={0}
-                                    role="button"
-                                    aria-label="추첨 현황 캡처 붙여넣기"
-                                    onPaste={e => { if (handleClipboard(e.clipboardData)) e.preventDefault(); }}
-                                    onClick={e => e.currentTarget.focus()}
-                                    onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-                                    onDragLeave={() => setDragOver(false)}
-                                    onDrop={e => { e.preventDefault(); setDragOver(false); const f = Array.from(e.dataTransfer.files || []).find(x => x.type.startsWith('image/')); if (f) readImage(f); }}
-                                    className={`lr-drop ${dragOver ? 'is-over' : ''} ${shot ? 'has-shot' : ''}`}
-                                >
-                                    {shot ? (
-                                        <img src={shot} alt="붙여넣은 추첨 현황 캡처" className="lr-shot" />
-                                    ) : (
-                                        <div className="text-center space-y-1.5 py-6">
-                                            <p className="text-[13px] font-bold text-slate-700">여기를 누르고 Ctrl+V</p>
-                                            <p className="text-[11.5px] text-slate-400">캡처 이미지를 붙여넣거나 끌어다 놓으세요</p>
-                                        </div>
-                                    )}
-                                    {reading && (
-                                        <div className="lr-reading">
-                                            <span className="lr-spin" />
-                                            <span>캡처에서 1순위 팀을 읽는 중... (10초 안팎)</span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <button type="button" className="text-[11.5px] font-bold text-slate-600 hover:text-slate-900 underline" onClick={() => fileRef.current && fileRef.current.click()}>이미지 파일 선택</button>
-                                    <span className="text-[11px] text-slate-400">표 글을 복사해 붙여넣어도 돼요</span>
-                                </div>
-                                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files && e.target.files[0]; if (f) readImage(f); e.target.value = ''; }} />
-                                {readErr && <p className="text-[11.5px] font-semibold text-red-600">{readErr}</p>}
-                                {source.problems.length > 0 && (
-                                    <p className="text-[11.5px] font-semibold text-amber-700">1순위를 찾지 못한 줄 {source.problems.length}건: {source.problems.join(', ')}</p>
+                                <textarea
+                                    id="lr-raw"
+                                    className="sms-control"
+                                    style={{ height: hasData ? 90 : 180, padding: '8px 10px', lineHeight: 1.5, resize: 'vertical', fontSize: 12 }}
+                                    value={raw}
+                                    onChange={e => handleRaw(e.target.value)}
+                                    placeholder={'추첨 현황 화면에서 표 전체를 드래그해 복사(Ctrl+C)한 뒤\n여기에 붙여넣기(Ctrl+V) 하세요.\n\n예) 1  2026-11-01 (일)  12:00~14:00  2팀  1순위 그린FC (결제완료) ...'}
+                                />
+                                {raw && !hasData && (
+                                    <p className="text-[11.5px] font-semibold text-red-600">날짜·시간대·1순위 팀을 찾지 못했어요. '날짜/시간대별 신청현황' 표를 복사했는지 확인해 주세요.</p>
+                                )}
+                                {parsed.problems.length > 0 && (
+                                    <p className="text-[11.5px] font-semibold text-amber-700">1순위를 찾지 못한 줄 {parsed.problems.length}건: {parsed.problems.join(', ')}</p>
                                 )}
                             </div>
 
@@ -5355,23 +5200,22 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 <>
                                     <div className="sms-field">
                                         <span className="sms-label">
-                                            당첨 내역 확인 · {rows.length}건 표시{offCount > 0 && ` (${offCount}건 제외)`}
+                                            당첨 내역 확인 · {rows.length}건 표시
+                                            {rows.length !== parsed.rows.length && ` (${parsed.rows.length - rows.length}건 제외)`}
                                         </span>
                                         <div className="lr-check">
-                                            {allRows.map(r => (
-                                                <div key={r.key} className={`lr-check-row ${r.off ? 'off' : ''}`}>
-                                                    <input type="checkbox" aria-label={`${r.iso} ${r.start} 포함`} checked={!r.off} onChange={() => setEdit(r.key, { off: !r.off })} />
+                                            {parsed.rows.map(r => (
+                                                <label key={r.key} className={`lr-check-row ${excluded[r.key] ? 'off' : ''}`}>
+                                                    <input type="checkbox" checked={!excluded[r.key]} onChange={() => toggle(r.key)} />
                                                     <span className="tabular-nums text-slate-500 whitespace-nowrap">{r.iso.slice(5).replace('-', '.')}({r.dow}) {r.start}</span>
-                                                    <input
-                                                        className="lr-team-input"
-                                                        value={r.team}
-                                                        onChange={e => setEdit(r.key, { team: e.target.value })}
-                                                        title={r.status ? `상태: ${r.status}` : ''}
-                                                    />
-                                                </div>
+                                                    <span className="font-bold text-slate-800 truncate" title={`${r.team} (${r.status || '상태 없음'})`}>
+                                                        {r.team}
+                                                        {r.status && <span className="ml-1 font-medium text-slate-400">{r.status}</span>}
+                                                    </span>
+                                                </label>
                                             ))}
                                         </div>
-                                        <span className="text-[11px] text-slate-400">{shot ? '자동으로 읽은 결과예요. 원본과 다르면 팀명을 바로 고치세요. 체크를 끄면 공지에서 빠져요.' : '팀명을 고치거나, 체크를 끄면 공지에서 빠져요.'}</span>
+                                        <span className="text-[11px] text-slate-400">체크를 끄면 공지에서 빠져요.</span>
                                     </div>
 
                                     <div className="sms-field">
@@ -5434,8 +5278,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                                 <p className="lr-title">{title}</p>
                                                 <p className="lr-sub">
                                                     {ym ? `${yy}년 ${mm}월 이용분` : ''}
-                                                    {ym && source.confirmedAt ? '  ·  ' : ''}
-                                                    {source.confirmedAt ? `당첨 확정 ${source.confirmedAt}` : ''}
+                                                    {ym && parsed.confirmedAt ? '  ·  ' : ''}
+                                                    {parsed.confirmedAt ? `당첨 확정 ${parsed.confirmedAt}` : ''}
                                                 </p>
                                                 <p className="lr-count">당첨 <b>{rows.length}</b>건</p>
                                             </div>
@@ -5473,7 +5317,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                 </>
                             ) : (
                                 <div className="w-full lg:w-[560px] border-2 border-dashed border-slate-300 rounded-lg bg-white/60 p-8 text-center space-y-2">
-                                    <p className="text-sm font-bold text-slate-600">{reading ? '캡처를 읽고 있어요' : '캡처를 붙여넣으면 여기에 공지 이미지가 나와요'}</p>
+                                    <p className="text-sm font-bold text-slate-600">붙여넣으면 여기에 공지 이미지가 나와요</p>
                                     <p className="text-[12px] text-slate-400">날짜순으로 정리된 1순위 당첨 팀 목록 · PNG 저장 / 이미지 복사</p>
                                 </div>
                             )}
