@@ -1017,10 +1017,11 @@
         .gen-tab-icon svg { width: 18px; height: 18px; }
         .gen-tab:hover { border-color: #b6c0cf; color: #1e293b; }
         .gen-tab:hover .gen-tab-icon { color: #64748b; }
-        .gen-tab.active { border-color: #1d4ed8; color: #1d4ed8; font-weight: 700; box-shadow: 0 2px 8px rgba(29, 78, 216, 0.12); }
-        .gen-tab.active .gen-tab-icon { background: #e8eefc; color: #1d4ed8; }
+        /* 선택된 탭: 상단 메뉴·헤더 버튼과 같은 네이비(#0f172a) */
+        .gen-tab.active { border-color: #0f172a; color: #0f172a; font-weight: 700; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12); }
+        .gen-tab.active .gen-tab-icon { background: #0f172a; color: #ffffff; }
         .gen-tab:focus { outline: none; }
-        .gen-tab:focus-visible { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.35); }
+        .gen-tab:focus-visible { box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.25); }
 
         /* 팝업 생성기: Team Friends 주간 운영 안내 (피그마 시안F, 560px 폭) */
         .tf-card, .tf-card * {
