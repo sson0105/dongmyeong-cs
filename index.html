@@ -2217,7 +2217,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 build: (v, h) => {
                     const { year: y, month: m } = smsParseYearMonth(v.month);
                     return `안녕하세요. 동명근린공원 축구장입니다.
-${h(m + '월')} 축구장 대관 추첨 후 남은 회차를 선착순으로 오픈합니다.
+${h(m + '월')} 축구장 대관 잔여 회차를 선착순으로 오픈합니다.
 
   • 관내팀: ${h(smsDrawDate(y, m, 23))} 11:00
   • 관외팀: ${h(smsDrawDate(y, m, 24))} 11:00
