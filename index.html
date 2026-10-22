@@ -1127,6 +1127,51 @@
         .lr-check-row:first-child { border-top: none; }
         .lr-check-row.off { opacity: 0.45; text-decoration: line-through; }
 
+        /* 팝업 종류 선택 (팀 프렌즈 / 잔여 회차) */
+        .pop-kinds { display: flex; flex-wrap: wrap; gap: 10px; }
+        .pop-kind {
+            display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px;
+            background: #ffffff; border: 1px solid #d5dbe5; border-radius: 8px; cursor: pointer; text-align: left;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .pop-kind:hover { border-color: #b6c0cf; }
+        .pop-kind-dot { width: 16px; height: 16px; flex-shrink: 0; border-radius: 50%; border: 2px solid #cbd5e1; background: #fff; }
+        .pop-kind-text { display: flex; flex-direction: column; gap: 1px; line-height: 1.3; }
+        .pop-kind-text b { font-size: 14px; font-weight: 700; color: #334155; }
+        .pop-kind-text span { font-size: 12px; font-weight: 500; color: #94a3b8; }
+        .pop-kind.active { border-color: #0f172a; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1); }
+        .pop-kind.active .pop-kind-dot { border: 5px solid #0f172a; }
+        .pop-kind.active .pop-kind-text b { color: #0f172a; }
+        .pop-kind:focus { outline: none; }
+        .pop-kind:focus-visible { box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.25); }
+
+        /* 팝업 생성기: 잔여 회차 예약 안내 (시안 480px 폭) */
+        .rp-card, .rp-card * {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif !important;
+            box-sizing: border-box; margin: 0;
+        }
+        .rp-card { width: 480px; background: #ffffff; color: #14361f; -webkit-font-smoothing: antialiased; }
+        .rp-top {
+            position: relative; overflow: hidden; background: #17462a; text-align: center;
+            padding: 50px 24px 46px; display: flex; flex-direction: column; align-items: center;
+        }
+        .rp-line { position: absolute; left: 0; right: 0; top: 188px; height: 2px; background: rgba(255, 255, 255, 0.14); }
+        .rp-ring { position: absolute; left: 50%; top: 39px; width: 304px; height: 304px; margin-left: -152px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.16); }
+        .rp-place, .rp-title, .rp-desc { position: relative; }
+        .rp-place { font-size: 16.5px; font-weight: 700; color: #d9ebdd; line-height: 1.4; }
+        .rp-title { margin-top: 22px !important; font-size: 48.4px; font-weight: 900; line-height: 1.2; letter-spacing: -1.45px; color: #ffffff; word-break: keep-all; }
+        .rp-title .hl { color: #f5d547; }
+        .rp-desc { margin-top: 12px !important; font-size: 16.5px; font-weight: 400; line-height: 1.6; color: #d9ebdd; white-space: pre-line; word-break: keep-all; }
+        .rp-bottom { padding: 24px 32px 24px; display: flex; flex-direction: column; align-items: center; }
+        .rp-btn {
+            width: 100%; height: 56px; border-radius: 10px; background: #17462a;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-size: 18px; font-weight: 900; color: #ffffff;
+        }
+        .rp-notice { margin-top: 18px !important; font-size: 14px; font-weight: 500; color: #7a1f2b; text-align: center; word-break: keep-all; }
+        .rp-contact { margin-top: 12px !important; font-size: 15px; font-weight: 500; color: #3a4d40; }
+        .rp-contact b { font-weight: 700; color: #14361f; }
+
         .noon-divider {
             border-bottom: 2.3px dashed #c9c9c9 !important;
             margin-top: 1px !important;
@@ -1352,7 +1397,7 @@
             <div class="gen-tabs no-print" role="tablist" aria-label="생성기 도구">
                 <button type="button" role="tab" data-gen-tool="calendar" onclick="switchGenTool('calendar')" class="gen-tab"><span class="gen-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M7.5 13.5h2M11 13.5h2M14.5 13.5h2M7.5 17h2M11 17h2"/></svg></span><span>대관 캘린더</span></button>
                 <button type="button" role="tab" data-gen-tool="lottery" onclick="switchGenTool('lottery')" class="gen-tab"><span class="gen-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a2 2 0 0 0 0 0v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3"/><path d="M12 13v4M8.5 20.5h7M10 17h4l.5 3.5h-5L10 17z"/></svg></span><span>추첨 결과</span></button>
-                <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tab"><span class="gen-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="15" rx="2"/><path d="M3 8.5h18M6 6.3h.01M8.5 6.3h.01M7 12.5h10M7 15.5h6"/></svg></span><span>팀 프렌즈 팝업</span></button>
+                <button type="button" role="tab" data-gen-tool="popup" onclick="switchGenTool('popup')" class="gen-tab"><span class="gen-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="15" rx="2"/><path d="M3 8.5h18M6 6.3h.01M8.5 6.3h.01M7 12.5h10M7 15.5h6"/></svg></span><span>팝업</span></button>
             </div>
 
             <!-- 도구: 대관 캘린더 (A4 가로 인쇄) -->
@@ -1360,7 +1405,7 @@
                 <div id="generator-root" class="gen-font w-full flex justify-center"></div>
             </div>
 
-            <!-- 도구: Team Friends 주간 운영 안내 팝업 (PNG) -->
+            <!-- 도구: 팝업 (팀 프렌즈 주간 운영 안내 / 잔여 회차 예약 안내, PNG) -->
             <div id="gen-pane-popup" class="gen-pane hidden">
                 <div id="popup-root"></div>
             </div>
@@ -4790,7 +4835,7 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         }
 
         // PNG에 넣을 폰트만 골라서 내장 (Noto Sans KR 같은 큰 웹폰트를 통째로 받지 않도록)
-        const TF_PRETENDARD_WEIGHTS = [400, 700, 800, 900];
+        const TF_PRETENDARD_WEIGHTS = [400, 500, 700, 800, 900];
         // 페이지에 이미 로드된 프리텐다드 스타일시트에서 굵기별 실제 woff2 주소를 읽어옴
         function tfPretendardFonts() {
             const found = {};
@@ -5065,7 +5110,170 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
             );
         }
 
-        ReactDOM.createRoot(document.getElementById('popup-root')).render(<PopupGeneratorApp />);
+
+        /* =========================================================
+         * 팝업 생성기: 잔여 회차 예약 안내 (홈페이지 팝업용 PNG, 480px 폭)
+         * ========================================================= */
+        const RP_DEFAULTS = {
+            place: '동명근린공원 축구장',
+            line1: '잔여 회차,',
+            line2: '지금 바로',
+            line3: '예약하세요',
+            desc: '아직 비어 있는 회차가 있어요.\n원하는 날짜를 골라 바로 예약하세요.',
+            button: '잔여 회차 예약하기',
+            notice: '※ 이용일 2일 전 예약 마감됩니다.',
+            phone: '02-2045-7835~7',
+        };
+        const RP_FIELDS = [
+            { key: 'place', label: '상단 문구' },
+            { key: 'line1', label: '제목 1줄' },
+            { key: 'line2', label: '제목 2줄' },
+            { key: 'line3', label: '제목 3줄 (노란 강조)' },
+            { key: 'desc', label: '설명 (줄바꿈 그대로 표시)', multi: true },
+            { key: 'button', label: '버튼 문구' },
+            { key: 'notice', label: '마감 안내' },
+            { key: 'phone', label: '문의 전화' },
+        ];
+
+        function RemainPopupApp() {
+            const [v, setV] = useState(RP_DEFAULTS);
+            const [busy, setBusy] = useState('');
+            const [msg, setMsg] = useState(null);
+            const cardRef = React.useRef(null);
+            const set = (k, val) => setV(prev => ({ ...prev, [k]: val }));
+            const flash = (t, isError = false) => { setMsg({ text: t, isError }); setTimeout(() => setMsg(null), isError ? 5000 : 2500); };
+
+            async function renderBlob() {
+                if (!window.htmlToImage) throw new Error('이미지 변환 도구를 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.');
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+                const fontEmbedCSS = await tfGetFontCss();
+                return window.htmlToImage.toBlob(cardRef.current, { pixelRatio: 2, fontEmbedCSS, backgroundColor: '#ffffff' });
+            }
+            async function handleDownload() {
+                setBusy('download');
+                try {
+                    const blob = await renderBlob();
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = '잔여회차_예약안내_팝업.png';
+                    document.body.appendChild(a); a.click(); a.remove();
+                    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+                    flash('PNG 파일을 저장했어요.');
+                } catch (e) { console.error(e); flash('이미지 저장에 실패했어요. ' + (e.message || ''), true); }
+                setBusy('');
+            }
+            async function handleCopy() {
+                setBusy('copy');
+                try {
+                    if (!navigator.clipboard || !window.ClipboardItem) throw new Error('이 브라우저는 이미지 복사를 지원하지 않아요. PNG 저장을 이용해 주세요.');
+                    await navigator.clipboard.write([new ClipboardItem({ 'image/png': renderBlob() })]);
+                    flash('이미지를 클립보드에 복사했어요.');
+                } catch (e) { console.error(e); flash('이미지 복사에 실패했어요. ' + (e.message || ''), true); }
+                setBusy('');
+            }
+
+            const changed = RP_FIELDS.some(f => v[f.key] !== RP_DEFAULTS[f.key]);
+
+            return (
+                <div className="space-y-4">
+                    <p className="text-xs text-slate-500 px-1">홈페이지에 띄울 잔여 회차 예약 안내 팝업입니다. 문구를 고치면 바로 반영돼요.</p>
+
+                    <div className="flex flex-col lg:flex-row gap-5 items-start">
+                        {/* 입력 패널 */}
+                        <div className="w-full lg:w-[380px] shrink-0 bg-white border border-slate-200 rounded-lg shadow-sm p-4 space-y-3">
+                            {RP_FIELDS.map(f => (
+                                <div key={f.key} className="sms-field">
+                                    <span className="sms-label">{f.label}</span>
+                                    {f.multi ? (
+                                        <textarea
+                                            id={`rp-${f.key}`}
+                                            className="sms-control"
+                                            style={{ height: 'auto', minHeight: 56, padding: '8px 10px', lineHeight: 1.5, resize: 'vertical' }}
+                                            rows={Math.max(2, v[f.key].split('\n').length)}
+                                            value={v[f.key]}
+                                            onChange={e => set(f.key, e.target.value)}
+                                        />
+                                    ) : (
+                                        <input id={`rp-${f.key}`} className="sms-control" value={v[f.key]} onChange={e => set(f.key, e.target.value)} />
+                                    )}
+                                </div>
+                            ))}
+                            {changed && (
+                                <button type="button" className="text-[12px] font-bold text-blue-600 hover:underline" onClick={() => setV(RP_DEFAULTS)}>기본 문구로 되돌리기</button>
+                            )}
+                        </div>
+
+                        {/* 미리보기 + 저장 */}
+                        <div className="flex flex-col items-start gap-3 min-w-0 max-w-full">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <button type="button" onClick={handleDownload} disabled={!!busy}
+                                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold py-1.5 px-5 rounded-md text-xs shadow transition">
+                                    {busy === 'download' ? '만드는 중...' : 'PNG 저장'}
+                                </button>
+                                <button type="button" onClick={handleCopy} disabled={!!busy}
+                                    className="bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 border border-slate-300 font-bold py-1.5 px-4 rounded-md text-xs transition">
+                                    {busy === 'copy' ? '복사 중...' : '이미지 복사'}
+                                </button>
+                                <span className="text-[12px] text-slate-400">가로 960px (2배 해상도)</span>
+                                {msg && <span className={`text-xs font-semibold ${msg.isError ? 'text-red-600' : 'text-emerald-600'}`}>{msg.text}</span>}
+                            </div>
+
+                            <div className="max-w-full overflow-x-auto rounded shadow-xl border border-slate-200">
+                                <div ref={cardRef} className="rp-card">
+                                    <div className="rp-top">
+                                        <div className="rp-line" />
+                                        <div className="rp-ring" />
+                                        <p className="rp-place">{v.place}</p>
+                                        <p className="rp-title">
+                                            {v.line1}<br />{v.line2}<br /><span className="hl">{v.line3}</span>
+                                        </p>
+                                        {v.desc.trim() && <p className="rp-desc">{v.desc}</p>}
+                                    </div>
+                                    <div className="rp-bottom">
+                                        <div className="rp-btn">
+                                            <span>{v.button}</span>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="M13 6l6 6-6 6" /></svg>
+                                        </div>
+                                        {v.notice.trim() && <p className="rp-notice">{v.notice}</p>}
+                                        {v.phone.trim() && <p className="rp-contact">문의 <b>{v.phone}</b></p>}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        /* 팝업 탭: 팀 프렌즈 / 잔여 회차 중 골라서 만들기 */
+        const POPUP_KINDS = [
+            { id: 'tf', label: '팀 프렌즈', desc: '중·고등학생 무료 개방 주간 운영 안내' },
+            { id: 'remain', label: '잔여 회차', desc: '잔여 회차 예약 안내' },
+        ];
+        function PopupToolsApp() {
+            const [kind, setKind] = useState(() => {
+                try { const k = localStorage.getItem('dm-popup-kind'); if (POPUP_KINDS.some(x => x.id === k)) return k; } catch (e) {}
+                return 'tf';
+            });
+            const pick = (k) => { setKind(k); try { localStorage.setItem('dm-popup-kind', k); } catch (e) {} };
+            return (
+                <div className="space-y-4">
+                    <div className="pop-kinds" role="radiogroup" aria-label="팝업 종류">
+                        {POPUP_KINDS.map(k => (
+                            <button key={k.id} type="button" role="radio" aria-checked={kind === k.id}
+                                className={`pop-kind ${kind === k.id ? 'active' : ''}`} onClick={() => pick(k.id)}>
+                                <span className="pop-kind-dot" />
+                                <span className="pop-kind-text"><b>{k.label}</b><span>{k.desc}</span></span>
+                            </button>
+                        ))}
+                    </div>
+                    <div className={kind === 'tf' ? '' : 'hidden'}><PopupGeneratorApp /></div>
+                    <div className={kind === 'remain' ? '' : 'hidden'}><RemainPopupApp /></div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('popup-root')).render(<PopupToolsApp />);
 
         /* =========================================================
          * 추첨 결과 생성기: 추첨 신청 현황(날짜/시간대별) 화면을 복사·붙여넣기 하면
