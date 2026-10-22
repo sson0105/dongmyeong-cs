@@ -2209,6 +2209,25 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                 }
             },
             {
+                id: 'remain-open',
+                title: '잔여 회차 선착순 오픈 안내',
+                category: '추첨·결제',
+                // 관내팀 23일·관외팀 24일 오픈이므로 24일까지는 다음 달, 그 이후는 다다음 달을 기본으로
+                fields: [{ key: 'month', label: '대관 월', type: 'yearMonth', default: () => smsDefaultDrawMonth(24) }],
+                build: (v, h) => {
+                    const { year: y, month: m } = smsParseYearMonth(v.month);
+                    return `안녕하세요. 동명근린공원 축구장입니다.
+${h(m + '월')} 축구장 대관 추첨 후 남은 회차를 선착순으로 오픈합니다.
+
+  • 관내팀: ${h(smsDrawDate(y, m, 23))} 11:00
+  • 관외팀: ${h(smsDrawDate(y, m, 24))} 11:00
+
+오픈 시간에 맞춰 대관예약시스템에서 예약해 주시기 바랍니다.
+
+문의: 02-2045-7835~7`;
+                }
+            },
+            {
                 id: 'bank-transfer',
                 title: '공단 계좌 입금 안내',
                 category: '추첨·결제',
