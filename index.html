@@ -1163,6 +1163,7 @@
         .rp-place, .rp-title, .rp-desc { position: relative; }
         .rp-place { font-size: 16.5px; font-weight: 700; color: #d9ebdd; line-height: 1.4; }
         .rp-title { margin-top: 22px !important; font-size: 48.4px; font-weight: 900; line-height: 1.2; letter-spacing: -1.45px; color: #ffffff; word-break: keep-all; }
+        .rp-title .nm { white-space: pre-line; }
         .rp-title .hl { color: #f5d547; }
         .rp-desc { margin-top: 12px !important; font-size: 16.5px; font-weight: 400; line-height: 1.6; color: #d9ebdd; white-space: pre-line; word-break: keep-all; }
         .rp-bottom { padding: 24px 32px 24px; display: flex; flex-direction: column; align-items: center; }
@@ -5119,9 +5120,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
          * ========================================================= */
         const RP_DEFAULTS = {
             place: '동명근린공원 축구장',
-            line1: '잔여 회차,',
-            line2: '지금 바로',
-            line3: '예약하세요',
+            normal: '잔여 회차,\n지금 바로',
+            strong: '예약하세요',
             desc: '아직 비어 있는 회차가 있어요.\n원하는 날짜를 골라 바로 예약하세요.',
             button: '잔여 회차 예약하기',
             notice: '※ 이용일 2일 전 예약 마감됩니다.',
@@ -5129,9 +5129,8 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
         };
         const RP_FIELDS = [
             { key: 'place', label: '상단 문구' },
-            { key: 'line1', label: '제목 1줄' },
-            { key: 'line2', label: '제목 2줄' },
-            { key: 'line3', label: '제목 3줄 (노란 강조)' },
+            { key: 'normal', label: '일반 문구 (흰색, 줄바꿈 그대로 표시)', multi: true },
+            { key: 'strong', label: '강조 (노란색)' },
             { key: 'desc', label: '설명 (줄바꿈 그대로 표시)', multi: true },
             { key: 'button', label: '버튼 문구' },
             { key: 'notice', label: '마감 안내' },
@@ -5228,7 +5227,9 @@ ${h(m + '월')} 축구장 대관 당첨 건이 현재 미결제 상태입니다.
                                         <div className="rp-ring" />
                                         <p className="rp-place">{v.place}</p>
                                         <p className="rp-title">
-                                            {v.line1}<br />{v.line2}<br /><span className="hl">{v.line3}</span>
+                                            {v.normal.trim() && <span className="nm">{v.normal.trim()}</span>}
+                                            {v.normal.trim() && v.strong.trim() && <br />}
+                                            {v.strong.trim() && <span className="hl">{v.strong.trim()}</span>}
                                         </p>
                                         {v.desc.trim() && <p className="rp-desc">{v.desc}</p>}
                                     </div>
