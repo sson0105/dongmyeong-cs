@@ -1127,23 +1127,16 @@
         .lr-check-row:first-child { border-top: none; }
         .lr-check-row.off { opacity: 0.45; text-decoration: line-through; }
 
-        /* 팝업 종류 선택 (팀 프렌즈 / 잔여 회차) */
-        .pop-kinds { display: flex; flex-wrap: wrap; gap: 10px; }
-        .pop-kind {
-            display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px;
-            background: #ffffff; border: 1px solid #d5dbe5; border-radius: 8px; cursor: pointer; text-align: left;
-            transition: border-color 0.15s, box-shadow 0.15s;
-        }
-        .pop-kind:hover { border-color: #b6c0cf; }
-        .pop-kind-dot { width: 16px; height: 16px; flex-shrink: 0; border-radius: 50%; border: 2px solid #cbd5e1; background: #fff; }
-        .pop-kind-text { display: flex; flex-direction: column; gap: 1px; line-height: 1.3; }
-        .pop-kind-text b { font-size: 14px; font-weight: 700; color: #334155; }
-        .pop-kind-text span { font-size: 12px; font-weight: 500; color: #94a3b8; }
-        .pop-kind.active { border-color: #0f172a; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1); }
-        .pop-kind.active .pop-kind-dot { border: 5px solid #0f172a; }
-        .pop-kind.active .pop-kind-text b { color: #0f172a; }
-        .pop-kind:focus { outline: none; }
-        .pop-kind:focus-visible { box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.25); }
+        /* 팝업 종류 선택: 입력 패널 맨 위의 2칸 선택 버튼 (위쪽 생성기 탭과 모양이 겹치지 않게) */
+        .pop-seg { display: grid; grid-template-columns: 1fr 1fr; height: 36px; border: 1px solid var(--cal-line); border-radius: 6px; overflow: hidden; background: #fff; }
+        .pop-seg button { border: none; background: transparent; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--cal-ink-3); transition: background-color 0.15s, color 0.15s; }
+        .pop-seg button + button { border-left: 1px solid var(--cal-line); }
+        .pop-seg button:hover { color: var(--cal-ink); background: #f8fafc; }
+        .pop-seg button.on { background: #0f172a; color: #fff; font-weight: 700; }
+        .pop-seg button:focus { outline: none; }
+        .pop-seg button:focus-visible { box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.6); }
+        .pop-kind-desc { font-size: 12px; color: var(--cal-ink-4); }
+        .pop-kind-field { padding-bottom: 14px; border-bottom: 1px solid var(--cal-line-2); }
 
         /* 팝업 생성기: 잔여 회차 예약 안내 (시안 480px 폭) */
         .rp-card, .rp-card * {
@@ -4909,7 +4902,7 @@ ${h(m + '월')} 축구장 대관 잔여 회차를 선착순으로 오픈합니�
             return tfFontCssPromise;
         }
 
-        function PopupGeneratorApp() {
+        function PopupGeneratorApp({ kindField }) {
             const [weekStart, setWeekStart] = useState(() => tfNextMonday());
             // 날짜별 수정 내용 (주를 옮겨도 유지) { 'YYYY-MM-DD': { open, reason } }
             const [edits, setEdits] = useState({});
@@ -5001,6 +4994,7 @@ ${h(m + '월')} 축구장 대관 잔여 회차를 선착순으로 오픈합니�
                     <div className="flex flex-col lg:flex-row gap-5 items-start">
                         {/* 입력 패널 */}
                         <div className="w-full lg:w-[380px] shrink-0 bg-white border border-slate-200 rounded-lg shadow-sm p-4 space-y-4">
+                            {kindField}
                             <div className="sms-field">
                                 <span className="sms-label">운영 주간</span>
                                 <div className="flex items-center gap-2">
@@ -5156,7 +5150,7 @@ ${h(m + '월')} 축구장 대관 잔여 회차를 선착순으로 오픈합니�
             { key: 'phone', label: '문의 전화' },
         ];
 
-        function RemainPopupApp() {
+        function RemainPopupApp({ kindField }) {
             const [v, setV] = useState(RP_DEFAULTS);
             const [busy, setBusy] = useState('');
             const [msg, setMsg] = useState(null);
@@ -5202,6 +5196,7 @@ ${h(m + '월')} 축구장 대관 잔여 회차를 선착순으로 오픈합니�
                     <div className="flex flex-col lg:flex-row gap-5 items-start">
                         {/* 입력 패널 */}
                         <div className="w-full lg:w-[380px] shrink-0 bg-white border border-slate-200 rounded-lg shadow-sm p-4 space-y-3">
+                            {kindField}
                             {RP_FIELDS.map(f => (
                                 <div key={f.key} className="sms-field">
                                     <span className="sms-label">{f.label}</span>
@@ -5270,8 +5265,8 @@ ${h(m + '월')} 축구장 대관 잔여 회차를 선착순으로 오픈합니�
 
         /* 팝업 탭: 팀 프렌즈 / 잔여 회차 중 골라서 만들기 */
         const POPUP_KINDS = [
-            { id: 'tf', label: '팀 프렌즈', desc: '중·고등학생 무료 개방 주간 운영 안내' },
-            { id: 'remain', label: '잔여 회차', desc: '잔여 회차 예약 안내' },
+            { id: 'tf', label: '팀 프렌즈 미운영', desc: '중·고등학생 무료 개방 주간 운영 안내' },
+            { id: 'remain', label: '대관 잔여 회차', desc: '잔여 회차 예약 안내' },
         ];
         function PopupToolsApp() {
             const [kind, setKind] = useState(() => {
@@ -5279,19 +5274,23 @@ ${h(m + '월')} 축구장 대관 잔여 회차를 선착순으로 오픈합니�
                 return 'tf';
             });
             const pick = (k) => { setKind(k); try { localStorage.setItem('dm-popup-kind', k); } catch (e) {} };
-            return (
-                <div className="space-y-4">
-                    <div className="pop-kinds" role="radiogroup" aria-label="팝업 종류">
+            const current = POPUP_KINDS.find(x => x.id === kind) || POPUP_KINDS[0];
+            const kindField = (
+                <div className="sms-field pop-kind-field">
+                    <span className="sms-label">팝업 종류</span>
+                    <div className="pop-seg" role="radiogroup" aria-label="팝업 종류">
                         {POPUP_KINDS.map(k => (
                             <button key={k.id} type="button" role="radio" aria-checked={kind === k.id}
-                                className={`pop-kind ${kind === k.id ? 'active' : ''}`} onClick={() => pick(k.id)}>
-                                <span className="pop-kind-dot" />
-                                <span className="pop-kind-text"><b>{k.label}</b><span>{k.desc}</span></span>
-                            </button>
+                                className={kind === k.id ? 'on' : ''} onClick={() => pick(k.id)}>{k.label}</button>
                         ))}
                     </div>
-                    <div className={kind === 'tf' ? '' : 'hidden'}><PopupGeneratorApp /></div>
-                    <div className={kind === 'remain' ? '' : 'hidden'}><RemainPopupApp /></div>
+                    <span className="pop-kind-desc">{current.desc}</span>
+                </div>
+            );
+            return (
+                <div>
+                    <div className={kind === 'tf' ? '' : 'hidden'}><PopupGeneratorApp kindField={kindField} /></div>
+                    <div className={kind === 'remain' ? '' : 'hidden'}><RemainPopupApp kindField={kindField} /></div>
                 </div>
             );
         }
